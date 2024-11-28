@@ -8,8 +8,8 @@ export class BasketEntity{
     id : number
 
     @OneToOne(()=>UserEntity)
-    @JoinColumn()
-    user : UserEntity
+    @JoinColumn({name : 'user'})
+    user : number
 
     // @ManyToMany(()=>ProductEntity)
     // @JoinTable()

@@ -36,11 +36,8 @@ export class AuthService {
         const tokens = await this.getTokens(newUser.id,newUser.email)
         
         let basketEntity = new BasketEntity();
-        basketEntity.user = newUser;
-
-        const basket = await this.basketService.createBasket(basketEntity)
-        console.log(basket);
-
+        basketEntity.user = newUser.id;
+        await this.basketService.createBasket(basketEntity)
         await this.updateRefreshToken(newUser.id, tokens.refreshToken);
         return tokens
     }

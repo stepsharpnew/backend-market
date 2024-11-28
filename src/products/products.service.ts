@@ -67,6 +67,9 @@ export class ProductsService {
                 category : createProductDTO.category.category
             }
         }) 
+        if (!category) {
+            throw new HttpException('Указанная вами категория отсутствует',HttpStatus.UNPROCESSABLE_ENTITY)
+        }
         const slug = slugify(`${createProductDTO.name}-${(Math.random()*36).toString(36).substring(2)}`)
         
         // const reduced_name = slugify(createProductDTO.category.category)
