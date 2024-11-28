@@ -8,6 +8,8 @@ import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 import 'dotenv/config'
 import { AuthDto } from './dto/auth.dto';
+import { BasketService } from 'src/basket/basket.service';
+import { BasketEntity } from 'src/basket/basket.entity';
 
 
 
@@ -17,6 +19,7 @@ export class AuthService {
     private userRepository:Repository<UserEntity>,
     private usersService: UserService,
     private jwtService: JwtService,
+    private basketService : BasketService
     ){}
 
     async registration(createUserDto : CreateUserDTO):
@@ -31,6 +34,13 @@ export class AuthService {
         Object.assign(user,createUserDto)
         const newUser = await this.userRepository.save({...user,password : hashPassword} )
         const tokens = await this.getTokens(newUser.id,newUser.email)
+        
+        let basketEntity = new BasketEntity();
+        basketEntity.user = newUser;
+
+        const basket = await this.basketService.createBasket(basketEntity)
+        console.log(basket);
+
         await this.updateRefreshToken(newUser.id, tokens.refreshToken);
         return tokens
     }

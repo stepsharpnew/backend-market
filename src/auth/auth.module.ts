@@ -5,14 +5,20 @@ import { JwtModule } from '@nestjs/jwt';
 import { RefreshTokenStrategy } from './strategies/refreshToken.strategy';
 import { AccessTokenStrategy } from './strategies/accessToken.strategy';
 import { UserModule } from 'src/user/user.module';
+import { BasketService } from 'src/basket/basket.service';
+import { BasketModule } from 'src/basket/basket.module';
 
 @Module({
   imports : [JwtModule.register({
     global: true,
     secret: process.env.JWT_ACCESS_SECRET,
     signOptions: { expiresIn: '1h' },
-  }), UserModule],
+  }),
+  UserModule,
+  BasketModule
+  ],
   controllers: [AuthController],
   providers: [AuthService,RefreshTokenStrategy,AccessTokenStrategy],
+  
 })
 export class AuthModule {}

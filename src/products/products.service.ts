@@ -92,7 +92,6 @@ export class ProductsService {
             },
             relations : ['category']
         })
-        console.log(products);
         
         return products
     }
