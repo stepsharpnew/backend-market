@@ -1,5 +1,6 @@
+import { BasketProductsEntity } from "src/entitys/basket_products.entity";
 import { CategoryEntity } from "src/entitys/category.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({name : 'products'})
 
@@ -27,6 +28,9 @@ export class ProductEntity {
 
     @ManyToOne(()=>CategoryEntity, (category)=>category.products)
     category : CategoryEntity
+
+    @OneToMany(()=>BasketProductsEntity, (product)=> product.products)
+    products : ProductEntity
     //celler_id
     //category_id
 }

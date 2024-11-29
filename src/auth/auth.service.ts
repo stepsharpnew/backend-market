@@ -9,7 +9,6 @@ import { UserService } from 'src/user/user.service';
 import 'dotenv/config'
 import { AuthDto } from './dto/auth.dto';
 import { BasketService } from 'src/basket/basket.service';
-import { BasketEntity } from 'src/basket/basket.entity';
 
 
 
@@ -22,8 +21,7 @@ export class AuthService {
     private basketService : BasketService
     ){}
 
-    async registration(createUserDto : CreateUserDTO):
-    Promise<{}>
+    async registration(createUserDto : CreateUserDTO)
     {
         const userExist = await this.usersService.findByEmail(createUserDto.email)
         if (userExist) {
@@ -34,10 +32,6 @@ export class AuthService {
         Object.assign(user,createUserDto)
         const newUser = await this.userRepository.save({...user,password : hashPassword} )
         const tokens = await this.getTokens(newUser.id,newUser.email)
-        
-        let basketEntity = new BasketEntity();
-        basketEntity.user = newUser.id;
-        await this.basketService.createBasket(basketEntity)
         await this.updateRefreshToken(newUser.id, tokens.refreshToken);
         return tokens
     }

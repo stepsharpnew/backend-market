@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BasketProductsEntity } from "src/entitys/basket_products.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({name : 'users'})
 
@@ -21,5 +22,8 @@ export class UserEntity{
 
     @Column({default : '',nullable : true})
     refreshToken : string
+
+    @OneToMany(()=>BasketProductsEntity, (basket)=>basket.user)
+    user : UserEntity
 
 }
