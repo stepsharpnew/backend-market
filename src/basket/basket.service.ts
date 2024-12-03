@@ -4,6 +4,7 @@ import { ProductEntity } from 'src/products/products.entity';
 import { UserEntity } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
 import { BasketProductsEntity } from 'src/entitys/basket_products.entity';
+import { ZakazEntity } from 'src/zakaz/zakaz.entity';
 
 @Injectable()
 export class BasketService {
@@ -14,6 +15,8 @@ export class BasketService {
         private readonly productRepository : Repository<ProductEntity>,
         @InjectRepository(BasketProductsEntity)
         private readonly basketProduct_Repository : Repository<BasketProductsEntity>,
+        @InjectRepository(ZakazEntity)
+        private readonly zakazRepository : Repository<ZakazEntity>,
         
 ){}
 
@@ -46,8 +49,8 @@ export class BasketService {
             .where('products.id IN (:...ids)',{ids : product_Ids})
             const products = await queryBuilder.getMany()
             return products
-        } catch (error) {
-
+        } catch (error) {  
+            console.log(error);
             
         }
         
@@ -83,6 +86,69 @@ export class BasketService {
         console.log('Entity', Entity);
         const newBasketItem = await this.basketProduct_Repository.save(Entity)
         return newBasketItem
+    }
+
+
+
+
+    //Удаление корзины(всех добавленных связей между пользователем и товарами)
+    async deleteBasket(user_id){
+        const user = await this.userRepository.findOne({
+            where : {
+                id : user_id
+            }
+        })
+        if (!user) {
+            throw new HttpException('Такого пользователя нет',HttpStatus.BAD_REQUEST)
+        }
+        const basket_items = await this.basketProduct_Repository.find({
+            where : {
+                user
+            },
+            relations : ["products", "user"]
+        })
+        if (!user) {
+            throw new HttpException('Чтобы оформить заказ добавьте товары в корзину',HttpStatus.BAD_REQUEST)
+        }
+        const products_Ids = basket_items.map((elem)=>elem.products.id)
+        await this.basketProduct_Repository
+        .createQueryBuilder()
+        .delete()
+        .from('basket_products') // Название таблицы в базе данных
+        .where('productsId IN (:...ids)', { ids: products_Ids })
+        .andWhere(`userId = ${user_id}`)
+        .execute();
+    }
+
+    //получить список товаров в корзине, при нажатии кнопки "ПОКУПКА", должна создатьсья запись с юзером и списком его товаров
+
+    async basketToZakaz(user_id: number){
+        const user = await this.userRepository.findOne({
+            where : {
+                id : user_id
+            }
+        })
+        if (!user) {
+            throw new HttpException('Такого пользователя нет',HttpStatus.BAD_REQUEST)
+        }
+        const basket_items = await this.basketProduct_Repository.find({
+            where : {
+                user
+            },
+            relations : ["products", "user"]
+        })
+        if (!user) {
+            throw new HttpException('Чтобы оформить заказ добавьте товары в корзину',HttpStatus.BAD_REQUEST)
+        }
+        const products_Ids = basket_items.map((elem)=>elem.products.id)
+        console.log(products_Ids);
+        
+        let zakaz = new ZakazEntity()
+        zakaz.productList = products_Ids
+        zakaz.user = user
+        const new_zakaz = await this.zakazRepository.save(zakaz)
+        return new_zakaz
+        
     }
 
 }

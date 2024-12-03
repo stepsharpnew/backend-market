@@ -1,5 +1,6 @@
 import { BasketProductsEntity } from "src/entitys/basket_products.entity";
 import { CategoryEntity } from "src/entitys/category.entity";
+import { ZakazEntity } from "src/zakaz/zakaz.entity";
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({name : 'products'})
@@ -31,6 +32,9 @@ export class ProductEntity {
 
     @OneToMany(()=>BasketProductsEntity, (product)=> product.products)
     products : ProductEntity
+
+    // @OneToMany(()=>ZakazEntity, (zakaz)=> zakaz.products)
+    // products_info : ProductEntity
     //celler_id
     //category_id
 }

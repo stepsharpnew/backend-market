@@ -1,4 +1,5 @@
 import { BasketProductsEntity } from "src/entitys/basket_products.entity";
+import { ZakazEntity } from "src/zakaz/zakaz.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({name : 'users'})
@@ -26,4 +27,6 @@ export class UserEntity{
     @OneToMany(()=>BasketProductsEntity, (basket)=>basket.user)
     user : UserEntity
 
+    @OneToMany(()=>ZakazEntity, (zakaz)=>zakaz.user)
+    zakazy : ZakazEntity[]
 }
