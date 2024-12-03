@@ -31,7 +31,7 @@ export class AuthService {
         const hashPassword = await bcrypt.hash(createUserDto.password,4)
         Object.assign(user,createUserDto)
         const newUser = await this.userRepository.save({...user,password : hashPassword} )
-        const tokens = await this.getTokens(newUser.id,newUser.email)
+        const tokens = await this.getTokens(newUser.id,newUser.email,newUser.role)
         await this.updateRefreshToken(newUser.id, tokens.refreshToken);
         return tokens
     }
@@ -46,7 +46,7 @@ export class AuthService {
         if (!validPass) {
             throw new HttpException('Неправильный пароль',HttpStatus.BAD_REQUEST)
         }
-        const tokens = await this.getTokens(findUser.id,findUser.email)
+        const tokens = await this.getTokens(findUser.id,findUser.email,findUser.role)
         await this.updateRefreshToken(findUser.id, tokens.refreshToken);
         return tokens
     }
@@ -69,7 +69,7 @@ export class AuthService {
         
       }
 
-    async getTokens(userId: number, email: string):Promise<{
+    async getTokens(userId: number, email: string, role : string):Promise<{
       accessToken:string,
       refreshToken: string,
       }> {
@@ -78,6 +78,7 @@ export class AuthService {
             {
               sub: userId,
               email,
+              role
             },
             {
               secret: process.env.JWT_ACCESS_SECRET,
@@ -88,6 +89,7 @@ export class AuthService {
             {
               sub: userId,
               email,
+              role
             },
             {
               secret: process.env.JWT_REFRESH_SECRET,
@@ -115,7 +117,7 @@ export class AuthService {
       if (!checkRefreshTokens) {
         throw new HttpException('Доступ заблокирован',HttpStatus.FORBIDDEN)
       }
-      const tokens = this.getTokens(userId, (await user).email)//Обновление 2-х токенов
+      const tokens = this.getTokens(userId, (await user).email,(await user).role)//Обновление 2-х токенов
       await this.updateRefreshToken((await user).id,(await tokens).refreshToken)//Запись нового в БД
       return tokens
     }

@@ -20,11 +20,8 @@ export class BasketController {
   @Post('create')
   @UseGuards(AccesTokenGeard)
   async productToBasket(@User()user_id : any, @Body('product_id') product_id:number){
-    console.log('asdasd',user_id);
     const new_record = await this.basketService.addProdToBasket(user_id.sub ,product_id )
-    console.log('sosat',new_record);
     return new_record
-    
   }
 
 }

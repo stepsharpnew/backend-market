@@ -15,8 +15,6 @@ export class AuthMiddleware implements NestMiddleware {
 
     async use(req: expressRequestInterface, res: Response, next: NextFunction) {
         const authHeader = req.headers.authorization
-
-        
         if (!authHeader) {
             req.user = null
             next()
@@ -26,8 +24,7 @@ export class AuthMiddleware implements NestMiddleware {
         try {
             const decode = this.jwtService.verify(token,{secret : process.env.JWT_ACCESS_SECRET})
             const user = await this.userService.findById(decode.sub)
-            req.user = user            
-            console.log(req.user);
+            req.user = user    
             next()
         } catch (error) {
             req.user = null 

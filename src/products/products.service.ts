@@ -6,7 +6,7 @@ import { CreateProductDTO } from './dto/createProduct.dto';
 import slugify from 'slugify';
 import { CategoryEntity } from 'src/entitys/category.entity';
 import { CreateCategoryDTO } from './dto/createCategory.dto';
-import { UserEntity } from 'src/user/user.entity';
+
 
 @Injectable()
 export class ProductsService {
@@ -54,6 +54,8 @@ export class ProductsService {
 
 
     async createProduct(createProductDTO : CreateProductDTO, user_id : number):Promise<ProductEntity>{
+        console.log(user_id);
+        
         const productConsist = await this.productRepository.findOne({
             where : {
                 name : createProductDTO.name

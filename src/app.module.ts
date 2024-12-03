@@ -6,6 +6,7 @@ import { AuthMiddleware } from './user/middleware/auth.middleware';
 import { AuthModule } from './auth/auth.module';
 import { ProductsModule } from './products/products.module';
 import { BasketModule } from './basket/basket.module';
+import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
@@ -13,7 +14,8 @@ import { BasketModule } from './basket/basket.module';
     TypeOrmModule.forRoot(dataSourceOptions),
     AuthModule,
     ProductsModule,
-    BasketModule
+    BasketModule,
+    FileModule
   ],
 })
 export class AppModule 

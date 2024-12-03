@@ -47,7 +47,6 @@ export class AuthController {
   async refreshTokensController(@Req() req : expressRequestInterface):
   Promise<{accessToken:string,refreshToken: string,}>
   {
-    console.log(req.user.refreshToken);
     const tokens = await this.authService.refreshTokens(req.user.sub, req.user.refreshToken)
     return tokens
     
