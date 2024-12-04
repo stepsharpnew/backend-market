@@ -1,6 +1,6 @@
 
-import { ProductEntity } from "src/products/products.entity";
-import { UserEntity } from "src/user/user.entity";
+import { ProductEntity } from "../products/products.entity";
+import { UserEntity } from "../user/user.entity";
 import { Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({name : 'basket_products'})

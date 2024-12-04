@@ -1,5 +1,5 @@
-import { BasketProductsEntity } from "src/entitys/basket_products.entity";
-import { ZakazEntity } from "src/zakaz/zakaz.entity";
+import { BasketProductsEntity } from "../entitys/basket_products.entity";
+import { ZakazEntity } from "../zakaz/zakaz.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({name : 'users'})

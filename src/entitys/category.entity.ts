@@ -1,4 +1,4 @@
-import { ProductEntity } from "src/products/products.entity";
+import { ProductEntity } from "../products/products.entity";
 import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 

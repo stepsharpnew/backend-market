@@ -1,5 +1,5 @@
-import { BasketProductsEntity } from "src/entitys/basket_products.entity";
-import { CategoryEntity } from "src/entitys/category.entity";
+import { BasketProductsEntity } from "../entitys/basket_products.entity";
+import { CategoryEntity } from "../entitys/category.entity";
 import { ZakazEntity } from "src/zakaz/zakaz.entity";
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
