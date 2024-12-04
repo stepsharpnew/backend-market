@@ -20,13 +20,25 @@ export class BasketService {
         
 ){}
 
+    async GetUser(user_id : number):Promise<UserEntity>{
+        return await this.userRepository.findOne({
+            where : {
+                id : user_id
+            }
+        })
+    }
+
+    async GetProduct(product_id : number):Promise<ProductEntity>{
+        return await this.productRepository.findOne({
+            where : {
+                id : product_id
+            }
+        })
+    }
+
     async getBasketUser(id : number){
         try {
-            const currentUser = await this.userRepository.findOne({
-                where : {
-                    id
-                }
-            })
+            const currentUser = await this.GetUser(id)
             if (!currentUser) {
                 throw new HttpException('Нет такого пользователя',HttpStatus.UNPROCESSABLE_ENTITY)
             }
@@ -56,17 +68,11 @@ export class BasketService {
         
     } 
 
+
+
     async addProdToBasket(user_id: number, product_id : number){
-        const product = await this.productRepository.findOne({
-            where : {
-                id : product_id
-            }
-        })
-        const user = await this.userRepository.findOne({
-            where : {
-                id : user_id
-            }
-        })
+        const product = await this.GetProduct(product_id)
+        const user = await this.GetUser(user_id)
         if (!product) {
             throw new HttpException('Такого товара еще не существует',HttpStatus.UNPROCESSABLE_ENTITY)
         }
@@ -92,12 +98,8 @@ export class BasketService {
 
 
     //Удаление корзины(всех добавленных связей между пользователем и товарами)
-    async deleteBasket(user_id){
-        const user = await this.userRepository.findOne({
-            where : {
-                id : user_id
-            }
-        })
+    async deleteBasket(user_id:number){
+        const user = await this.GetUser(user_id)
         if (!user) {
             throw new HttpException('Такого пользователя нет',HttpStatus.BAD_REQUEST)
         }
@@ -114,20 +116,20 @@ export class BasketService {
         await this.basketProduct_Repository
         .createQueryBuilder()
         .delete()
-        .from('basket_products') // Название таблицы в базе данных
+        .from('basket_products')
         .where('productsId IN (:...ids)', { ids: products_Ids })
         .andWhere(`userId = ${user_id}`)
         .execute();
     }
 
+    async deleteProdFromBAsket(user_id : number, product_id : number){
+
+    }
+
     //получить список товаров в корзине, при нажатии кнопки "ПОКУПКА", должна создатьсья запись с юзером и списком его товаров
 
     async basketToZakaz(user_id: number){
-        const user = await this.userRepository.findOne({
-            where : {
-                id : user_id
-            }
-        })
+        const user = await this.GetUser(user_id)
         if (!user) {
             throw new HttpException('Такого пользователя нет',HttpStatus.BAD_REQUEST)
         }
@@ -140,15 +142,34 @@ export class BasketService {
         if (!user) {
             throw new HttpException('Чтобы оформить заказ добавьте товары в корзину',HttpStatus.BAD_REQUEST)
         }
+
         const products_Ids = basket_items.map((elem)=>elem.products.id)
         console.log(products_Ids);
+        if (products_Ids.length === 0) {
+            throw new HttpException('Ваша корзина пустая', HttpStatus.UNPROCESSABLE_ENTITY)
+        }
         
+
+        const queryBuilder =  this.productRepository
+        .createQueryBuilder('products')
+        .where('id IN (:...ids)', { ids: products_Ids })
+
+        let products = await queryBuilder.getMany()
+        products.forEach(element => {
+            element.sold_count++
+        });
+        await this.productRepository.save(products)
+
         let zakaz = new ZakazEntity()
         zakaz.productList = products_Ids
         zakaz.user = user
         const new_zakaz = await this.zakazRepository.save(zakaz)
+        this.deleteBasket(user_id)
         return new_zakaz
         
     }
 
+
+    //Создается много заказов от одной фунции добавления в заказ 
+    //Если корзина пуста, возниает ошибка ++++++++
 }
