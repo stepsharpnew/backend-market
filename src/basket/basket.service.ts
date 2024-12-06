@@ -165,11 +165,9 @@ export class BasketService {
         zakaz.user = user
         const new_zakaz = await this.zakazRepository.save(zakaz)
         this.deleteBasket(user_id)
-        return new_zakaz
-        
+        return new_zakaz 
     }
 
 
-    //Создается много заказов от одной фунции добавления в заказ 
     //Если корзина пуста, возниает ошибка ++++++++
 }

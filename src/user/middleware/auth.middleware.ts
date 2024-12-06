@@ -3,7 +3,7 @@ import { Injectable,NestMiddleware } from "@nestjs/common";
 import { NextFunction, Request, Response } from "express";
 import { verify } from "jsonwebtoken";
 import { UserService } from "../user.service";
-import { expressRequestInterface } from "src/types";
+import { expressRequestInterface } from "src/config/types";
 import { JwtService } from "@nestjs/jwt";
 
 @Injectable()

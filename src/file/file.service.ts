@@ -6,7 +6,7 @@ import { UserEntity } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
 import slugify from 'slugify';
 import "dotenv/config"
-import { s3 } from 'src/s3.config';
+import { s3 } from 'src/config/s3.config';
 
 
 @Injectable()

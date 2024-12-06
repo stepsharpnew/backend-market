@@ -47,7 +47,7 @@ export class ProductsService {
             }
         })
         if (!product) {
-            throw new HttpException('Товаров нет', HttpStatus.UNPROCESSABLE_ENTITY)
+            throw new HttpException('Такого товара нет', HttpStatus.UNPROCESSABLE_ENTITY)
         }
         return product
     }

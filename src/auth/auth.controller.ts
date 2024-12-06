@@ -13,7 +13,7 @@ import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
 import { CreateUserDTO } from 'src/user/dto/creteUserDTO';
 import { AccesTokenGeard } from 'src/guards/accessToken.guard';
-import { expressRequestInterface } from 'src/types';
+import { expressRequestInterface } from 'src/config/types';
 import { RefreshTokenGuard } from 'src/guards/refreshToken.guard';
 import { UserEntity } from 'src/user/user.entity';
 
