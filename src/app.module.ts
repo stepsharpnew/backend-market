@@ -1,7 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { dataSourceOptions } from './config/typeorm.config';
+import { dataSourceOptions } from './typeorm.config';
 import { AuthMiddleware } from './user/middleware/auth.middleware';
 import { AuthModule } from './auth/auth.module';
 import { ProductsModule } from './products/products.module';

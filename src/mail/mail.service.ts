@@ -8,8 +8,9 @@ export class MailService {
 
   async sendMail(dto : SendMailDTO ){
     try {
+      
       const mail = await this.mailerService.sendMail(
-        dto
+        dto 
       )
       return mail
     } catch (error) {
@@ -18,6 +19,4 @@ export class MailService {
     }
 
   }
-
-
 }

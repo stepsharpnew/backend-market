@@ -16,6 +16,8 @@ import { AccesTokenGeard } from 'src/guards/accessToken.guard';
 import { expressRequestInterface } from 'src/config/types';
 import { RefreshTokenGuard } from 'src/guards/refreshToken.guard';
 import { UserEntity } from 'src/user/user.entity';
+import { User } from 'src/user/decorators/UserDecorator'
+import { ChangePassDTO } from './dto/cahngePassDTO';
 
 
 @Controller('auth')
@@ -51,4 +53,13 @@ export class AuthController {
     return tokens
     
   }
+
+
+  @UseGuards(AccesTokenGeard)
+  @Post('change_pass')
+  changePass(@User()user, @Body() dto: ChangePassDTO) {
+    return this.authService.changePassword(user.sub, dto );
+  }
+
+
 }

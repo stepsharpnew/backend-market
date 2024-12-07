@@ -9,6 +9,7 @@ import { UserService } from 'src/user/user.service';
 import 'dotenv/config'
 import { AuthDto } from './dto/auth.dto';
 import { BasketService } from 'src/basket/basket.service';
+import { ChangePassDTO } from './dto/cahngePassDTO';
 
 
 
@@ -23,10 +24,14 @@ export class AuthService {
 
     async registration(createUserDto : CreateUserDTO)
     {
+      console.log(createUserDto);
         const userExist = await this.usersService.findByEmail(createUserDto.email)
+        console.log(createUserDto, userExist);
         if (userExist) {
             throw new HttpException('Пользователь уже есть',HttpStatus.UNPROCESSABLE_ENTITY)
         }
+        console.log(createUserDto, userExist);
+        
         let user = new UserEntity()
         const hashPassword = await bcrypt.hash(createUserDto.password,4)
         Object.assign(user,createUserDto)
@@ -34,7 +39,7 @@ export class AuthService {
         const tokens = await this.getTokens(newUser.id,newUser.email,newUser.role)
         await this.updateRefreshToken(newUser.id, tokens.refreshToken);
         return tokens
-    }
+    } 
 
     async login(authDto : AuthDto):
     Promise<{accessToken: string,refreshToken:string}>{      
@@ -120,6 +125,31 @@ export class AuthService {
       const tokens = this.getTokens(userId, (await user).email,(await user).role)//Обновление 2-х токенов
       await this.updateRefreshToken((await user).id,(await tokens).refreshToken)//Запись нового в БД
       return tokens
+    }
+
+
+    async changePassword(
+      user_id : number, 
+      dto : ChangePassDTO
+    ){
+      const user = await this.userRepository.findOne({
+        where : {
+          id : user_id
+        }
+      })
+      const ValidPass = await bcrypt.compare(dto.old_password, user.password)
+      if (!ValidPass) {
+        throw new HttpException('Актуальный пароль введен неверно',HttpStatus.FORBIDDEN)
+      }
+      console.log(ValidPass);
+      if (dto.new_password !== dto.confirm_password) {
+        throw new HttpException('Введенные пароли не совпадают',HttpStatus.FORBIDDEN)
+      }
+      const hashPass = await bcrypt.hashSync(dto.new_password, 5);
+      let newUser= new UserEntity()
+      Object.assign(newUser, {...user, password : hashPass})
+      return await this.userRepository.save(newUser)
+
     }
 
 }

@@ -7,6 +7,9 @@ import { AccessTokenStrategy } from './strategies/accessToken.strategy';
 import { UserModule } from 'src/user/user.module';
 import { BasketService } from 'src/basket/basket.service';
 import { BasketModule } from 'src/basket/basket.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserEntity } from 'src/user/user.entity';
+import { ProductEntity } from 'src/products/products.entity';
 
 @Module({
   imports : [JwtModule.register({
@@ -15,7 +18,10 @@ import { BasketModule } from 'src/basket/basket.module';
     signOptions: { expiresIn: '1h' },
   }),
   UserModule,
-  BasketModule
+  BasketModule,
+
+  // TypeOrmModule.forFeature([ProductEntity,UserEntity])
+  
   ],
   controllers: [AuthController],
   providers: [AuthService,RefreshTokenStrategy,AccessTokenStrategy],
