@@ -18,6 +18,7 @@ import { RefreshTokenGuard } from 'src/guards/refreshToken.guard';
 import { UserEntity } from 'src/user/user.entity';
 import { User } from 'src/user/decorators/UserDecorator'
 import { ChangePassDTO } from './dto/cahngePassDTO';
+import { Length } from 'class-validator';
 
 
 @Controller('auth')
@@ -54,12 +55,37 @@ export class AuthController {
     
   }
 
-
   @UseGuards(AccesTokenGeard)
+  @UsePipes(new ValidationPipe())
   @Post('change_pass')
-  changePass(@User()user, @Body() dto: ChangePassDTO) {
-    return this.authService.changePassword(user.sub, dto );
+  changePass(@User('email')email : string, @Body() dto: ChangePassDTO) {
+    return this.authService.changePassword(email, dto );
   }
 
+
+  @Post('restoring')
+  RestoringPassword(@Body('email') email: string) {
+    return this.authService.RestoringSendMail(email);
+  }
+
+  @Post('confirm_code')
+  RestoringCodeConfirm(
+    @Body('email') email: string,
+    @Body('code') code : number
+  ) {
+    return this.authService.RestoringCodeConfirm(code,email);
+  }
+
+  @Post('restore_new_password')
+  @UsePipes(new ValidationPipe())
+  RestoringCreateNewPassword(
+    @Body('email') email: string,
+    @Body('code') code : number,
+    @Body()changePassDTO : ChangePassDTO,
+    // @Body('new_password')@Length(5,20) new_password: string,
+    // @Body('confirm_password') confirm_password : string,
+  ) {
+    return this.authService.RestoringCreateNewPassword(code,email, changePassDTO);
+  }
 
 }

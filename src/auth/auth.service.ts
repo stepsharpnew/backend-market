@@ -10,6 +10,9 @@ import 'dotenv/config'
 import { AuthDto } from './dto/auth.dto';
 import { BasketService } from 'src/basket/basket.service';
 import { ChangePassDTO } from './dto/cahngePassDTO';
+import { MailService } from 'src/mail/mail.service';
+import { SendMailDTO } from 'src/mail/dto/sendMailDTO';
+import PasswordRestoringHTML from 'src/mail/PasswordRestoringHTML';
 
 
 
@@ -19,7 +22,8 @@ export class AuthService {
     private userRepository:Repository<UserEntity>,
     private usersService: UserService,
     private jwtService: JwtService,
-    private basketService : BasketService
+    private basketService : BasketService,
+    private mailService : MailService
     ){}
 
     async registration(createUserDto : CreateUserDTO)
@@ -129,19 +133,18 @@ export class AuthService {
 
 
     async changePassword(
-      user_id : number, 
+      email : string, 
       dto : ChangePassDTO
     ){
-      const user = await this.userRepository.findOne({
-        where : {
-          id : user_id
-        }
-      })
+      const user = await this.usersService.findByEmail(email)
+      console.log(user);
+      if (!dto.old_password) {
+        throw new HttpException('Актуальный пароль обязателен',HttpStatus.FORBIDDEN)
+      }
       const ValidPass = await bcrypt.compare(dto.old_password, user.password)
       if (!ValidPass) {
         throw new HttpException('Актуальный пароль введен неверно',HttpStatus.FORBIDDEN)
       }
-      console.log(ValidPass);
       if (dto.new_password !== dto.confirm_password) {
         throw new HttpException('Введенные пароли не совпадают',HttpStatus.FORBIDDEN)
       }
@@ -149,7 +152,74 @@ export class AuthService {
       let newUser= new UserEntity()
       Object.assign(newUser, {...user, password : hashPass})
       return await this.userRepository.save(newUser)
-
     }
+
+
+
+    //RESTORING ------------------------------------------------
+
+    //Смена пароля на хэш код
+    private async RestorePasswordForCode(
+      code : number,
+      user : UserEntity
+    ){    
+      const hashPass = await bcrypt.hashSync(code.toString(), 5);
+      let newUser= new UserEntity()
+      Object.assign(newUser, {...user, password : hashPass})
+      return await this.userRepository.save(newUser)
+    }
+
+
+    //Отправка письма с кодом
+    async RestoringSendMail(email : string){
+      console.log(email);
+      const user = await this.usersService.findByEmail(email)
+      console.log(user);
+      
+      if (!user) {
+        throw new HttpException('Такого пользователя нет',HttpStatus.BAD_REQUEST)
+      }
+      const authCode = Math.floor(Math.random()*(999999-100000))+100000
+      await this.RestorePasswordForCode(authCode, user)
+
+      let sendMailDto = new SendMailDTO(); 
+      sendMailDto.from = process.env.MAIL_USERNAME
+      sendMailDto.to = email
+      sendMailDto.subject = "Код для смены пароля"
+      sendMailDto.html = PasswordRestoringHTML(authCode)
+      return await this.mailService.sendMail(sendMailDto)
+    }
+
+    //Проверка правильности кода кода
+    async RestoringCodeConfirm(code : number, email : string):Promise<boolean>{
+      const user = await this.usersService.findByEmail(email)
+      const codeVerify = await bcrypt.compare(code.toString(), user.password)
+      if (!codeVerify) {
+        throw new HttpException('Код аутентификации неверный',HttpStatus.BAD_REQUEST)
+      }
+      return codeVerify
+      
+    }
+    //Любой пользователь может создатть новый пароль
+    async RestoringCreateNewPassword(code : number, email : string, changePassDTO : ChangePassDTO){
+      if (!this.RestoringCodeConfirm(code, email)) {
+        throw new HttpException('Код аутентификации неверный',HttpStatus.BAD_REQUEST)
+      }
+      console.log(changePassDTO);
+      
+      const user = await this.usersService.findByEmail(email)
+
+      if (!user) {
+        throw new HttpException('Такого пользователя нет',HttpStatus.BAD_REQUEST)
+      }
+      if ( changePassDTO.new_password !== changePassDTO.confirm_password) {
+        throw new HttpException('Введенные пароли не совпадают',HttpStatus.FORBIDDEN)
+      }
+      const hashPass = await bcrypt.hashSync(changePassDTO.new_password, 5);
+      let newUser= new UserEntity()
+      Object.assign(newUser, {...user, password : hashPass})
+      return await this.userRepository.save(newUser)
+    }
+
 
 }

@@ -10,6 +10,7 @@ import { BasketModule } from 'src/basket/basket.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/user.entity';
 import { ProductEntity } from 'src/products/products.entity';
+import { MailModule } from 'src/mail/mail.module';
 
 @Module({
   imports : [JwtModule.register({
@@ -19,7 +20,7 @@ import { ProductEntity } from 'src/products/products.entity';
   }),
   UserModule,
   BasketModule,
-
+  MailModule
   // TypeOrmModule.forFeature([ProductEntity,UserEntity])
   
   ],
