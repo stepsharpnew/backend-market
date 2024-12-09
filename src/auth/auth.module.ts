@@ -5,13 +5,9 @@ import { JwtModule } from '@nestjs/jwt';
 import { RefreshTokenStrategy } from './strategies/refreshToken.strategy';
 import { AccessTokenStrategy } from './strategies/accessToken.strategy';
 import { UserModule } from 'src/user/user.module';
-import { BasketService } from 'src/basket/basket.service';
 import { BasketModule } from 'src/basket/basket.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from 'src/user/user.entity';
-import { ProductEntity } from 'src/products/products.entity';
 import { MailModule } from 'src/mail/mail.module';
-import { CACHE_MANAGER, CacheModule } from '@nestjs/cache-manager';
+import { CacheModule } from '@nestjs/cache-manager';
 import { CacheService } from 'src/config/cacheService';
 
 @Module({

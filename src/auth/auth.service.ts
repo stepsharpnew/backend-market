@@ -167,7 +167,8 @@ export class AuthService {
       const hashPass = await bcrypt.hashSync(code.toString(), 5);
       let newUser= new UserEntity()
       Object.assign(newUser, {...user, single_password : hashPass})
-      return await this.userRepository.save(newUser)
+      return  await this.cacheService.set<UserEntity>(`user:${user.email}`, hashPass,180000)
+      // await this.userRepository.save(newUser)
     }
 
 
@@ -197,21 +198,33 @@ export class AuthService {
       return await this.mailService.sendMail(sendMailDto)
     }
 
-    //Проверка правильности кода кода
-    async RestoringCodeConfirm(code : number, email : string):Promise<boolean>{
-      const user = await this.usersService.findByEmail(email)
-      const codeVerify = await bcrypt.compare(code.toString(), user.single_password)
-      if (!codeVerify) {
-        throw new HttpException('Код аутентификации неверный',HttpStatus.BAD_REQUEST)
+    //Проверка правильности кода кода 
+    async RestoringCodeConfirm(code : number, email : string){
+      // const user = await this.usersService.findByEmail(email)
+      const single_password = await this.cacheService.get<UserEntity | null>(`user:${email}`);
+      if (!single_password) {
+        return 404
       }
-      return codeVerify
+      
+      const codeVerify = await bcrypt.compare(code.toString(), single_password);
+      if (!codeVerify) {
+        return 401
+      }
+      return codeVerify;
       
     }
     //Любой пользователь может создатть новый пароль
     async RestoringCreateNewPassword(code : number, email : string, changePassDTO : ChangePassDTO){
-      if (!this.RestoringCodeConfirm(code, email)) {
+      const status = await this.RestoringCodeConfirm(code, email)
+      console.log(status);
+      
+      if (status === 401) {
         throw new HttpException('Код аутентификации неверный',HttpStatus.BAD_REQUEST)
       }
+      if (status === 404) {
+        throw new HttpException('Время действия кода вышло, создайте новый код',HttpStatus.BAD_REQUEST)
+      }
+
       const user = await this.usersService.findByEmail(email)
       if (!user) {
         throw new HttpException('Такого пользователя нет',HttpStatus.BAD_REQUEST)

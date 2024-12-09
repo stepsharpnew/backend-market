@@ -16,14 +16,6 @@ export class UserController {
     ){
         return await this.userService.registration(createUserDto)
     }
-
-    @Post('logout')
-    async logout(
-        @Res() res:Response,
-        @Req() req:Request
-    ){
-
-    }
     @UseGuards(AccesTokenGeard,AdminGuard)
     @Get()
     async getAllUsers(){

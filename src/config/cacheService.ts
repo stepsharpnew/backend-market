@@ -16,7 +16,7 @@ export class CacheService{
         return await this.cacheManeger.set(key,value, ttl)
     }
 
-    async det<T>(key):Promise<T|null>{
+    async det<T>(key : string):Promise<T|null>{
         return await this.cacheManeger.get<T>(key)
     }
 
