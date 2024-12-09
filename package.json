@@ -18,14 +18,15 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "typeorm": "ts-node -r tsconfig-paths/register ../node_modules/typeorm/cli.js --dataSource=src/config/typeorm.config.ts",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --dataSource=src/typeorm.config.ts",
     "db:drop": "npm run typeorm schema:drop",
     "db:create": "npm run typeorm migration:generate src/migrations/CategoryCreate",
     "db:migrate": "npm run typeorm migration:run",
-    "db:seed": "ts-node src/config/seeds.ts"
+    "db:seed": "ts-node src/seeds.ts"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^2.0.2",
+    "@nestjs/cache-manager": "^2.3.0",
     "@nestjs/common": "^10.0.0",
     "@nestjs/core": "^10.0.0",
     "@nestjs/jwt": "^10.2.0",
@@ -37,6 +38,8 @@
     "@yandex-cloud/nodejs-sdk": "^2.7.7",
     "aws-sdk": "^2.1692.0",
     "bcrypt": "^5.1.1",
+    "cache-manager": "^5.7.6",
+    "cache-manager-redis-store": "^2.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "cookie-parser": "^1.4.7",

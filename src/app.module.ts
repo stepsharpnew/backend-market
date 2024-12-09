@@ -12,12 +12,16 @@ import { MailModule } from './mail/mail.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import mailConfig from './config/mail.config';
 
+
+import * as redisStore from 'cache-manager-redis-store';
+import { CacheModule } from '@nestjs/cache-manager';
 @Module({
   imports: [
     UserModule,
     TypeOrmModule.forRoot(dataSourceOptions),
     MailerModule.forRoot(mailConfig),
     AuthModule,
+    // CacheModule.register(),
     ProductsModule,
     BasketModule,
     FileModule,

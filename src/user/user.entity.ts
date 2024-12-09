@@ -21,6 +21,12 @@ export class UserEntity{
     @Column({default : 'user'})
     role : string
 
+    @Column({nullable : true})
+    single_password : string
+
+    @Column({nullable : true})
+    telegram : string
+
     @Column({default : '',nullable : true})
     refreshToken : string
 

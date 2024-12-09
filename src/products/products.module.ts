@@ -7,17 +7,22 @@ import { CategoryEntity } from 'src/entitys/category.entity';
 import { UserService } from 'src/user/user.service';
 import { UserModule } from 'src/user/user.module';
 import { FileModule } from 'src/file/file.module';
-import { FileService } from 'src/file/file.service';
+import { CacheService } from 'src/config/cacheService';
+import { CacheModule } from '@nestjs/cache-manager';
+
 
 @Module({
   imports : [TypeOrmModule.forFeature([
     ProductEntity,
     CategoryEntity,
-    UserModule
+    UserModule,
   ]),
-  FileModule
+  FileModule,
+  CacheModule.register({
+    ttl : 30000
+  })
   ],
   controllers: [ProductsController],
-  providers: [ProductsService],
+  providers: [ProductsService,CacheService],
 })
 export class ProductsModule {}

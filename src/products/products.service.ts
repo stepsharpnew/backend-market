@@ -6,6 +6,7 @@ import { CreateProductDTO } from './dto/createProduct.dto';
 import slugify from 'slugify';
 import { CategoryEntity } from 'src/entitys/category.entity';
 import { CreateCategoryDTO } from './dto/createCategory.dto';
+import { CacheService } from 'src/config/cacheService';
 
 
 @Injectable()
@@ -14,14 +15,18 @@ export class ProductsService {
     @InjectRepository(ProductEntity)
     private readonly productRepository : Repository<ProductEntity>,
     @InjectRepository(CategoryEntity)
-    private readonly categoryRepository : Repository<CategoryEntity>
+    private readonly categoryRepository : Repository<CategoryEntity>,
+    private readonly cacheService : CacheService
     ){}
 
 
     async getAllProducts(query:any):Promise<ProductEntity[]> {
-        const queryBuilder = this.productRepository.createQueryBuilder('products')
-        // queryBuilder.leftJoinAndSelect('products.category','category')
+        let cacheProducts = await this.cacheService.get<ProductEntity[]>('products')
+        if (cacheProducts) {
+            return cacheProducts 
+        }
 
+        const queryBuilder = this.productRepository.createQueryBuilder('products')
         if (query.limit) {
             queryBuilder.limit(query.limit)
             // queryBuilder.orderBy('createdAt','DESC')
@@ -35,8 +40,8 @@ export class ProductsService {
             }
 
         }
-
         const products = await queryBuilder.getMany()
+        await this.cacheService.set<ProductEntity[]>('products',products,50000)
         return products
     }
 

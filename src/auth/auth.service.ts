@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { CreateUserDTO } from 'src/user/dto/creteUserDTO';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/user.entity';
@@ -13,6 +13,9 @@ import { ChangePassDTO } from './dto/cahngePassDTO';
 import { MailService } from 'src/mail/mail.service';
 import { SendMailDTO } from 'src/mail/dto/sendMailDTO';
 import PasswordRestoringHTML from 'src/mail/PasswordRestoringHTML';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
+import { CacheService } from 'src/config/cacheService';
 
 
 
@@ -23,18 +26,17 @@ export class AuthService {
     private usersService: UserService,
     private jwtService: JwtService,
     private basketService : BasketService,
-    private mailService : MailService
+    private mailService : MailService,
+    private cacheService : CacheService
     ){}
 
     async registration(createUserDto : CreateUserDTO)
     {
-      console.log(createUserDto);
+
         const userExist = await this.usersService.findByEmail(createUserDto.email)
-        console.log(createUserDto, userExist);
         if (userExist) {
             throw new HttpException('Пользователь уже есть',HttpStatus.UNPROCESSABLE_ENTITY)
         }
-        console.log(createUserDto, userExist);
         
         let user = new UserEntity()
         const hashPassword = await bcrypt.hash(createUserDto.password,4)
@@ -137,7 +139,6 @@ export class AuthService {
       dto : ChangePassDTO
     ){
       const user = await this.usersService.findByEmail(email)
-      console.log(user);
       if (!dto.old_password) {
         throw new HttpException('Актуальный пароль обязателен',HttpStatus.FORBIDDEN)
       }
@@ -165,17 +166,21 @@ export class AuthService {
     ){    
       const hashPass = await bcrypt.hashSync(code.toString(), 5);
       let newUser= new UserEntity()
-      Object.assign(newUser, {...user, password : hashPass})
+      Object.assign(newUser, {...user, single_password : hashPass})
       return await this.userRepository.save(newUser)
     }
 
 
     //Отправка письма с кодом
     async RestoringSendMail(email : string){
-      console.log(email);
-      const user = await this.usersService.findByEmail(email)
-      console.log(user);
+      const cacheAuth = `authcode:${email}`
+      const consistCache = await this.cacheService.get(cacheAuth)
       
+      if (consistCache) {
+        throw new HttpException('Для отправки нового кода авторизации, просьба подождать 30 секунд',HttpStatus.TOO_MANY_REQUESTS)
+      }
+
+      const user = await this.usersService.findByEmail(email)
       if (!user) {
         throw new HttpException('Такого пользователя нет',HttpStatus.BAD_REQUEST)
       }
@@ -187,13 +192,15 @@ export class AuthService {
       sendMailDto.to = email
       sendMailDto.subject = "Код для смены пароля"
       sendMailDto.html = PasswordRestoringHTML(authCode)
+      await this.cacheService.set(`authcode:${email}`,authCode,30000 )
+      
       return await this.mailService.sendMail(sendMailDto)
     }
 
     //Проверка правильности кода кода
     async RestoringCodeConfirm(code : number, email : string):Promise<boolean>{
       const user = await this.usersService.findByEmail(email)
-      const codeVerify = await bcrypt.compare(code.toString(), user.password)
+      const codeVerify = await bcrypt.compare(code.toString(), user.single_password)
       if (!codeVerify) {
         throw new HttpException('Код аутентификации неверный',HttpStatus.BAD_REQUEST)
       }
@@ -205,10 +212,7 @@ export class AuthService {
       if (!this.RestoringCodeConfirm(code, email)) {
         throw new HttpException('Код аутентификации неверный',HttpStatus.BAD_REQUEST)
       }
-      console.log(changePassDTO);
-      
       const user = await this.usersService.findByEmail(email)
-
       if (!user) {
         throw new HttpException('Такого пользователя нет',HttpStatus.BAD_REQUEST)
       }

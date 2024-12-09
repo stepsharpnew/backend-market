@@ -45,7 +45,6 @@ export class ProductsController {
       @Body()createProductDTO : CreateProductDTO,
       @User() user:any
     ):Promise<ProductEntity>{
-      console.log(user);
       const product = await this.productsService.createProduct(createProductDTO,user.sub)
       return product
     }
@@ -85,7 +84,6 @@ export class ProductsController {
         @Param('product_slug') product_slug : string
     ){
         const product_id  = (await this.productsService.getProductBySlug(product_slug)).id
-        console.log('productID ' + product_id);
         return this.fileService.addFileProduct(file,user.sub,product_id)
       }
 

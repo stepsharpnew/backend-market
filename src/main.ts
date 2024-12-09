@@ -7,7 +7,6 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(cookieParser());
   await app.listen(process.env.PORT);
-  console.log(process.env.MAIL_USERNAME,process.env.MAIL_PASSWORD,);
   console.log(`server running on ${process.env.PORT}`);
 }
 bootstrap();

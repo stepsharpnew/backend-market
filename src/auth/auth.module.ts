@@ -11,6 +11,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/user.entity';
 import { ProductEntity } from 'src/products/products.entity';
 import { MailModule } from 'src/mail/mail.module';
+import { CACHE_MANAGER, CacheModule } from '@nestjs/cache-manager';
+import { CacheService } from 'src/config/cacheService';
 
 @Module({
   imports : [JwtModule.register({
@@ -20,12 +22,16 @@ import { MailModule } from 'src/mail/mail.module';
   }),
   UserModule,
   BasketModule,
-  MailModule
+  MailModule,
+  CacheModule.register({
+    ttl : 30000
+  })
   // TypeOrmModule.forFeature([ProductEntity,UserEntity])
+
   
   ],
-  controllers: [AuthController],
-  providers: [AuthService,RefreshTokenStrategy,AccessTokenStrategy],
+  controllers: [AuthController,],
+  providers: [AuthService,RefreshTokenStrategy,AccessTokenStrategy,CacheService],
   
 })
 export class AuthModule {}
