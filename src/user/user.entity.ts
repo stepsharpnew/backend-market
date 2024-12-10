@@ -1,3 +1,4 @@
+import { FavoriteEntity } from "../entitys/favorite.entity";
 import { BasketProductsEntity } from "../entitys/basket_products.entity";
 import { ZakazEntity } from "../zakaz/zakaz.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
@@ -29,6 +30,10 @@ export class UserEntity{
 
     @Column({default : '',nullable : true})
     refreshToken : string
+
+    @OneToMany(()=>FavoriteEntity, (favorites)=>favorites.user)
+    favorites : number
+
 
     @OneToMany(()=>BasketProductsEntity, (basket)=>basket.user)
     user : UserEntity

@@ -15,6 +15,7 @@ import mailConfig from './config/mail.config';
 
 import * as redisStore from 'cache-manager-redis-store';
 import { CacheModule } from '@nestjs/cache-manager';
+import { FavoriteModule } from './favorite/favorite.module';
 @Module({
   imports: [
     UserModule,
@@ -26,7 +27,8 @@ import { CacheModule } from '@nestjs/cache-manager';
     BasketModule,
     FileModule,
     ZakazModule,
-    MailModule
+    MailModule,
+    FavoriteModule
   ],
 })
 export class AppModule 

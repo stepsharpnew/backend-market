@@ -1,6 +1,7 @@
+import { FavoriteEntity } from "../entitys/favorite.entity";
 import { BasketProductsEntity } from "../entitys/basket_products.entity";
 import { CategoryEntity } from "../entitys/category.entity";
-import { ZakazEntity } from "src/zakaz/zakaz.entity";
+
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({name : 'products'})
@@ -26,6 +27,9 @@ export class ProductEntity {
 
     @Column({default : 0})
     sold_count : number
+
+    @OneToMany(()=>FavoriteEntity, (favorites)=>favorites.productList, {nullable : true})
+    favorites : FavoriteEntity[]
 
     @ManyToOne(()=>CategoryEntity, (category)=>category.products)
     category : CategoryEntity
