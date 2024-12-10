@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import 'dotenv/config'
+import { TelegramModule } from 'src/telegram/telegram.module';
 // import { AuthGuard } from './guards/authGuard';
 @Module({
   imports : [
@@ -13,6 +14,7 @@ import 'dotenv/config'
     //   global: true,
     //   secret: process.env.JWT_SECRET,
     // }),
+    TelegramModule
 ],
   controllers: [UserController],
   providers: [UserService],

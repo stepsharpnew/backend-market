@@ -16,6 +16,9 @@ import mailConfig from './config/mail.config';
 import * as redisStore from 'cache-manager-redis-store';
 import { CacheModule } from '@nestjs/cache-manager';
 import { FavoriteModule } from './favorite/favorite.module';
+import { TelegramService } from './telegram/telegram.service';
+import { TelegramModule } from './telegram/telegram.module';
+
 @Module({
   imports: [
     UserModule,
@@ -28,8 +31,10 @@ import { FavoriteModule } from './favorite/favorite.module';
     FileModule,
     ZakazModule,
     MailModule,
-    FavoriteModule
+    FavoriteModule,
+    TelegramModule
   ],
+  providers: [TelegramService],
 })
 export class AppModule 
 implements NestModule 

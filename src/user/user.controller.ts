@@ -22,4 +22,11 @@ export class UserController {
         return await this.userService.findAll()
     }
 
+    @UseGuards(AccesTokenGeard)
+    @Post('notify')
+    async Notify(
+        @Body('msg') msg : string
+    ){
+        return await this.userService.sendNotification(msg)
+    }
 }

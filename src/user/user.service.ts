@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { TelegramService } from 'src/telegram/telegram.service';
 
 
 
@@ -11,6 +12,7 @@ import * as bcrypt from 'bcrypt';
 export class UserService {
     constructor (@InjectRepository(UserEntity)
     private readonly userRepository:Repository<UserEntity>,
+    private readonly telegramService:TelegramService
     ){}
 
     async registration(createUserDto : CreateUserDTO):
@@ -56,6 +58,17 @@ export class UserService {
     async findAll(): Promise<UserEntity[]>{
         const users = await this.userRepository.find()
         return users
+    }
+
+    async sendNotification(msg : string){
+        return await this.telegramService.sendMessage(msg,{
+            reply_markup : {
+                inline_keyboard : [
+                    [{url : "google.com", text : "sosat"}]
+                ]
+            }
+        })
+
     }
 
 }
