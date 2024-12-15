@@ -9,6 +9,8 @@ import { UserModule } from 'src/user/user.module';
 import { FileModule } from 'src/file/file.module';
 import { CacheService } from 'src/config/cacheService';
 import { CacheModule } from '@nestjs/cache-manager';
+import { FavoriteEntity } from 'src/entitys/favorite.entity';
+import { UserEntity } from 'src/user/user.entity';
 
 
 @Module({
@@ -16,6 +18,8 @@ import { CacheModule } from '@nestjs/cache-manager';
     ProductEntity,
     CategoryEntity,
     UserModule,
+    FavoriteEntity,
+    UserEntity
   ]),
   FileModule,
   CacheModule.register({

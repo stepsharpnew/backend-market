@@ -7,6 +7,8 @@ import slugify from 'slugify';
 import { CategoryEntity } from 'src/entitys/category.entity';
 import { CreateCategoryDTO } from './dto/createCategory.dto';
 import { CacheService } from 'src/config/cacheService';
+import { UserEntity } from 'src/user/user.entity';
+import { FavoriteEntity } from 'src/entitys/favorite.entity';
 
 
 @Injectable()
@@ -14,8 +16,15 @@ export class ProductsService {
     constructor(
     @InjectRepository(ProductEntity)
     private readonly productRepository : Repository<ProductEntity>,
+
     @InjectRepository(CategoryEntity)
     private readonly categoryRepository : Repository<CategoryEntity>,
+
+    @InjectRepository(FavoriteEntity)
+    private readonly favoritesRepository : Repository<FavoriteEntity>,
+
+    @InjectRepository(UserEntity)
+    private readonly userRepository : Repository<UserEntity>,
     private readonly cacheService : CacheService
     ){}
 
@@ -114,6 +123,73 @@ export class ProductsService {
     }
 
 
+    async getuserFavorites(user:UserEntity){
+        return await this.favoritesRepository.findOne({
+            where : {
+                user
+            }
+        })
+    }
 
+
+    async telegramSaleNotify(
+        chatId : number,
+    ){
+        const user = await this.userRepository.findOne({
+            where : {
+                telegram : chatId.toString()
+            }
+        })
+        const favorites = await this.getuserFavorites(user)
+        if(!favorites){
+            return []
+        }
+        const favoritesIds = favorites.productList
+        console.log(favoritesIds);
+        
+        const queryBuilder = this.productRepository.createQueryBuilder('products')
+        .andWhereInIds(favoritesIds)
+        const products = await queryBuilder.getMany()
+
+        let array = []
+        products.forEach((product)=>{
+            if (product.saleBool === true) {
+                array.push(product)
+            }
+        })
+        // console.log('Array',array);
+        return array
+    }
+
+
+    async CreateSale(product_id : number, sale : number){
+        let product = await this.productRepository.findOne({
+            where : {
+                id : product_id
+            }
+        })
+        if (!product) {
+            throw new HttpException('Нет такого товара', HttpStatus.BAD_REQUEST)
+        }
+        if (product.saleBool || product.sale) {
+            throw new HttpException('Скидка уже есть', HttpStatus.BAD_REQUEST)
+        }
+        Object.assign(product, {...product, sale, saleBool : true})
+        return await this.productRepository.save(product)
+    }
+
+
+    async DeleteSale(product_id : number){
+        let product = await this.productRepository.findOne({
+            where : {
+                id : product_id
+            }
+        })
+        if (!product) {
+            throw new HttpException('Нет такого товара', HttpStatus.BAD_REQUEST)
+        }
+        Object.assign(product, {...product, saleBool : false, sale : 0})
+        return await this.productRepository.save(product)
+    }
 
 }

@@ -5,6 +5,7 @@ import { UserEntity } from './user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { TelegramService } from 'src/telegram/telegram.service';
+import { FavoriteService } from 'src/favorite/favorite.service';
 
 
 
@@ -12,6 +13,7 @@ import { TelegramService } from 'src/telegram/telegram.service';
 export class UserService {
     constructor (@InjectRepository(UserEntity)
     private readonly userRepository:Repository<UserEntity>,
+    private readonly favoriteService : FavoriteService,
     private readonly telegramService:TelegramService
     ){}
 
@@ -61,6 +63,7 @@ export class UserService {
     }
 
     async sendNotification(msg : string){
+        // const response = await this.
         return await this.telegramService.sendMessage(msg,{
             reply_markup : {
                 inline_keyboard : [
@@ -68,7 +71,33 @@ export class UserService {
                 ]
             }
         })
-
     }
+    async sendNotificationFavorites(msg : string){
+        // const message = this.favoriteService.
+        // return await this.telegramService.sensNotificationFavorites(message)
+    }
+
+    async getUserTelegram(email : string){
+        const user = await this.findByEmail(email)
+        if (!user) {
+            return "Нет пользователя с такой почтой"
+        }
+        console.log(user);
+        return user.email
+    }
+
+
+    async AddChatId(chatId : number, email : string){
+        let user = await this.findByEmail(email)
+        if (!user) {
+            return "Нет пользователя с такой почтой"
+        }
+        
+        Object.assign(user, {...user, telegram : chatId})
+        await this.userRepository.save(user)
+        console.log(user);
+        return user.email
+    }
+
 
 }

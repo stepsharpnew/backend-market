@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import { Telegraf } from 'telegraf';
 import { TelegramInterface } from './telegram.interface';
 import 'dotenv';
@@ -11,13 +11,13 @@ export class TelegramService implements OnModuleInit {
     options: TelegramInterface;
 
     async onModuleInit() {
-        try {
-            const config = await getTelegramConfig();
-            this.options = config;
-            this.bot = new Telegraf(config.token);
-        } catch (error) {
-            console.error('Failed to initialize TelegramService:', error.message);
-        }
+        // try {
+        //     const config = await getTelegramConfig();
+        //     this.options = config;
+        //     this.bot = new Telegraf(config.token);
+        // } catch (error) {
+        //     console.error('Failed to initialize TelegramService:', error.message);
+        // }
     }
 
     async sendMessage(
@@ -25,24 +25,26 @@ export class TelegramService implements OnModuleInit {
         options?: ExtraReplyMessage,
         chatId?: string 
     ) {
-        if (!this.bot) {
-            throw new Error('Bot is not initialized');
-        }
+        // if (!this.bot) {
+        //     throw new Error('Bot is not initialized');
+        // }
 
-        if (chatId) {
-            // Если указан конкретный chatId
-            await this.bot.telegram.sendMessage(chatId, msg, {
-                parse_mode: 'HTML',
-                ...options,
-            });
-        } else {
-            // Если много chatId, отправляем всем из массива
-            for (const id of this.options.chatIds) {
-                await this.bot.telegram.sendMessage(id, msg, {
-                    parse_mode: 'HTML',
-                    ...options,
-                });
-            }
-        }
+        // if (chatId) { 
+        //     // Если указан конкретный chatId
+        //     await this.bot.telegram.sendMessage(chatId, msg, {
+        //         parse_mode: 'HTML',
+        //         ...options,
+        //     });
+        // } else {
+        //     // Если много chatId, отправляем всем из массива
+        //     for (const id of this.options.chatIds) {
+        //         await this.bot.telegram.sendMessage(id, msg, {
+        //             parse_mode: 'HTML',
+        //             ...options,
+        //         });
+        //     }
+        // }
     }
+
+  
 }

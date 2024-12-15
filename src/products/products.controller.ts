@@ -97,5 +97,28 @@ export class ProductsController {
       }
 
 
+      @Post('telegram_sale')
+      async telegramSaleNotify(
+        @Body('chatId') chatId : number
+      ){
+        return  this.productsService.telegramSaleNotify(chatId)
+          
+      }
 
+      @Post('create_sale')
+      async CreateSale(
+        @Body('product_id') product_id : number,
+        @Body('sale') sale : number,
+      ){
+        return  this.productsService.CreateSale(product_id, sale)
+          
+      }
+
+      @Delete('delete_sale')
+      async DeleteSale(
+        @Body('product_id') product_id : number,
+      ){
+        return  this.productsService.DeleteSale(product_id)
+          
+      }
 }

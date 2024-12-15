@@ -16,7 +16,7 @@ export class ProductEntity {
     @Column()
     price : number
 
-    @Column({default : ''})
+    @Column({default : 'https://storage.yandexcloud.net/step2002sharp/nofoto2.jpg'})
     image_url : string
 
     @Column()
@@ -24,6 +24,12 @@ export class ProductEntity {
 
     @Column()
     slug : string
+
+    @Column({default : false})
+    saleBool : boolean
+
+    @Column({default : 0, nullable : true})
+    sale : number
 
     @Column({default : 0})
     sold_count : number
@@ -36,9 +42,4 @@ export class ProductEntity {
 
     @OneToMany(()=>BasketProductsEntity, (product)=> product.products)
     products : ProductEntity
-
-    // @OneToMany(()=>ZakazEntity, (zakaz)=> zakaz.products)
-    // products_info : ProductEntity
-    //celler_id
-    //category_id
 }

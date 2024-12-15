@@ -23,7 +23,7 @@ export class FavoriteController {
 
 
   @Get()
-  @UseGuards(AccesTokenGeard,AdminGuard)
+  @UseGuards(AccesTokenGeard)
   async takeFavorites(
     @User() user : any,
   ){

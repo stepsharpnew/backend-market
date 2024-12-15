@@ -66,7 +66,11 @@ export class FavoriteService {
 
     async getFavorites(user_id:number){
         const user = await this.getUserById(user_id)
-        const favoritesIds = (await this.getuserFavorites(user)).productList
+        const favorites = await this.getuserFavorites(user)
+        if (!favorites) {
+            return []
+        }
+        const favoritesIds = favorites.productList
         console.log(favoritesIds);
         const queryBuilder = this.productRepository.createQueryBuilder('products')
         .andWhereInIds(favoritesIds)
