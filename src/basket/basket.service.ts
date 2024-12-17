@@ -120,6 +120,7 @@ export class BasketService {
         .where('productsId IN (:...ids)', { ids: products_Ids })
         .andWhere(`userId = ${user_id}`)
         .execute();
+        return 'good'
     }
 
     async deleteProdFromBAsket(user_id : number, product_id : number){

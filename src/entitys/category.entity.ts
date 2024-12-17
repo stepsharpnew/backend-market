@@ -1,3 +1,4 @@
+import { ApiProperty } from "@nestjs/swagger";
 import { ProductEntity } from "../products/products.entity";
 import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
@@ -9,9 +10,13 @@ export class CategoryEntity{
     @PrimaryGeneratedColumn()
     id : number
 
+
+    @ApiProperty({example : "Электроника", description : "Название категории"})
     @Column()
     category : string
 
+
+    @ApiProperty({example : "Elektronika", description : "SLUG категории"})
     @Column()
     short_name : string
 

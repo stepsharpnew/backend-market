@@ -11,7 +11,14 @@ import { AdminGuard } from 'src/user/guards/AdminGuard';
 import { UserGuard } from 'src/user/guards/UserGuard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileService } from 'src/file/file.service';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { QueryOptions } from './dto/QueryOptionsDTO';
+import { query } from 'express';
+import { Binary } from 'typeorm';
+import { CategoryEntity } from 'src/entitys/category.entity';
 
+@ApiBearerAuth()
+@ApiTags('Продукты')
 @Controller('products')
 export class ProductsController {
   constructor(
@@ -20,16 +27,23 @@ export class ProductsController {
   ) {}
 
   //Получение всех товар
+  @ApiOperation({summary : "Все товары"})
+  @ApiResponse({status : 200, type : [ProductEntity] })
+  @ApiQuery({name : 'limit', required : false})
+  @ApiQuery({name : 'offset', required : false})
   @Get()
   async getAllProducts(
-    @Query() query:AnyARecord
+    @Query() dto:QueryOptions
   ):Promise<ProductEntity[]>{
-    const products = await this.productsService.getAllProducts(query)
+    const { limit, offset } = dto
+    const products = await this.productsService.getAllProducts({limit, offset})
     return products
   }
 
   //Получение товара
-  @Get(':slug')
+  @ApiOperation({summary : "Один товар"})
+  @ApiResponse({status : 200, type : ProductEntity })
+  @Get('get/:slug')
   async getProduct(
     @Query() query:any,
     @Param('slug')productname : string
@@ -39,6 +53,8 @@ export class ProductsController {
   }
 
   //Создание товара
+  @ApiOperation({summary : "Добавить товар"})
+  @ApiResponse({status : 200, type : ProductEntity })
   @Post('create')
   @UseGuards(AccesTokenGeard,AdminGuard)  
     async createProduct(
@@ -50,6 +66,7 @@ export class ProductsController {
     }
 
     //удаление товара по слагу
+    @ApiOperation({summary : "Удалить товар"})
     @Delete('delete/:slug')
     @UseGuards(AccesTokenGeard,AdminGuard)  
       async deleteBySlug(
@@ -63,21 +80,33 @@ export class ProductsController {
       }
 
       //Получение товаров этой категории
+      @ApiOperation({summary : "Получить товары категории"})
+      @ApiResponse({status : 200, type : [ProductEntity] })
       @Get('category/:category')
       async getByCategoty(
         @Param('category') category_short_name : string,
-        // @Param('slug') slug :string
       ):Promise<ProductEntity[]>{
-        
         const products = await this.productsService.getProductsByCategoty(category_short_name)
         return products
       }
 
 
       //Созддание фото для продукта
+      @ApiOperation({summary : "Добавит фото на товар"})
+      @ApiResponse({status : 200, type : ProductEntity })
+      @ApiConsumes('multipart/form-data')
+      @ApiBody({schema : {
+        type : 'object',
+        properties : {
+          file : {
+            type : 'string',
+            format : 'binary'
+          }
+        }
+      }})
       @Post('addphoto/:product_slug')
       @UseGuards(AccesTokenGeard,AdminGuard)
-      @UseInterceptors(FileInterceptor('image'))
+      @UseInterceptors(FileInterceptor('file'))
       async takeFile(
         @UploadedFile() file : Express.Multer.File,
         @User() user : any,
@@ -88,7 +117,8 @@ export class ProductsController {
       }
 
       
-      // Добавление категории
+      @ApiOperation({summary : "Добавить категорию"})
+      @ApiResponse({status : 200, type : CategoryEntity })
       @Post('category')
       @UseGuards(AccesTokenGeard,AdminGuard)
       async createCategory(@Body() createCategoryDTO : CreateCategoryDTO){
@@ -113,7 +143,6 @@ export class ProductsController {
         return  this.productsService.CreateSale(product_id, sale)
           
       }
-
       @Delete('delete_sale')
       async DeleteSale(
         @Body('product_id') product_id : number,
@@ -121,4 +150,11 @@ export class ProductsController {
         return  this.productsService.DeleteSale(product_id)
           
       }
+
+      // @Get('sales')
+      // async GetSales(){
+      //   console.log('asdasd');
+      //   return await this.productsService.GetSales()
+      // }
 }
+ 

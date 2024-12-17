@@ -1,23 +1,38 @@
-import { CACHE_MANAGER } from "@nestjs/cache-manager";
-import { Inject, Injectable } from "@nestjs/common";
-import { Cache } from "cache-manager";
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Inject, Injectable } from '@nestjs/common';
+import { Cache } from 'cache-manager';
+import { RedisClientType } from 'redis';
 
 @Injectable()
+export class CacheService {
+  constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
 
-export class CacheService{
-    constructor(@Inject(CACHE_MANAGER) private cacheManeger:Cache ){}
+  async get<T>(key: string): Promise<T | null> {
+    return await this.cacheManager.get<T>(key);
+  }
 
+  async set<T>(key: string, value: T, ttl: number): Promise<void> {
+    await this.cacheManager.set(key, value, ttl);
+  }
 
-    async get<T>(key:string):Promise<T|null>{
-        return await this.cacheManeger.get<T>(key)
+  async del(key: string): Promise<void> {
+    await this.cacheManager.del(key);
+  }
+
+  async getKeys(pattern: string): Promise<string[]> {
+    const store = this.cacheManager['store'] as any; // Приведение типов
+    if (typeof store.keys === 'function') {
+      return await store.keys(pattern);
     }
+    throw new Error('Метод keys недоступен');
+  }
 
-    async set<T>(key:string, value, ttl):Promise<T|null|void>{
-        return await this.cacheManeger.set(key,value, ttl)
+   getRedisClient(): RedisClientType {
+    const store = this.cacheManager['store'] as any; // Приведение типов
+    if (store && typeof store.getClient === 'function') {
+      return store.getClient(); // Получение клиента Redis
     }
-
-    async det<T>(key : string):Promise<T|null>{
-        return await this.cacheManeger.get<T>(key)
-    }
-
+    
+    throw new Error('Redis клиент недоступен');
+  }
 }

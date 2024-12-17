@@ -3,8 +3,13 @@ import { FavoriteService } from './favorite.service';
 import { AccesTokenGeard } from 'src/guards/accessToken.guard';
 import { AdminGuard } from 'src/user/guards/AdminGuard';
 import { User } from 'src/user/decorators/UserDecorator';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { FavoriteEntity } from 'src/entitys/favorite.entity';
+import { ProductEntity } from 'src/products/products.entity';
 
 
+@ApiBearerAuth()
+@ApiTags('Избранное')
 @Controller('favorite')
 export class FavoriteController {
   constructor(
@@ -12,18 +17,23 @@ export class FavoriteController {
 
   ) {}
 
+  @ApiOperation({summary : "Добавление в избранное"})
+  @ApiResponse({status : 200, type : FavoriteEntity })
   @Post('like')
   @UseGuards(AccesTokenGeard)
+  @ApiBody({schema : {}})
   async createFavorite(
+
     @User() user : any,
     @Body('product_id') product_id : number
   ){
     return  this.favoriteService.createFavorite(user.sub,product_id)
   }
 
-
-  @Get()
+  @ApiOperation({summary : "Избранное пользователя"})
+  @ApiResponse({status : 200, type : [ProductEntity] })
   @UseGuards(AccesTokenGeard)
+  @Get()
   async takeFavorites(
     @User() user : any,
   ){

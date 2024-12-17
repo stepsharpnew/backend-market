@@ -19,31 +19,42 @@ import { UserEntity } from 'src/user/user.entity';
 import { User } from 'src/user/decorators/UserDecorator'
 import { ChangePassDTO } from './dto/cahngePassDTO';
 import { Length } from 'class-validator';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiProperty, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-
+@ApiBearerAuth()
+@ApiTags('Модуль авторизации')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-
+  @ApiOperation({summary : "Регистрация"})
+  @ApiResponse({status : 200, type : UserEntity })
   @UsePipes(new ValidationPipe())
   @Post('signup')
   signup(@Body() createUserDto: CreateUserDTO) {
     return this.authService.registration(createUserDto);
   }
 
+
+  @ApiOperation({summary : "Авторизация"})
+  @ApiResponse({status : 200, type : UserEntity })
   @UsePipes(new ValidationPipe())
   @Post('signin')
   signin(@Body() data: AuthDto) {
     return this.authService.login(data);
   }
 
+
+  @ApiOperation({summary : "Выход"})
+  @ApiResponse({status : 200, type : UserEntity })
   @UseGuards(AccesTokenGeard)
   @Get('logout')
   logout(@Req() req: expressRequestInterface) : Promise<UserEntity> {
     return this.authService.logout(req.user.sub);
   }
 
+  @ApiOperation({summary : "Обновление refresh токена"})
+  @ApiResponse({status : 200, type : UserEntity })
   @UseGuards(RefreshTokenGuard)
   @Get('refresh')
   async refreshTokensController(@Req() req : expressRequestInterface):
@@ -54,6 +65,9 @@ export class AuthController {
     
   }
 
+
+  @ApiOperation({summary : "Смена пароля"})
+  @ApiResponse({status : 200, type : UserEntity })
   @UseGuards(AccesTokenGeard)
   @UsePipes(new ValidationPipe())
   @Post('change_pass')
@@ -62,11 +76,32 @@ export class AuthController {
   }
 
 
+  @ApiOperation({summary : "Восстановление пароля(Отправка на email)"})
+  @ApiResponse({status : 200, example : true })
   @Post('restoring')
-  RestoringPassword(@Body('email') email: string) {
+  @ApiBody({
+    schema: {
+      properties: {
+        email: { example: 'shalkin02@inbox.ru' },
+      },
+    },
+  })
+  RestoringPassword(
+    @Body('email') email: string) {
     return this.authService.RestoringSendMail(email);
   }
 
+  
+  @ApiOperation({summary : "Проверка кода авторизации"})
+  @ApiResponse({status : 200})
+  @ApiBody({
+    schema: {
+      properties: {
+        email: { example: 'shalkin02@inbox.ru' },
+        code: { example: "123342" },
+      },
+    },
+  })
   @Post('confirm_code')
   RestoringCodeConfirm(
     @Body('email') email: string,
@@ -75,14 +110,24 @@ export class AuthController {
     return this.authService.RestoringCodeConfirm(code,email);
   }
 
+
+  //Надо в changePassDTO воткнуть code и email
+  @ApiOperation({summary : "Создание нового пароля"})
+  @ApiResponse({status : 200 })
+  @ApiBody({
+    schema: {
+      properties: {
+        email: { example: 'shalkin02@inbox.ru' },
+        code: { example: "123342" },
+      },
+    },
+  })
   @Post('restore_new_password')
   @UsePipes(new ValidationPipe())
   RestoringCreateNewPassword(
     @Body('email') email: string,
     @Body('code') code : number,
     @Body()changePassDTO : ChangePassDTO,
-    // @Body('new_password')@Length(5,20) new_password: string,
-    // @Body('confirm_password') confirm_password : string,
   ) {
     return this.authService.RestoringCreateNewPassword(code,email, changePassDTO);
   }

@@ -29,28 +29,29 @@ export class ProductsService {
     ){}
 
 
-    async getAllProducts(query:any):Promise<ProductEntity[]> {
-        let cacheProducts = await this.cacheService.get<ProductEntity[]>('products')
+    async getAllProducts({limit , offset}):Promise<ProductEntity[]> {
+        let cacheProducts = await this.cacheService.get<ProductEntity[]>(`products_limit:${limit}_offset:${offset}`)
         if (cacheProducts) {
             return cacheProducts 
         }
-
+        console.log({limit , offset});
+        
         const queryBuilder = this.productRepository.createQueryBuilder('products')
-        if (query.limit) {
-            queryBuilder.limit(query.limit)
+        if (limit) {
+            queryBuilder.limit(limit)
             // queryBuilder.orderBy('createdAt','DESC')
         }
-        if (query.offset) {
-            if (query.limit) {
-                queryBuilder.offset(query.offset*query.limit) 
+        if (offset) {
+            if (limit) {
+                queryBuilder.offset(offset*limit) 
 
             }else{
-                queryBuilder.offset(query.offset)
+                queryBuilder.offset(offset)
             }
 
         }
         const products = await queryBuilder.getMany()
-        await this.cacheService.set<ProductEntity[]>('products',products,50000)
+        await this.cacheService.set<ProductEntity[]>('products_limit:${limit}_offset:${offset}',products,50000)
         return products
     }
 
@@ -95,6 +96,9 @@ export class ProductsService {
     }
     async deleteBySlug(slug : string, id : number){
         const getProduct = await this.getProductBySlug(slug)
+        if (!getProduct) {
+            throw new HttpException('Нет такого продукта',HttpStatus.BAD_REQUEST)
+        }
         const deleting = await this.productRepository.delete(getProduct.id)      
         return deleting
     }
@@ -118,6 +122,14 @@ export class ProductsService {
     // AddProductToCategory
 
     async createCategory(createCategoryDTO : CreateCategoryDTO){
+        const category = await this.categoryRepository.findOne({
+            where : {
+                category : createCategoryDTO.category
+            }
+        })
+        if (category) {
+            throw new HttpException('Такая категория уже есть',HttpStatus.BAD_REQUEST)
+        }
         const short_name = slugify(createCategoryDTO.category)
         return await this.categoryRepository.save({...createCategoryDTO, short_name})
     }
@@ -175,6 +187,10 @@ export class ProductsService {
             throw new HttpException('Скидка уже есть', HttpStatus.BAD_REQUEST)
         }
         Object.assign(product, {...product, sale, saleBool : true})
+        console.log(product_id);
+        
+        // const cache = await this.cacheService.set<ProductEntity>(`sale_${product_id}:`,product,60000)
+        // console.log(cache);
         return await this.productRepository.save(product)
     }
 
@@ -189,7 +205,25 @@ export class ProductsService {
             throw new HttpException('Нет такого товара', HttpStatus.BAD_REQUEST)
         }
         Object.assign(product, {...product, saleBool : false, sale : 0})
+        const cache = await this.cacheService.del(`sale_${product_id}:`)
+        console.log(cache);
+        
         return await this.productRepository.save(product)
     }
+
+    // async GetSales(){
+    //     const redis = await this.cacheService.getRedisClient()
+    //     const keys = await redis.keys('sale_*'); // Найти все ключи, начинающиеся на sale_
+    //     const sales = await Promise.all(
+    //         keys.map(key => this.cacheService.get<ProductEntity>(key)) // Получить значения по ключам
+    //     );
+    //     console.log(sales);
+    //     return sales
+    //     const products = await this.productRepository.find({
+    //         where : {
+
+    //         }
+    //     })
+    // }
 
 }

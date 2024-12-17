@@ -13,9 +13,8 @@ import { ChangePassDTO } from './dto/cahngePassDTO';
 import { MailService } from 'src/mail/mail.service';
 import { SendMailDTO } from 'src/mail/dto/sendMailDTO';
 import PasswordRestoringHTML from 'src/mail/PasswordRestoringHTML';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Cache } from 'cache-manager';
 import { CacheService } from 'src/config/cacheService';
+import { ApiOperation, ApiProperty, ApiResponse } from '@nestjs/swagger';
 
 
 
@@ -29,6 +28,7 @@ export class AuthService {
     private mailService : MailService,
     private cacheService : CacheService
     ){}
+
 
     async registration(createUserDto : CreateUserDTO)
     {
@@ -46,7 +46,7 @@ export class AuthService {
         await this.updateRefreshToken(newUser.id, tokens.refreshToken);
         return tokens
     } 
-
+    @ApiProperty()
     async login(authDto : AuthDto):
     Promise<{accessToken: string,refreshToken:string}>{      
         const findUser = await this.usersService.findByEmail(authDto.email)
@@ -62,16 +62,16 @@ export class AuthService {
         return tokens
     }
     
-
+    @ApiProperty()
     async findAll(): Promise<UserEntity[]>{
         const users = await this.userRepository.find()
         return users
     }
-
+    @ApiProperty()
     async hashData(data: string):Promise<string>{
         return await bcrypt.hash(data,5);
       }
-
+    @ApiProperty()
     async updateRefreshToken(userId: number, refreshToken: string) : Promise<UserEntity> {
         const hashedRefreshToken = await this.hashData(refreshToken);
         return await this.usersService.update(userId, {
@@ -80,6 +80,7 @@ export class AuthService {
         
       }
 
+    @ApiProperty()
     async getTokens(userId: number, email: string, role : string):Promise<{
       accessToken:string,
       refreshToken: string,
@@ -113,10 +114,13 @@ export class AuthService {
             refreshToken,
         };
     }
+    @ApiProperty()
     async logout(userId: number):Promise<UserEntity> {
         return this.usersService.update(userId, { refreshToken: null });
     }
 
+
+    @ApiProperty()
     async refreshTokens(userId:number, refreshToken : string):
     Promise<{accessToken:string,refreshToken: string,}>
       {
@@ -133,7 +137,7 @@ export class AuthService {
       return tokens
     }
 
-
+    @ApiProperty()
     async changePassword(
       email : string, 
       dto : ChangePassDTO
@@ -160,6 +164,7 @@ export class AuthService {
     //RESTORING ------------------------------------------------
 
     //Смена пароля на хэш код
+
     private async RestorePasswordForCode(
       code : number,
       user : UserEntity
@@ -171,12 +176,14 @@ export class AuthService {
       // await this.userRepository.save(newUser)
     }
 
-
+    @ApiProperty()
     //Отправка письма с кодом
     async RestoringSendMail(email : string){
       const cacheAuth = `authcode:${email}`
       const consistCache = await this.cacheService.get(cacheAuth)
-      
+      if (!email) {
+        throw new HttpException('Почта не указана',HttpStatus.BAD_REQUEST)
+      }
       if (consistCache) {
         throw new HttpException('Для отправки нового кода авторизации, просьба подождать 30 секунд',HttpStatus.TOO_MANY_REQUESTS)
       }
@@ -194,10 +201,10 @@ export class AuthService {
       sendMailDto.subject = "Код для смены пароля"
       sendMailDto.html = PasswordRestoringHTML(authCode)
       await this.cacheService.set(`authcode:${email}`,authCode,30000 )
-      
-      return await this.mailService.sendMail(sendMailDto)
+      await this.mailService.sendMail(sendMailDto)
+      return true
     }
-
+    // @ApiProperty()
     //Проверка правильности кода кода 
     async RestoringCodeConfirm(code : number, email : string){
       // const user = await this.usersService.findByEmail(email)
@@ -213,6 +220,7 @@ export class AuthService {
       return codeVerify;
       
     }
+    @ApiProperty()
     //Любой пользователь может создатть новый пароль
     async RestoringCreateNewPassword(code : number, email : string, changePassDTO : ChangePassDTO){
       const status = await this.RestoringCodeConfirm(code, email)

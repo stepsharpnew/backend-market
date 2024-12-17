@@ -11,7 +11,7 @@ import { CacheService } from 'src/config/cacheService';
 import { CacheModule } from '@nestjs/cache-manager';
 import { FavoriteEntity } from 'src/entitys/favorite.entity';
 import { UserEntity } from 'src/user/user.entity';
-
+import * as redisStore from  'cache-manager-redis-store'
 
 @Module({
   imports : [TypeOrmModule.forFeature([
@@ -23,8 +23,11 @@ import { UserEntity } from 'src/user/user.entity';
   ]),
   FileModule,
   CacheModule.register({
-    ttl : 30000
-  })
+    // store: redisStore,
+    // host: 'localhost',
+    // port: 6379,
+    ttl: 600,
+  }),
   ],
   controllers: [ProductsController],
   providers: [ProductsService,CacheService],

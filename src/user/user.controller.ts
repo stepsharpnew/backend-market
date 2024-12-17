@@ -6,7 +6,9 @@ import { Request, Response } from 'express';
 import { AccesTokenGeard } from 'src/guards/accessToken.guard';
 import { AdminGuard } from './guards/AdminGuard';
 import { TelegramService } from 'src/telegram/telegram.service';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('user')
 export class UserController {
     constructor(
@@ -20,8 +22,10 @@ export class UserController {
     ){
         return await this.userService.registration(createUserDto)
     }
+
+    
     @UseGuards(AccesTokenGeard,AdminGuard)
-    @Get()
+    @Get('get_all')
     async getAllUsers(){
         return await this.userService.findAll()
     }
