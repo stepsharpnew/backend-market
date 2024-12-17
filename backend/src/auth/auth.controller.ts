@@ -20,6 +20,7 @@ import { User } from 'src/user/decorators/UserDecorator'
 import { ChangePassDTO } from './dto/cahngePassDTO';
 import { Length } from 'class-validator';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiProperty, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { RestoringPassDTO } from './dto/RestoringPassDTO';
 
 @ApiBearerAuth()
 @ApiTags('Модуль авторизации')
@@ -67,7 +68,7 @@ export class AuthController {
 
 
   @ApiOperation({summary : "Смена пароля"})
-  @ApiResponse({status : 200, type : UserEntity })
+  @ApiResponse({status : 200, type : ChangePassDTO })
   @UseGuards(AccesTokenGeard)
   @UsePipes(new ValidationPipe())
   @Post('change_pass')
@@ -114,22 +115,13 @@ export class AuthController {
   //Надо в changePassDTO воткнуть code и email
   @ApiOperation({summary : "Создание нового пароля"})
   @ApiResponse({status : 200 })
-  @ApiBody({
-    schema: {
-      properties: {
-        email: { example: 'shalkin02@inbox.ru' },
-        code: { example: "123342" },
-      },
-    },
-  })
+  @ApiBody({type : RestoringPassDTO})
   @Post('restore_new_password')
   @UsePipes(new ValidationPipe())
   RestoringCreateNewPassword(
-    @Body('email') email: string,
-    @Body('code') code : number,
-    @Body()changePassDTO : ChangePassDTO,
+    @Body()dto : RestoringPassDTO,
   ) {
-    return this.authService.RestoringCreateNewPassword(code,email, changePassDTO);
+    return this.authService.RestoringCreateNewPassword(dto);
   }
 
 }

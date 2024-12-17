@@ -15,6 +15,7 @@ import { SendMailDTO } from 'src/mail/dto/sendMailDTO';
 import PasswordRestoringHTML from 'src/mail/PasswordRestoringHTML';
 import { CacheService } from 'src/config/cacheService';
 import { ApiOperation, ApiProperty, ApiResponse } from '@nestjs/swagger';
+import { RestoringPassDTO } from './dto/RestoringPassDTO';
 
 
 
@@ -222,8 +223,8 @@ export class AuthService {
     }
     @ApiProperty()
     //Любой пользователь может создатть новый пароль
-    async RestoringCreateNewPassword(code : number, email : string, changePassDTO : ChangePassDTO){
-      const status = await this.RestoringCodeConfirm(code, email)
+    async RestoringCreateNewPassword(changePassDTO : RestoringPassDTO){
+      const status = await this.RestoringCodeConfirm(changePassDTO.code, changePassDTO.email)
       console.log(status);
       
       if (status === 401) {
@@ -233,7 +234,7 @@ export class AuthService {
         throw new HttpException('Время действия кода вышло, создайте новый код',HttpStatus.BAD_REQUEST)
       }
 
-      const user = await this.usersService.findByEmail(email)
+      const user = await this.usersService.findByEmail(changePassDTO.email)
       if (!user) {
         throw new HttpException('Такого пользователя нет',HttpStatus.BAD_REQUEST)
       }

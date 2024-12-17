@@ -12,6 +12,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { FavoriteEntity } from 'src/entitys/favorite.entity';
 import { UserEntity } from 'src/user/user.entity';
 import * as redisStore from  'cache-manager-redis-store'
+import { FilterService } from 'src/filter/filter.service';
 
 @Module({
   imports : [TypeOrmModule.forFeature([
@@ -30,6 +31,6 @@ import * as redisStore from  'cache-manager-redis-store'
   }),
   ],
   controllers: [ProductsController],
-  providers: [ProductsService,CacheService],
+  providers: [ProductsService,CacheService,FilterService],
 })
 export class ProductsModule {}

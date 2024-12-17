@@ -16,6 +16,8 @@ import { QueryOptions } from './dto/QueryOptionsDTO';
 import { query } from 'express';
 import { Binary } from 'typeorm';
 import { CategoryEntity } from 'src/entitys/category.entity';
+import { FilterService } from 'src/filter/filter.service';
+import { FilterDTO } from 'src/filter/filterDTO';
 
 @ApiBearerAuth()
 @ApiTags('Продукты')
@@ -23,7 +25,8 @@ import { CategoryEntity } from 'src/entitys/category.entity';
 export class ProductsController {
   constructor(
     private readonly productsService: ProductsService,
-    private readonly fileService : FileService
+    private readonly fileService : FileService,
+    private readonly filterService : FilterService
   ) {}
 
   //Получение всех товар
@@ -31,13 +34,22 @@ export class ProductsController {
   @ApiResponse({status : 200, type : [ProductEntity] })
   @ApiQuery({name : 'limit', required : false})
   @ApiQuery({name : 'offset', required : false})
+  @ApiQuery({name : 'price_bottom', required : false})
+  @ApiQuery({name : 'price_up', required : false})
   @Get()
   async getAllProducts(
-    @Query() dto:QueryOptions
+    @Query() dto:QueryOptions,
+    @Query()filterDTO : FilterDTO
   ):Promise<ProductEntity[]>{
     const { limit, offset } = dto
+    const {price_bottom, price_up}= filterDTO
     const products = await this.productsService.getAllProducts({limit, offset})
-    return products
+    console.log(products.map((el)=>el.id));
+    console.log({price_bottom, price_up});
+    
+    
+    const filtered = this.filterService.filter(products,price_bottom,price_up)
+    return filtered
   }
 
   //Получение товара
@@ -127,6 +139,7 @@ export class ProductsController {
       }
 
 
+
       @Post('telegram_sale')
       async telegramSaleNotify(
         @Body('chatId') chatId : number
@@ -135,15 +148,45 @@ export class ProductsController {
           
       }
 
+
+      @ApiOperation({summary : "Все товары по скидке"})
+      @ApiResponse({status : 200, type : [ProductEntity] })
+      @Get('sales')
+      async findProdBySale():Promise<ProductEntity[]>{
+        return this.productsService.findProdBySale()
+          
+      }
+
+
+      //GUARDS
       @Post('create_sale')
+      @UseGuards(AccesTokenGeard, AdminGuard)
+      @ApiBody({
+        schema : {
+          properties : {
+            product_id : {example : 1},
+            sale : {example : 20}
+          }
+        }
+      })
       async CreateSale(
         @Body('product_id') product_id : number,
         @Body('sale') sale : number,
       ){
         return  this.productsService.CreateSale(product_id, sale)
-          
       }
+
+
+
       @Delete('delete_sale')
+      @UseGuards(AccesTokenGeard, AdminGuard)
+      @ApiBody({
+        schema : {
+          properties : {
+            product_id : {example : 1},
+          }
+        }
+      })
       async DeleteSale(
         @Body('product_id') product_id : number,
       ){

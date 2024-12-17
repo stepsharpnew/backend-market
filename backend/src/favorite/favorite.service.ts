@@ -31,11 +31,22 @@ export class FavoriteService {
             }
         })
     }
+    async getProdBYId(product_id : number){
+        return await this.productRepository.findOne({
+            where : {
+                id : product_id
+            }
+        })
+    }
 
     async createFavorite(user_id : any, product_id : number){
         const user = await this.getUserById(user_id)
         if (!user) {
             throw new HttpException('Такого пользователя нет',HttpStatus.UNPROCESSABLE_ENTITY)
+        }
+        
+        if (!await this.getProdBYId(product_id)) {
+            throw new HttpException('Такого товара нет',HttpStatus.UNPROCESSABLE_ENTITY)
         }
         let userFavoriteItems = await this.getuserFavorites(user)
         if (!userFavoriteItems) {

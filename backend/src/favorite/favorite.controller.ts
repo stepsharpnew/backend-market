@@ -19,9 +19,13 @@ export class FavoriteController {
 
   @ApiOperation({summary : "Добавление в избранное"})
   @ApiResponse({status : 200, type : FavoriteEntity })
+  @ApiBody({
+    schema : {
+      properties : {product_id : {example : 1}}
+    }
+  })
   @Post('like')
   @UseGuards(AccesTokenGeard)
-  @ApiBody({schema : {}})
   async createFavorite(
 
     @User() user : any,

@@ -51,7 +51,7 @@ export class ProductsService {
 
         }
         const products = await queryBuilder.getMany()
-        await this.cacheService.set<ProductEntity[]>('products_limit:${limit}_offset:${offset}',products,50000)
+        await this.cacheService.set<ProductEntity[]>(`products_limit:${limit}_offset:${offset}`,products,50000)
         return products
     }
 
@@ -171,6 +171,17 @@ export class ProductsService {
         })
         // console.log('Array',array);
         return array
+    }
+
+
+
+    async findProdBySale(){
+        const products = await this.productRepository.find({
+            where : {
+                saleBool : true
+            }
+        })
+        return products
     }
 
 

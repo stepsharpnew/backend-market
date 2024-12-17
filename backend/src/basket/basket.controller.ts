@@ -2,13 +2,14 @@ import { Body, Controller, Delete, Get, Post, UseGuards } from '@nestjs/common';
 import { BasketService } from './basket.service';
 import { AccesTokenGeard } from 'src/guards/accessToken.guard';
 import { User } from 'src/user/decorators/UserDecorator';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserEntity } from 'src/user/user.entity';
 import { ProductEntity } from 'src/products/products.entity';
 import { BasketProductsEntity } from 'src/entitys/basket_products.entity';
 import { ZakazEntity } from 'src/zakaz/zakaz.entity';
 
 @ApiTags('Корзина')
+@ApiBearerAuth()
 @Controller('basket')
 export class BasketController {
   constructor(private readonly basketService: BasketService) {}
@@ -35,7 +36,7 @@ export class BasketController {
     return new_record
   }
 
-  @ApiOperation({summary : "Добавление товара в корзину"})
+  @ApiOperation({summary : "Очистка корзины"})
   @ApiResponse({status : 200, example : "good"})
   @Delete('delete')
   @UseGuards(AccesTokenGeard)

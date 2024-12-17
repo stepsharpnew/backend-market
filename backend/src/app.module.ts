@@ -18,6 +18,8 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { FavoriteModule } from './favorite/favorite.module';
 import { TelegramService } from './telegram/telegram.service';
 import { TelegramModule } from './telegram/telegram.module';
+import { FilterModule } from './filter/filter.module';
+import { FilterService } from './filter/filter.service';
 
 @Module({
   imports: [
@@ -32,7 +34,8 @@ import { TelegramModule } from './telegram/telegram.module';
     ZakazModule,
     MailModule,
     FavoriteModule,
-    TelegramModule
+    TelegramModule,
+    FilterModule
   ],
   providers: [TelegramService],
 })
