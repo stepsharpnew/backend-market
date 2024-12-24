@@ -45,6 +45,7 @@ export class AuthService {
         const newUser = await this.userRepository.save({...user,password : hashPassword} )
         const tokens = await this.getTokens(newUser.id,newUser.email,newUser.role)
         await this.updateRefreshToken(newUser.id, tokens.refreshToken);
+        
         return tokens
     } 
     @ApiProperty()

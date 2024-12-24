@@ -30,28 +30,24 @@ export class ProductsService {
 
 
     async getAllProducts({limit , offset}):Promise<ProductEntity[]> {
-        let cacheProducts = await this.cacheService.get<ProductEntity[]>(`products_limit:${limit}_offset:${offset}`)
-        if (cacheProducts) {
-            return cacheProducts 
-        }
+        // let cacheProducts = await this.cacheService.get<ProductEntity[]>(`products_limit:${limit}_offset:${offset}`)
+        // if (cacheProducts) {
+        //     return cacheProducts 
+        // }
         console.log({limit , offset});
         
+        
         const queryBuilder = this.productRepository.createQueryBuilder('products')
+        .leftJoinAndSelect('products.category', 'category') 
         if (limit) {
-            queryBuilder.limit(limit)
-            // queryBuilder.orderBy('createdAt','DESC')
+            queryBuilder.limit(Number(limit));
         }
+        
         if (offset) {
-            if (limit) {
-                queryBuilder.offset(offset*limit) 
-
-            }else{
-                queryBuilder.offset(offset)
-            }
-
+            queryBuilder.offset(Number(offset)); 
         }
         const products = await queryBuilder.getMany()
-        await this.cacheService.set<ProductEntity[]>(`products_limit:${limit}_offset:${offset}`,products,50000)
+        // await this.cacheService.set<ProductEntity[]>(`products_limit:${limit}_offset:${offset}`,products,50000)
         return products
     }
 
@@ -66,6 +62,7 @@ export class ProductsService {
         }
         return product
     }
+
 
 
     async createProduct(createProductDTO : CreateProductDTO, user_id : number):Promise<ProductEntity>{
@@ -176,11 +173,10 @@ export class ProductsService {
 
 
     async findProdBySale(){
-        const products = await this.productRepository.find({
-            where : {
-                saleBool : true
-            }
-        })
+        const queryBuilder = this.productRepository.createQueryBuilder('products')
+        queryBuilder.leftJoinAndSelect('products.category', 'category')
+        .where('products.sale > :sale', { sale: 0 })
+        const products = await queryBuilder.getMany()
         return products
     }
 
@@ -221,6 +217,17 @@ export class ProductsService {
         
         return await this.productRepository.save(product)
     }
+
+    async getCategories(){
+        let cacheCategories = await this.cacheService.get<CategoryEntity[]>(`categories:`)
+        if (cacheCategories) {
+            return cacheCategories 
+        }
+        const categories = await this.categoryRepository.find()
+        await this.cacheService.set<CategoryEntity[]>(`categories:`,categories,50000)
+        return categories
+    }
+
 
     // async GetSales(){
     //     const redis = await this.cacheService.getRedisClient()

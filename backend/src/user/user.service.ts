@@ -99,5 +99,4 @@ export class UserService {
         return user.email
     }
 
-
 }

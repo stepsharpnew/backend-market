@@ -4,6 +4,7 @@ import {
   Get,
   Post,
   Req,
+  Res,
   UseGuards,
   UsePipes,
   ValidationPipe,
@@ -18,9 +19,9 @@ import { RefreshTokenGuard } from 'src/guards/refreshToken.guard';
 import { UserEntity } from 'src/user/user.entity';
 import { User } from 'src/user/decorators/UserDecorator'
 import { ChangePassDTO } from './dto/cahngePassDTO';
-import { Length } from 'class-validator';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiProperty, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { RestoringPassDTO } from './dto/RestoringPassDTO';
+import { Response } from 'express';
 
 @ApiBearerAuth()
 @ApiTags('Модуль авторизации')
@@ -32,8 +33,16 @@ export class AuthController {
   @ApiResponse({status : 200, type : UserEntity })
   @UsePipes(new ValidationPipe())
   @Post('signup')
-  signup(@Body() createUserDto: CreateUserDTO) {
-    return this.authService.registration(createUserDto);
+  async signup(@Body() createUserDto: CreateUserDTO,@Res() res: Response) {
+    console.log(1231);
+    let tokens = await this.authService.registration(createUserDto);
+
+    console.log(tokens);
+    res.cookie('refresh',tokens.refreshToken, {
+      httpOnly : true,
+      maxAge : 604800000,
+    })
+    return res.status(201).send({ accessToken: tokens.accessToken });
   }
 
 
@@ -41,8 +50,14 @@ export class AuthController {
   @ApiResponse({status : 200, type : UserEntity })
   @UsePipes(new ValidationPipe())
   @Post('signin')
-  signin(@Body() data: AuthDto) {
-    return this.authService.login(data);
+  async signin(@Body() data: AuthDto,@Res() res: Response) {
+    let tokens = await this.authService.login(data);
+    res.cookie('refresh',tokens.refreshToken, {
+      httpOnly : true,
+      maxAge : 604800000,
+    })
+    
+    return res.status(201).send({ accessToken: tokens.accessToken });
   }
 
 

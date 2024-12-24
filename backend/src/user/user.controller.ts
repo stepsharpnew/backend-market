@@ -7,6 +7,7 @@ import { AccesTokenGeard } from 'src/guards/accessToken.guard';
 import { AdminGuard } from './guards/AdminGuard';
 import { TelegramService } from 'src/telegram/telegram.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { User } from './decorators/UserDecorator';
 
 @ApiBearerAuth()
 @Controller('user')
@@ -61,6 +62,15 @@ export class UserController {
 
         return user
     }
+
+    @UseGuards(AccesTokenGeard)
+    @Get('/me')
+    async getMe(
+        @User() user : any,
+    ){
+        return {...user} 
+    }
+
 
 
 }

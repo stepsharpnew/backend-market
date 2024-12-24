@@ -6,6 +6,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
   const config = new DocumentBuilder()
   .setTitle('Market')
   .setDescription('The backend-market API description')
@@ -17,6 +18,10 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, documentFactory);
 
   app.use(cookieParser());
+  app.enableCors({
+    origin: 'http://localhost:5173',
+    credentials: true,  
+  });
   await app.listen(process.env.PORT);
   console.log(`server running on ${process.env.PORT}`);
 }

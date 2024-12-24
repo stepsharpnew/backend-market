@@ -46,9 +46,13 @@ export class ProductsController {
     const products = await this.productsService.getAllProducts({limit, offset})
     console.log(products.map((el)=>el.id));
     console.log({price_bottom, price_up});
+    return products
     
-    
-    const filtered = this.filterService.filter(products,price_bottom,price_up)
+    const filtered = this.filterService.filter(
+      products,
+      10000,//price_bottom,
+      100000//price_up
+    )
     return filtered
   }
 
@@ -190,8 +194,12 @@ export class ProductsController {
       async DeleteSale(
         @Body('product_id') product_id : number,
       ){
-        return  this.productsService.DeleteSale(product_id)
-          
+        return  this.productsService.DeleteSale(product_id)   
+      }
+
+      @Get('all_categories')
+      async getCategories(){
+        return  this.productsService.getCategories()   
       }
 
       // @Get('sales')

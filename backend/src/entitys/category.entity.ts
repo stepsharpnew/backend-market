@@ -15,6 +15,9 @@ export class CategoryEntity{
     @Column()
     category : string
 
+    @ApiProperty({example : "http://example.com", description : "Ссылка на товар"})
+    @Column()
+    image_url : string
 
     @ApiProperty({example : "Elektronika", description : "SLUG категории"})
     @Column()
