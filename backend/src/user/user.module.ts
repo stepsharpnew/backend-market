@@ -7,6 +7,7 @@ import { JwtModule } from '@nestjs/jwt';
 import 'dotenv/config'
 import { TelegramModule } from 'src/telegram/telegram.module';
 import { FavoriteModule } from 'src/favorite/favorite.module';
+import { FileModule } from 'src/file/file.module';
 // import { AuthGuard } from './guards/authGuard';
 @Module({
   imports : [
@@ -16,7 +17,8 @@ import { FavoriteModule } from 'src/favorite/favorite.module';
     //   secret: process.env.JWT_SECRET,
     // }),
     TelegramModule,
-    FavoriteModule
+    FavoriteModule,
+    FileModule
 ],
   controllers: [UserController],
   providers: [UserService],

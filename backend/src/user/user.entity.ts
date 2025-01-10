@@ -19,7 +19,7 @@ export class UserEntity{
     password : string
 
     @ApiPropertyOptional({example : "Картинка пользователя", description : "Аватарка"})
-    @Column({default : ''})
+    @Column({default : 'https://storage.yandexcloud.net/step2002sharp/none-profile.png'})
     image_url : string
 
     @ApiProperty({example : "user", description : "Роль пользователя"})

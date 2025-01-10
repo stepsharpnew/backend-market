@@ -27,11 +27,13 @@ export class UserService {
     }
     
     async findById(id: number): Promise<UserEntity> {
-        return await this.userRepository.findOne({
+        const user = await this.userRepository.findOne({
             where : {
                 id
             }
         });
+        delete user.password
+        return user
       }
 
       async findByEmail(email: string): Promise<UserEntity> {
@@ -42,6 +44,21 @@ export class UserService {
             }
         });
       }
+      
+
+      async editProfile(user : CreateUserDTO, user_id : number):Promise<UserEntity>{
+        const userConsist = await this.findById(user_id)
+        if (userConsist.email !== user.email) {
+            throw new HttpException('Вы не можете изменить этого пользователя',HttpStatus.FORBIDDEN)
+        }
+        let newUser = await this.userRepository.findOne({
+            where : {
+                id : user_id
+            }
+        })
+        return newUser
+      }
+
       
       async update(
         id: number,

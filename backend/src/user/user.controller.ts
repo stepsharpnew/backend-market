@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Req, Res, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Req, Res, UploadedFile, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CreateUserDTO } from './dto/creteUserDTO';
 import { UserService } from './user.service';
 // import { AuthGuard } from './guards/authGuard';
@@ -6,15 +6,19 @@ import { Request, Response } from 'express';
 import { AccesTokenGeard } from 'src/guards/accessToken.guard';
 import { AdminGuard } from './guards/AdminGuard';
 import { TelegramService } from 'src/telegram/telegram.service';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { User } from './decorators/UserDecorator';
+import { UserEntity } from './user.entity';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { FileService } from 'src/file/file.service';
 
 @ApiBearerAuth()
 @Controller('user')
 export class UserController {
     constructor(
         private readonly userService : UserService,
-        private readonly telegramService : TelegramService
+        private readonly telegramService : TelegramService,
+        private readonly fileService : FileService,
     ){}
 
     @UsePipes(new ValidationPipe())
@@ -63,14 +67,62 @@ export class UserController {
         return user
     }
 
+
+    @ApiOperation({summary : "Изменение профиля"})
+    @ApiResponse({status : 200, type : UserEntity })
+    @UsePipes(new ValidationPipe())
+    @UseGuards(AccesTokenGeard)
+    @Put('edit')
+    async signin(
+        @Body() user: CreateUserDTO,
+        @Res() res: Response,
+        @User() user_sub : any
+    ) {
+      let newUser = await this.userService.editProfile(user, user_sub.sub);
+      res.cookie('refresh',newUser.refreshToken, {
+        httpOnly : true,
+        maxAge : 604800000,
+      })
+      
+      return newUser;
+    }
+
+
+    @ApiOperation({summary : "Добавить аватарку"})
+    @ApiResponse({status : 200, type : UserEntity })
+    @ApiConsumes('multipart/form-data')
+    @ApiBody({schema : {
+      type : 'object',
+      properties : {
+        file : {
+          type : 'string',
+          format : 'binary'
+        }
+      }
+    }})
+    @Post('addphoto')
+    @UseGuards(AccesTokenGeard)
+    @UseInterceptors(FileInterceptor('file'))
+
+    async takeFile(
+      @UploadedFile() file : Express.Multer.File,
+      @User() user : any,
+    ){
+        console.log(file);
+        
+      return this.fileService.addFileProductUser(file,user.sub)
+    }
+
     @UseGuards(AccesTokenGeard)
     @Get('/me')
     async getMe(
         @User() user : any,
     ){
-        return {...user} 
+        const user_info = this.userService.findById(user.sub)
+        return user_info
     }
 
+    
 
 
 }

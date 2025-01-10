@@ -1,40 +1,41 @@
 const categories = [
     { 
-        category: "Телевизоры", 
+        category: "Televisions", 
         short_name: "Televizory", 
         image_url: "https://storage.yandexcloud.net/step2002sharp/televisory.jpg" 
     },
     { 
-        category: "Ноутбуки", 
+        category: "Laptops", 
         short_name: "Noutbuki", 
         image_url: "https://storage.yandexcloud.net/step2002sharp/nounbuki.jpeg" 
     },
     { 
-        category: "Смартфоны", 
+        category: "Smartphones", 
         short_name: "Smartfony", 
         image_url: "https://storage.yandexcloud.net/step2002sharp/telefony.jpg" 
     },
     { 
-        category: "Планшеты", 
+        category: "Tablets", 
         short_name: "Planshety", 
         image_url: "https://storage.yandexcloud.net/step2002sharp/tablets.jpg" 
     },
     { 
-        category: "Бытовая техника", 
+        category: "Home Appliances", 
         short_name: "Bytovaya-tehnika", 
         image_url: "https://storage.yandexcloud.net/step2002sharp/bytovaya.jpg" 
     },
     { 
-        category: "Наушники", 
+        category: "Headphones", 
         short_name: "Nauschniki", 
         image_url: "https://storage.yandexcloud.net/step2002sharp/headphones.jpg" 
     },
     { 
-        category: "Смарт-часы", 
+        category: "Smart Watches", 
         short_name: "Smart-chasy", 
         image_url: "https://storage.yandexcloud.net/step2002sharp/watches.jpg" 
     }
-]
+];
+
 const products = [
     {
         name: "Ноутбук Acer Aspire 5",

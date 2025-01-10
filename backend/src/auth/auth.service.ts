@@ -96,7 +96,7 @@ export class AuthService {
             },
             {
               secret: process.env.JWT_ACCESS_SECRET,
-              expiresIn: '1h',
+              expiresIn: '1m',
             },
           ),
           this.jwtService.signAsync(
@@ -126,16 +126,17 @@ export class AuthService {
     async refreshTokens(userId:number, refreshToken : string):
     Promise<{accessToken:string,refreshToken: string,}>
       {
-      const user = this.usersService.findById(userId)
-      if (!user || !(await user).refreshToken) {
-        throw new HttpException('Доступ заблокирован',HttpStatus.FORBIDDEN)
+      const user =  await this.usersService.findById(userId)
+
+      if (!user || !user.refreshToken) {
+        throw new HttpException('Токена нет',HttpStatus.FORBIDDEN)
       }
-      const checkRefreshTokens = await bcrypt.compare(refreshToken,(await user).refreshToken)
+      const checkRefreshTokens = await bcrypt.compare(refreshToken, user.refreshToken)
       if (!checkRefreshTokens) {
         throw new HttpException('Доступ заблокирован',HttpStatus.FORBIDDEN)
       }
-      const tokens = this.getTokens(userId, (await user).email,(await user).role)//Обновление 2-х токенов
-      await this.updateRefreshToken((await user).id,(await tokens).refreshToken)//Запись нового в БД
+      const tokens = await this.getTokens(userId,  user.email, user.role)//Обновление 2-х токенов
+      await this.updateRefreshToken( user.id,tokens.refreshToken)//Запись нового в БД
       return tokens
     }
 
