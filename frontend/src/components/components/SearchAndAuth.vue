@@ -3,24 +3,23 @@
     <v-row 
         align="center"
         width="fill"
-        justify="space-beetween"
+        justify="space-between"
         class="d-flex flex-fill ga-2 dlex-wrap width-100" 
-    >
+    > 
         <v-sheet >
             <v-btn
                     class="mx-4 pa-2"
                     append-icon="mdi-chevron-right"
                     color="grey "
-                    text="Каталог"
+                    text="Catalog"
                     variant="outlined"
-                    block
                     @click="openCategory=true"
                 >
             </v-btn>
         </v-sheet>
         <v-card-text>
             <v-text-field
-                class="ma-2"
+                class="my-2"
                 :loading="loading"
                 append-inner-icon="mdi-magnify"
                 density="compact"
@@ -28,34 +27,35 @@
                 variant="solo"
                 hide-details
                 single-line
+                block
                 @click:append-inner="onClick"
             ></v-text-field>
         </v-card-text>
         <v-spacer></v-spacer>
-        <v-sheet >
+        <v-sheet>
             <v-btn
-                    lass="mx-4 pa-2"
+                    class="mx-4 my-2 pa-2"
                     append-icon="mdi-chevron-right"
                     color="red-lighten-2"
-                    text="Вход"
+                    text="Sign In"
                     @click="this.$router.push('/login')"
                     variant="outlined"
-                    block
+                   
                 >
             </v-btn>
         </v-sheet>
-        <v-sheet >
+        <v-sheet>
             <v-btn
-                    class="mx-4 pa-2"
+                    class="mx-4 my-2 pa-2"
                     append-icon="mdi-chevron-right"
                     color="red-lighten-2"
-                    text="Регистрация"
+                    text="Sign Up"
                     @click="this.$router.push('/reg')"
                     variant="outlined"
-                    block
+                    
                 >
             </v-btn>
-        </v-sheet>
+        </v-sheet>  
     </v-row>
 
     <v-navigation-drawer
@@ -72,22 +72,21 @@
             <v-container class="d-flex justify-start my-6">
                 <v-row
                     align="center"
-                    justify="space-beetween"
+                    justify="space-between"
                 >
                     <v-col
                     cols="auto"
                     >
-                        <p class="text-center">Категории товаров</p>
+                        <p class="text-center">Categories</p>
                     </v-col>
                     <v-spacer></v-spacer>
                     <v-col>
                         <v-btn
-                                class="mr-4 pa-3"
+                                class="mr-2"
                                 append-icon="mdi-chevron-left"
                                 color="red-lighten-2"
-                                text="Закрыть"
+                                text="Close"
                                 variant="outlined"
-                                block
                                 @click="closeCategory"
                             >
                         </v-btn>
@@ -95,9 +94,6 @@
 
                 </v-row>
             </v-container>
-
-
-
             <v-container fluid class="pa-3">
                 <v-row>
                     <v-col
@@ -187,9 +183,12 @@ export default {
 
     },
     async mounted(){
-        const categories = await axios.get('/api/products/all_categories')
-        console.log(categories);
-        this.categories = categories.data
+        try {
+            const response = await axios.get('/api/products/all_categories');
+            this.categories = response.data;
+        } catch (error) {
+            console.error('Error fetching categories:', error);
+        }
     }
 }
 

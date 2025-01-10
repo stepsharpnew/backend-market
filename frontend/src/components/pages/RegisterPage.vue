@@ -12,7 +12,7 @@
           <v-card
             :loading="isUpdating"
             class="mx-auto rounded-xl"
-            color="blue-grey-darken-1"
+            color="grey-darken-2"
           >
             <template v-slot:loader="{ isActive }">
               <v-progress-linear
@@ -52,7 +52,7 @@
                     
                 <v-row align="space-beetween">
                   <v-col class="text-center">
-                    <h3 class="text-h4">{{ name }}</h3>
+                    <h3 class="text-h4" style="font-weight: 200;">Account Create</h3>
                     <span class="text-grey-lighten-1 cursor-pointer" @click="this.$router.push('/login')">{{ title }}</span>
                   </v-col>
                 </v-row>
@@ -97,8 +97,8 @@
                       :disabled="isUpdating"
                       :items="people"
                       color="blue-grey-lighten-2"
-                      item-title="name"
-                      item-value="name"
+                      item-title="category"
+                      item-value="category"
                       label="Select most interesting categories"
                       chips
                       closable-chips
@@ -133,22 +133,18 @@ import eventBus from '../../eventBus';
   
         return {
           autoUpdate: true,
-          friends: ['Sandra Adams', 'Britta Holt'],
+          friends: ['Телевизоры', 'Ноутбуки'],
           isUpdating: false,
           name: 'Account Create',
           people: [
-            // TODO: https://github.com/vuetifyjs/vuetify/issues/15721
-            // { header: 'Group 1' },
-            { name: 'Sandra Adams', group: 'Group 1', avatar: srcs[1] },
-            { name: 'Ali Connors', group: 'Group 1', avatar: srcs[2] },
-            { name: 'Trevor Hansen', group: 'Group 1', avatar: srcs[3] },
-            { name: 'Tucker Smith', group: 'Group 1', avatar: srcs[2] },
-            // { divider: true },
-            // { header: 'Group 2' },
-            { name: 'Britta Holt', group: 'Group 2', avatar: srcs[4] },
-            { name: 'Jane Smith ', group: 'Group 2', avatar: srcs[5] },
-            { name: 'John Smith', group: 'Group 2', avatar: srcs[1] },
-            { name: 'Sandra Williams', group: 'Group 2', avatar: srcs[3] },
+            { category: 'Sandra Adams', group: 'Group 1', avatar: srcs[1] },
+            { category: 'Ali Connors', group: 'Group 1', avatar: srcs[2] },
+            { category: 'Trevor Hansen', group: 'Group 1', avatar: srcs[3] },
+            { category: 'Tucker Smith', group: 'Group 1', avatar: srcs[2] },
+            { category: 'Britta Holt', group: 'Group 2', avatar: srcs[4] },
+            { category: 'Jane Smith ', group: 'Group 2', avatar: srcs[5] },
+            { category: 'John Smith', group: 'Group 2', avatar: srcs[1] },
+            { category: 'Sandra Williams', group: 'Group 2', avatar: srcs[3] },
           ],
           title: 'You Have account?',
           email: '',
@@ -189,7 +185,9 @@ import eventBus from '../../eventBus';
             })
 
             eventBus.emit('show-modal', "Sign up is successfull");
+            this.$router.push('/')
             localStorage.setItem('access', token.data.accessToken)
+            localStorage.setItem('refresh', token.data.refreshToken)
             this.isUpdating = false
           } catch (error) {
               console.log(error);
@@ -214,8 +212,17 @@ import eventBus from '../../eventBus';
       },
 
     async mounted(){
-
+      try {
+        const response = await axios.get('/api/products/all_categories');
+        this.people = response.data;
+        console.log(this.people);
+        
+      } catch (error) {
+        console.log(error);
+        
       }
+
+    }
     }
   </script>
 <style scoped>

@@ -18,6 +18,18 @@ import MainHeader from './components/components/MainHeader.vue';
 
 </template>
 
-<style scoped>
+<style>
+.text-h3{
+  font-family: 'Sarpanch', sans-serif;
+}
   
+.text-h4{
+  font-family: 'Sarpanch', sans-serif;
+}  
+
+.text-h6{
+  font-family: 'Sarpanch', sans-serif;
+}  
+
+
 </style>

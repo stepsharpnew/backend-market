@@ -21,11 +21,10 @@
   </template>
   <script>
     export default {
-      data () {
-        return {
-          saleProducts: [],
-        }
-      },
+      // data () {
+      //   return {
+      //   }
+      // },
       props : {
         saleProducts : {
             type : Array

@@ -3,6 +3,7 @@ import PrimaryPage from '../components/pages/PrimaryPage.vue'
 import RegisterPage from '../components/pages/RegisterPage.vue'
 import LoginPage from '../components/pages/LoginPage.vue'
 import ProfilePage from '../components/pages/ProfilePage.vue'
+import RestoringPage from '../components/pages/RestoringPage.vue'
 
 
 const routes = [
@@ -10,6 +11,7 @@ const routes = [
   { path: '/reg', component:  RegisterPage},
   { path: '/login', component:  LoginPage},
   { path: '/profile', component:  ProfilePage},
+  { path: '/restore', component:  RestoringPage},
 
 ]
 

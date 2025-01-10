@@ -35,50 +35,38 @@
                           density="comfortable"
                           icon="mdi-chevron-left"
                           variant="tonal"
-                          @click="this.$router.push('/')"
+                          @click="goToLogin"
                       ></v-btn>
                       <v-spacer></v-spacer>
                       <v-btn
                           class="mx-4 pa-2"
                           append-icon="mdi-chevron-right"
                           color="orange-lighten-2"
-                          text="Sign In"
+                          text="Next"
                           variant="outlined"
-                          @click="Login"
+                          @click="CheckEmail"
                       >
                       </v-btn>
                   </v-row>
                 </v-col>
-                    
                 <v-row>
                   <v-col class="text-center ma-4">
-                    <p class="text-h4" style="font-weight: 200;">Account Login</p>
-                    <span class="text-grey-lighten-1 cursor-pointer" @click="this.$router.push('/reg')">You didn't have account?</span><br>
-                    <div style="width: 100%; height: 10px;"></div>
-                    <span class="text-grey-lighten-1 cursor-pointer" @click="this.$router.push('/restore')">You forgot password?</span>
+                    <p class="text-h4" style="font-weight: 100;">Account Restoring</p>
+                    <ProgressBar :buffer="buffer" :progress="progress"/>
                   </v-col>
                 </v-row>
               </v-row>
             </v-img>
-  
             <v-form>
               <v-container>
                 <v-row>
                   <v-col cols="12">
+                    <p class="main">Enter you email</p>
                     <v-text-field
                       v-model="email"
                       :disabled="isUpdating"
                       color="grey-lighten-2"
                       label="Email"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-text-field
-                      type="password"
-                      v-model="password"
-                      :disabled="isUpdating"
-                      color="grey-lighten-2"
-                      label="Password"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -89,25 +77,28 @@
         </v-col>
       </v-row>
     </v-container>
-  </template>
-
+</template>
 
 <script>
 
 import axios from 'axios';
-import eventBus from '../../eventBus';
+import eventBus from '../../../eventBus';
+import ProgressBar from '../../UIUX/ProgressBar.vue';
     export default {
       data () {
         return {
           autoUpdate: true,
           isUpdating: false,
-          name: 'Account Login',
           email: '',
-          password : '',
           timeout: null,
+          buffer: 1,
+          progress : 0
+          
         }
       },
-  
+      components : {
+        ProgressBar
+      },
       watch: {
         isUpdating (val) {
           clearTimeout(this.timeout)
@@ -118,56 +109,56 @@ import eventBus from '../../eventBus';
       },
   
       methods: {
-        remove (item) {
-          const index = this.friends.indexOf(item.name)
-          if (index >= 0) this.friends.splice(index, 1)
-        },
-
-        async Login(){
+        async CheckEmail(){
           this.isUpdating = true
           try {               
-            const token = await axios.post('/api/auth/signin',{
-              email : this.email, 
-              password : this.password
-            }, {
-              withCredentials : true
+            const response = await axios.post('/api/auth/restoring',{
+              email : this.email
             })
-            console.log(token.data);
-
-            setTimeout(()=>{
-              eventBus.emit('show-modal', 'Login is success'); 
-              localStorage.setItem('access', token.data.accessToken)
-              localStorage.setItem('refresh', token.data.refreshToken)
-              this.$router.push('/')
+            console.log(response);
+            if (response.data) {
+              eventBus.emit('show-modal', 'Check you email'); 
               this.isUpdating = false
-            },1000)
-
+              this.$emit('goToSecond', this.email)
+            }
           } catch (error) {
+            console.log(error.response.data);
+            
               setTimeout(()=>{
+                if (error.response.data.statusCode) {
+                  eventBus.emit('show-modal', error.response.data.message); 
                   this.isUpdating = false
-                  console.log(error.response.data.message);
-                  if (Array.isArray(error.response.data.message)) {
-                    eventBus.emit('show-modal', error.response.data.message[0]); 
-                    return
-                  }
-                  if (error.response.data.message) {
-                    eventBus.emit('show-modal', error.response.data.message);
-                    return
-                  }else{
-                    eventBus.emit('show-modal', 'Error in Sign in');
-                    return
-                  }
-                  
+                  return
+                }
+                eventBus.emit('show-modal', 'Error, try later');
+                this.isUpdating = false 
               },1000 )
           }
+        },
+        goToLogin(){
+          this.$router.push('/login')          
+          eventBus.emit('show-modal', 'Process password restoring is aborted');
+        }
+      },
+      props : {
+        currentEmail : {
+          type : String
         }
       },
 
-    async mounted(){
-
+      async created(){
+        console.log(this.currentEmail);
+        
+        if (this.currentEmail) {
+          this.email = this.currentEmail
+        }
       }
-    }
-  </script>
-<style scoped>
+  }
+</script>
 
+<style scoped>
+.main{
+  font-family: 'Roboto', sans-serif; 
+  font-weight: 300;
+}
 </style>

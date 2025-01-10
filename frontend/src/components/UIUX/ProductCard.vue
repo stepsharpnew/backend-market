@@ -75,16 +75,14 @@ export default {
   },
   data() {
     return {
-      show: [], // Для управления состоянием "раскрытости" карточек
+      show: [],
     };
   },
   mounted() {
-    // Инициализируем массив show в зависимости от количества продуктов
     this.show = new Array(this.products.length).fill(false);
   },
   methods: {
     toggleShow(index) {
-      // Изменение состояния раскрытия для конкретного продукта
       this.show[index]=!this.show[index]
     },
   },
