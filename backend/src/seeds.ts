@@ -5,7 +5,8 @@ import {products, categories} from "./config/seed_data"
 
 const dataSource = new DataSource({
   type: "postgres",
-  host: "localhost",
+  // host: "postgres-image",
+  host : 'localhost',
   port: 5432,
   username: "postgres",
   password: "12345678",

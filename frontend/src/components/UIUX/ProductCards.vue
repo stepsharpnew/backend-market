@@ -8,58 +8,44 @@
       v-for="(product, index) in products"
       :key="index"
     >
-      <v-hover v-slot="{ isHovering, props }">
-        <v-card
-          class="mx-auto"
-          max-width="320"
-          v-bind="props"
-        >
+        <v-card class="mx-auto" max-width="320">
           <v-img
             height="200px"
             :src="product.category.image_url"
             cover
             class="align-end"
           >
-            <v-expand-transition>
-              <div
-                v-if="isHovering"
-                class="d-flex transition-fast-in-fast-out bg-orange-darken-2 v-card--reveal text-h4 "
-                style="height: 40%;"
-              >
-                {{ product.price }} ₽
-              </div>
-            </v-expand-transition>
+            <!-- Placeholder for image -->
           </v-img>
-          <v-card-title class="text-subtitle-2 text-start">{{ product.name }}</v-card-title>
+          <div 
+            class="d-flex flex-column pa-3"
+            style="height: 80px;"
+          >
+            <div 
+              class="text-subtitle-3 text-start" 
+              style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+            >
+              {{ product.name }}
+            </div>
+            <div class="text-subtitle-1 text-end mt-auto">
+              {{ product.price }} ₽
+            </div>
+          </div>
           <v-card-actions>
-            <v-btn color="orange-lighten-2">
-              Подробнее
-            </v-btn>
+            <v-btn color="orange-lighten-2" @click="GoToProd(product)">Подробнее</v-btn>
             <v-spacer></v-spacer>
-            <v-btn
-              :icon="'mdi-heart'"
-              color="grey"
-              prepend
-              class="ma-0 pa-0"
-            ></v-btn>
-            <v-btn
-              :icon="show[index] ? 'mdi-chevron-up' : 'mdi-chevron-down'"
-              class="ma-0 pa-0"
-              @click="toggleShow(index)"
-            ></v-btn>
+            <v-btn :icon="'mdi-heart'" color="grey" prepend class="ma-0 pa-0"></v-btn>
           </v-card-actions>
 
           <v-expand-transition>
             <div v-show="show[index]">
               <v-divider></v-divider>
-
               <v-card-text>
                 {{ product.description }}
               </v-card-text>
             </div>
           </v-expand-transition>
         </v-card>
-      </v-hover>
     </v-col>
   </v-row>
 </template>
@@ -80,11 +66,16 @@ export default {
   },
   mounted() {
     this.show = new Array(this.products.length).fill(false);
+    console.log(this.products);
+    
   },
   methods: {
     toggleShow(index) {
       this.show[index]=!this.show[index]
     },
+    GoToProd(product){
+      this.$router.push(`/product/${product.slug}`)
+    }
   },
 };
 </script>

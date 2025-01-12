@@ -55,7 +55,8 @@ export class ProductsService {
         const product = await this.productRepository.findOne({
             where : {
                 slug
-            }
+            },
+            relations : ['category']
         })
         if (!product) {
             throw new HttpException('Такого товара нет', HttpStatus.UNPROCESSABLE_ENTITY)

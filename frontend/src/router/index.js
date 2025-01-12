@@ -4,6 +4,7 @@ import RegisterPage from '../components/pages/RegisterPage.vue'
 import LoginPage from '../components/pages/LoginPage.vue'
 import ProfilePage from '../components/pages/ProfilePage.vue'
 import RestoringPage from '../components/pages/RestoringPage.vue'
+import ProductCard from '../components/pages/ProductCard.vue'
 
 
 const routes = [
@@ -12,6 +13,7 @@ const routes = [
   { path: '/login', component:  LoginPage},
   { path: '/profile', component:  ProfilePage},
   { path: '/restore', component:  RestoringPage},
+  { path: '/product/:slug', component:  ProductCard},
 
 ]
 

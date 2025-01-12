@@ -3,7 +3,7 @@ import { CreateUserDTO } from './dto/creteUserDTO';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './user.entity';
 import { Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { TelegramService } from 'src/telegram/telegram.service';
 import { FavoriteService } from 'src/favorite/favorite.service';
 

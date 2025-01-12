@@ -4,12 +4,6 @@
       v-model="dialog"
       max-width="400"
     >
-      <!-- <template v-slot:activator="{ props: activatorProps }">
-        <v-btn v-bind="activatorProps">
-          Open Dialog
-        </v-btn>
-      </template> -->
-
       <v-card
         text="Are you sure you want to log out of your account?"
         title="Logout?"
@@ -17,8 +11,8 @@
         <template v-slot:actions>
           <v-spacer></v-spacer>
 
-          <v-btn @click="dialog = false"
-          class="mx-4 my-2 pa-2"
+          <v-btn @click="closeDialog"
+            class="mx-4 my-2 pa-2"
             color="grey"
             text="Cancel"
             variant="outlined"
@@ -62,13 +56,17 @@ export default {
   },
   methods: {
     logoutAndClose() {
-      localStorage.removeItem('access')
-      localStorage.removeItem('refresh')
-      localStorage.removeItem('user')
-      this.$emit('closeLeftPanel')
-      // localStorage.removeItem('privacy')
+      localStorage.removeItem('access');
+      localStorage.removeItem('refresh');
+      localStorage.removeItem('user');
+      this.$emit('closeLeftPanel');
       this.dialog = false;
+      this.$emit('update:openLogoutModal', false);
+    },
+    closeDialog() {
+      this.dialog = false;
+      this.$emit('update:openLogoutModal', false);
     }
   }
-}
+};
 </script>
