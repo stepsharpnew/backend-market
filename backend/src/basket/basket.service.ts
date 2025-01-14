@@ -52,7 +52,7 @@ export class BasketService {
             let product_Ids =  user_products.map((el)=>{
                 return el.products.id
             })
-            console.log(product_Ids);
+            // console.log(product_Ids);
             if (product_Ids.length == 0) {
                 return new HttpException('У пользователя нет товаров в корзине',HttpStatus.UNPROCESSABLE_ENTITY)
             }
@@ -89,7 +89,7 @@ export class BasketService {
         let Entity = new BasketProductsEntity()
         Entity.user = user
         Entity.products = product
-        console.log('Entity', Entity);
+        // console.log('Entity', Entity);
         const newBasketItem = await this.basketProduct_Repository.save(Entity)
         return newBasketItem
     }
@@ -145,7 +145,7 @@ export class BasketService {
         }
 
         const products_Ids = basket_items.map((elem)=>elem.products.id)
-        console.log(products_Ids);
+        // console.log(products_Ids);
         if (products_Ids.length === 0) {
             throw new HttpException('Ваша корзина пустая', HttpStatus.UNPROCESSABLE_ENTITY)
         }

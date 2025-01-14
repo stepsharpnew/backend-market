@@ -50,7 +50,6 @@ export class FileService {
     async fileToS3(params, product_id:number){
           try {
             const data = await s3.upload(params).promise();
-            console.log(data);
             
             return await this.AddProductURL(data.Location, product_id)
           } catch (error) {
@@ -71,7 +70,6 @@ export class FileService {
             }
         })
         const new_product = await this.productRepository.save({...product,image_url : url})
-        console.log(new_product);
         return new_product
     }   
 
@@ -81,7 +79,6 @@ export class FileService {
 
     //Создание названия и установка параметров USER
     async addFileProductUser(file : Express.Multer.File,user_id : any){
-        console.log(file);
         
         try {
             const filename = slugify(`${Date.now()}-${file.originalname.slice(0,8)}-${(Math.random()*48).toString(36).substring(2)}`)

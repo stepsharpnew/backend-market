@@ -35,11 +35,11 @@ export class AuthController {
   @Post('signup')
   async signup(@Body() createUserDto: CreateUserDTO,@Res() res: Response) {
     let tokens = await this.authService.registration(createUserDto);
-    console.log(tokens);
-    res.cookie('refresh',tokens.refreshToken, {
-      httpOnly : true,
-      maxAge : 604800000,
-    })
+    // console.log(tokens);
+    // res.cookie('refresh',tokens.refreshToken, {
+    //   httpOnly : true,
+    //   maxAge : 604800000,
+    // })
     return res.status(201).send({ ...tokens });
   }
 
@@ -49,13 +49,20 @@ export class AuthController {
   @UsePipes(new ValidationPipe())
   @Post('signin')
   async signin(@Body() data: AuthDto,@Res() res: Response) {
-    let tokens = await this.authService.login(data);
-    res.cookie('refresh',tokens.refreshToken, {
-      httpOnly : true,
-      maxAge : 604800000,
-    })
-    
-    return res.status(201).send({ ...tokens });
+    try{
+      let tokens = await this.authService.login(data);
+      // res.cookie('refresh',tokens.refreshToken, {
+      //   httpOnly : true,
+      //   maxAge : 604800000,
+      // })
+      
+      return res.status(201).send({ ...tokens });
+    }
+    catch(error){
+      console.log(error);
+      
+    }
+
   }
 
 
@@ -74,7 +81,7 @@ export class AuthController {
   async refreshTokensController(@Req() req : expressRequestInterface):
   Promise<{accessToken:string,refreshToken: string,}>
   { 
-    console.log('123',req.user.sub,req.user.refreshToken );
+    // console.log('123',req.user.sub,req.user.refreshToken );
     
     const tokens = await this.authService.refreshTokens(req.user.sub, req.user.refreshToken)
     return tokens

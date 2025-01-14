@@ -55,7 +55,8 @@ export class ProductsService {
         const product = await this.productRepository.findOne({
             where : {
                 slug
-            }
+            },
+            relations : ['category']
         })
         if (!product) {
             throw new HttpException('Такого товара нет', HttpStatus.UNPROCESSABLE_ENTITY)
@@ -106,6 +107,11 @@ export class ProductsService {
                 short_name: category_short_name,
             }
         })
+
+
+        if (!categories) {
+            throw new HttpException('Нет такой категории',HttpStatus.BAD_REQUEST)
+        }
         const products = await this.productRepository.find({
             where : {
                 category : categories

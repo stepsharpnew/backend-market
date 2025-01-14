@@ -181,7 +181,7 @@ import eventBus from '../../eventBus';
               email : this.email, 
               password : this.password
             }, {
-              withCredentials : true
+              // withCredentials : true
             })
 
             eventBus.emit('show-modal', "Sign up is successfull");

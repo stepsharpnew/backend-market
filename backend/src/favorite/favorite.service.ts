@@ -54,7 +54,7 @@ export class FavoriteService {
             const newFavoriteRecord = new FavoriteEntity();
             newFavoriteRecord.productList = [product_id];
             newFavoriteRecord.user = user;
-            console.log('первая', newFavoriteRecord);
+            // console.log('первая', newFavoriteRecord);
             return await this.favoritesRepository.save(newFavoriteRecord);
         } else {
             //Если запись уже есть
@@ -82,7 +82,6 @@ export class FavoriteService {
             return []
         }
         const favoritesIds = favorites.productList
-        console.log(favoritesIds);
         const queryBuilder = this.productRepository.createQueryBuilder('products')
         .andWhereInIds(favoritesIds)
         const products = await queryBuilder.getMany()

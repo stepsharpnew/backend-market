@@ -2,82 +2,26 @@
   <v-container class="d-flex flex-column pa-0 w-80 " >
     <!-- Навигационное меню -->
 
-      <v-navigation-drawer
-        image="https://cdn.vuetifyjs.com/images/backgrounds/bg-2.jpg"
-        theme="dark"
-        v-model="drawer"
-        :rail="rail"
-        @click="rail = false"
-        style="cursor: pointer"
-        v-if="isAuth"
-        class="h-100"
-      >
-      <v-tooltip :text="email">
-        <template v-slot:activator="{ props }">
-          <v-list-item
-            :prepend-avatar="image_url"
-            :title="email"
-            nav
-            v-bind="props"
-          >
-            <template v-slot:append>
-              <v-btn 
-                icon="mdi-chevron-left"
-                variant="text"
-                color="pink"
-                @click.stop="rail = !rail"
-              ></v-btn>
-            </template>
-          </v-list-item>
-        </template>
-      </v-tooltip>
-
-        <v-divider></v-divider>
-
-        <v-list density="compact" nav>
-
-          <v-tooltip text="My Account">
-            <template v-slot:activator="{ props }">
-              <v-list-item prepend-icon="mdi-account" title="My Account" value="account" v-bind="props" @click="this.$router.push('/profile')"></v-list-item>
-            </template>
-          </v-tooltip>
-
-          <v-tooltip text="Favorite">
-            <template v-slot:activator="{ props }">
-              <v-list-item prepend-icon="mdi-heart" title="Favorite" value="Favorite" v-bind="props"></v-list-item>
-            </template>
-          </v-tooltip>
-
-          <v-tooltip text="Basket">
-            <template v-slot:activator="{ props }">
-              <v-list-item prepend-icon="mdi-delete" title="Basket" value="Basket" v-bind="props"></v-list-item>
-            </template>
-          </v-tooltip>
-
-          <v-tooltip text="Logout">
-            <template v-slot:activator="{ props }">
-              <v-list-item prepend-icon="mdi-logout" title="Logout" value="Logout" v-bind="props" @click="openLogoutDialog = true"></v-list-item>
-            </template>
-          </v-tooltip>
-        </v-list>
-      </v-navigation-drawer>
+      <NavigationDrawer :isAuth="isAuth" :email="email" :image_url="image_url"/>
       
       <v-main class="pa-4 ma-5 w-80 align-center">
         <SearchAndAuth :rail="rail" />
         <v-row >
           <v-col>
-            <h2 class="text-h3 text-center">Current sales</h2>
+            <h2 class="text-h3 text-center" style="width: 100%;" v-if="saleProducts.length" >Current sales</h2>
           </v-col>
         </v-row>
 
         <!-- Список товаров -->
         <SaleSlider
-        class="mb-5"
-        v-if="saleProducts.length" 
-        :saleProducts="saleProducts"
+          class="mb-5"
+          v-if="saleProducts.length" 
+          :saleProducts="saleProducts"
         />
-        <v-row class="d-flex flex-wrap">
-          <ProductCard :products="products" />
+        <v-divider></v-divider>
+        <v-row class="d-flex flex-wrap my-5">
+          <h2 class="text-h3 text-center">Products</h2>
+          <ProductCards :products="products" />
         </v-row>
         <v-row>
           <v-col>
@@ -90,7 +34,7 @@
               ></v-pagination>
             </div>
             <!-- <PrivacyPolicy v-model="policyStatus"@closePolicy="closePolicy"/> -->
-            <LogoutModal :openLogoutModal="openLogoutDialog" @update:openLogoutModal="openLogoutDialog = $event" @closeLeftPanel="closeLeftPanel"/>
+            
           </v-col>
         </v-row>
       </v-main >
@@ -103,22 +47,24 @@
 import apiClient from '../../axiosClient';
 import LogoutModal from '../components/LogoutModal.vue';
 import MainFooter from '../components/MainFooter.vue';
+import NavigationDrawer from '../components/NavigationDrawer.vue';
 import PrivacyPolicy from '../components/PrivacyPolicy.vue';
 import SaleSlider from '../components/SaleSlider.vue';
 import SearchAndAuth from '../components/SearchAndAuth.vue';
-import ProductCard from '../UIUX/ProductCard.vue';
+import ProductCards from '../UIUX/ProductCards.vue';
 import axios from 'axios';
 
 export default {
   name: 'List',
   components: {
-    ProductCard,
+    ProductCards,
     // NavigationDrawer,
     SaleSlider,
     MainFooter,
     SearchAndAuth,
     PrivacyPolicy,
-    LogoutModal
+    LogoutModal,
+    NavigationDrawer
   },
   data() {
     return {
@@ -128,7 +74,7 @@ export default {
       saleProducts : [],
       openCategory : false,
       email : '',
-      isAuth : true,
+      isAuth : false,
       page : 1,
       limit : 15,
       offset : 0,
@@ -164,23 +110,24 @@ export default {
     }
     catch(error){
       console.log(error);
-      // if (token) {
-      //   user = await apiClient.get('/user/me', {
-      //     headers : `Authorization: Bearer ${token}`
-      //   })
-      // }
-      // if (user.data) {
-      //   localStorage.setItem('user', JSON.stringify(user.data))
-      //   this.email = user.data.email
-      //   this.image_url = user.data.image_url
-      //   this.isAuth = true
-      // }
+      if (token) {
+        user = await apiClient.get('/user/me', {
+          headers : `Authorization: Bearer ${token}`
+        })
+      }
+      if (user?.data) {
+        localStorage.setItem('user', JSON.stringify(user.data))
+        this.email = user.data.email
+        this.image_url = user.data.image_url
+        this.isAuth = true
+      }
 
     }
     try {    
       const response = await axios.get(`/api/products?offset=${this.offset * this.limit}&limit=${this.limit}`);
       this.products = response.data; 
-
+      console.log(this.products);
+      
       const sales = await axios.get(`/api/products/sales`);
       this.saleProducts = sales.data
 

@@ -1,0 +1,112 @@
+<template>
+	<v-navigation-drawer
+        image="https://cdn.vuetifyjs.com/images/backgrounds/bg-2.jpg"
+        theme="dark"
+        v-model="drawer"
+        :rail="rail"
+        style="cursor: pointer"
+        v-if="isAuth"
+        class="h-100"
+        permanent
+      >
+      <v-tooltip :text="email">
+        <template v-slot:activator="{ props }">
+          <v-list-item
+            :prepend-avatar="image_url"
+            :title="email"
+            width="100"
+            v-bind="props"
+          >
+            <!-- <template v-slot:append>
+              <v-btn 
+                icon="mdi-chevron-left"
+                variant="text"
+                color="pink"
+                @click.stop="rail = !rail"
+              ></v-btn>
+            </template> -->
+          </v-list-item>
+        </template>
+      </v-tooltip>
+	<v-divider></v-divider>
+	<v-list density="compact" nav>
+		<v-tooltip text="My Account">
+		<template v-slot:activator="{ props }">
+			<v-list-item prepend-icon="mdi-account" title="My Account" value="account" v-bind="props" @click="this.$router.push('/profile')"></v-list-item>
+		</template>
+		</v-tooltip>
+
+		<v-tooltip text="Favorite">
+		<template v-slot:activator="{ props }">
+			<v-list-item prepend-icon="mdi-heart" title="Favorite" value="Favorite" v-bind="props"></v-list-item>
+		</template>
+		</v-tooltip>
+
+		<v-tooltip text="Basket">
+		<template v-slot:activator="{ props }">
+			<v-list-item prepend-icon="mdi-delete" title="Basket" value="Basket" v-bind="props"></v-list-item>
+		</template>
+		</v-tooltip>
+
+		<v-tooltip text="Logout">
+		<template v-slot:activator="{ props }">
+			<v-list-item prepend-icon="mdi-logout" title="Logout" value="Logout" v-bind="props" @click="openLogoutDialog = true"></v-list-item>
+		</template>
+		</v-tooltip>
+	</v-list>
+	</v-navigation-drawer>
+	<LogoutModal
+		:openLogoutModal="openLogoutDialog"
+		@update:openLogoutModal="openLogoutDialog = $event"
+		@closeLeftPanel="closeLeftPanel"
+	/>
+</template>
+
+
+<script>
+
+import { mdiStarMinus } from '@mdi/js';
+import LogoutModal from './LogoutModal.vue';
+
+export default {
+	data(){
+		return {
+			drawer: true,
+			rail: true,
+			// email : '',
+			// image_url : 'https://storage.yandexcloud.net/step2002sharp/none-profile.png',
+			openLogoutDialog: false,
+		}
+	},
+	props : {
+		isAuth : {
+			type : Boolean
+		},
+		email : {
+			type:String
+		},
+		image_url : {
+			type:String
+		}
+	},
+	mounted(){
+		try {
+			// this.email =  JSON.parse(localStorage.getItem('user')).email
+			// this.image_url =  JSON.parse(localStorage.getItem('user')).image_url
+		} catch (error) {
+			
+		}
+
+	},
+	components : {
+		LogoutModal
+	},
+	methods : {
+		closeLeftPanel(){
+			this.openLogoutDialog = false
+			this.isAuth = false
+		}
+	}
+}
+
+</script>

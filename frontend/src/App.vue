@@ -9,7 +9,7 @@ import MainHeader from './components/components/MainHeader.vue';
   <v-app>
     <MainHeader></MainHeader>
     <v-main>
-      <router-view></router-view>
+      <router-view :key="$route.fullPath"></router-view>
       <GlobalModal/>
       <MainFooter></MainFooter>
       
@@ -28,6 +28,10 @@ import MainHeader from './components/components/MainHeader.vue';
 }  
 
 .text-h6{
+  font-family: 'Sarpanch', sans-serif;
+}  
+
+.text-h5{
   font-family: 'Sarpanch', sans-serif;
 }  
 

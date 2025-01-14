@@ -70,13 +70,12 @@
                     <v-card
                       prepend-icon="mdi-lock-reset"
                       title="Password Changing"
+                      class="w-25 ma-auto"
                     >
                       <v-card-text>
-                        <v-row dense>
+                        <v-row>
                           <v-col
                             cols="12"
-                            md="4"
-                            sm="6"
                           >
                             <v-text-field
                               label="Current password*"
@@ -88,8 +87,6 @@
 
                           <v-col
                             cols="12"
-                            md="4"
-                            sm="6"
                           >
                             <v-text-field
                               label="Password*"
@@ -101,8 +98,6 @@
 
                           <v-col
                             cols="12"
-                            md="4"
-                            sm="6"
                           >
                             <v-text-field
                               label="Confirm Password*"

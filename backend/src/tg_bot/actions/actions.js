@@ -75,9 +75,9 @@ const bufferFunctionPrint = (current, buffer) => {
                 });
             }
 
-            console.log(current);
-            console.log(buffer);
-            console.log(current === buffer);
+            // console.log(current);
+            // console.log(buffer);
+            // console.log(current === buffer);
 
             buffer = current;
             return buffer;
