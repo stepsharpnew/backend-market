@@ -12,7 +12,7 @@
           <v-img
             height="200px"
             :src="product.category.image_url"
-            cover
+            contain
             class="align-end"
           >
             <!-- Placeholder for image -->

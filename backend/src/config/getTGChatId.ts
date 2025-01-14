@@ -12,7 +12,7 @@ export const getTGChatId = async () => {
         }
 
         const chatIds = response.data.result.map((message)=>message.message?.chat?.id)
-        console.log('response', chatIds);
+        // console.log('response', chatIds);
         return chatIds;
     } catch (error) {
         console.error('Error fetching chat ID:', error.message);

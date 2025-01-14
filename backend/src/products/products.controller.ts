@@ -104,7 +104,7 @@ export class ProductsController {
       ):Promise<ProductEntity[]>{
         const products = await this.productsService.getProductsByCategoty(category_short_name)
         return products
-      }
+      } 
 
 
       //Созддание фото для продукта
@@ -199,7 +199,7 @@ export class ProductsController {
 
       @Get('all_categories')
       async getCategories(){
-        return  this.productsService.getCategories()   
+        return this.productsService.getCategories()   
       }
 
       // @Get('sales')

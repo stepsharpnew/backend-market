@@ -107,6 +107,11 @@ export class ProductsService {
                 short_name: category_short_name,
             }
         })
+
+
+        if (!categories) {
+            throw new HttpException('Нет такой категории',HttpStatus.BAD_REQUEST)
+        }
         const products = await this.productRepository.find({
             where : {
                 category : categories
