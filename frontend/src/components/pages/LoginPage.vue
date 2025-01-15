@@ -112,7 +112,7 @@ import eventBus from '../../eventBus';
         isUpdating (val) {
           clearTimeout(this.timeout)
           if (val) {
-            this.timeout = setTimeout(() => (this.isUpdating = false), 3000)
+            this.timeout = setTimeout(() => (this.isUpdating = false), 1500)
           }
         },
       },
@@ -125,40 +125,41 @@ import eventBus from '../../eventBus';
 
         async Login(){
           this.isUpdating = true
-          try {               
+          console.log('asdasd');
+          
+          try {      
+            console.log('asd');
             const token = await axios.post('/api/auth/signin',{
               email : this.email, 
               password : this.password
-            }, {
-              withCredentials : true
             })
             console.log(token.data);
-
-            setTimeout(()=>{
+            console.log('asdasdasdasdasdada');          
               eventBus.emit('show-modal', 'Login is success'); 
               localStorage.setItem('access', token.data.accessToken)
               localStorage.setItem('refresh', token.data.refreshToken)
               this.$router.push('/')
               this.isUpdating = false
-            },1000)
+
 
           } catch (error) {
-              setTimeout(()=>{
-                  this.isUpdating = false
-                  console.log(error.response.data.message);
-                  if (Array.isArray(error.response.data.message)) {
-                    eventBus.emit('show-modal', error.response.data.message[0]); 
-                    return
-                  }
-                  if (error.response.data.message) {
-                    eventBus.emit('show-modal', error.response.data.message);
-                    return
-                  }else{
-                    eventBus.emit('show-modal', 'Error in Sign in');
-                    return
-                  }
-                  
-              },1000 )
+            console.log(error);
+            setTimeout(()=>{
+                this.isUpdating = false
+                console.log(error.response.data.message);
+                if (Array.isArray(error.response.data.message)) {
+                  eventBus.emit('show-modal', error.response.data.message[0]); 
+                  return
+                }
+                if (error.response.data.message) {
+                  eventBus.emit('show-modal', error.response.data.message);
+                  return
+                }else{
+                  eventBus.emit('show-modal', 'Error in Sign in');
+                  return
+                }
+                
+            },1000 )
           }
         }
       },

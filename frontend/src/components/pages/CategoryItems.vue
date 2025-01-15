@@ -1,5 +1,6 @@
 <template>
 	<v-container class="d-flex flex-column flex-md-row pa-4 h-100 w-fill">
+	<NavigationDrawer :isAuth="isAuth" :email="email" :image_url="image_url"/>
 	  <!-- Левая колонка: Список товаров категории -->
 	  <v-row class="w-100">
 		<v-col cols="12" md="8" class="mb-4 mb-md-0">
@@ -64,16 +65,22 @@
   	import eventBus from '../../eventBus';
 	import axios from 'axios'
 	import ProductCards from '../UIUX/ProductCards.vue';
+  	import NavigationDrawer from '../components/NavigationDrawer.vue'
+	
   export default {
 	data(){
 		return {
 			products : '',
 			currentCategory : '',
-			otherCategories : ''
+			otherCategories : '',
+			isAuth : false,
+			email : '',
+			image_url : ''
 		}
 	},
 	components : {
-		ProductCards
+		ProductCards,
+		NavigationDrawer
 	},
 	methods: {
 		// goToProduct(product) {
@@ -91,7 +98,35 @@
 			});
 		}
 	},
+	created(){
+		try {
+			this.email =  JSON.parse(localStorage.getItem('user')).email
+			this.image_url =  JSON.parse(localStorage.getItem('user')).image_url
+			this.isAuth = true
+		} catch (error) {
+			
+		}
+	},
 	async mounted(){
+		if (this.email == '' && this.image_url == '') {
+			try {
+				const token = localStorage.getItem('access')
+				const user = await apiClient.get('/user/me', {
+					headers : `Authorization: Bearer ${token}`
+				})
+				if (user.data) {
+					localStorage.setItem('user', JSON.stringify(user.data))
+					this.email = user.data.email
+					this.image_url = user.data.image_url
+					this.isAuth = true
+				}
+				console.log(this.isAuth);
+				
+
+			} catch (error) {
+				
+			}
+		}
 		try {
 			const slug = this.$route.params.short_name
 			const response = await axios.get(`/api/products/category/${slug}`)

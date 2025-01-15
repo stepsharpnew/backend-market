@@ -32,7 +32,7 @@ apiClient.interceptors.response.use(
       } catch (refreshError) {
         // Если обновление токена не удалось, перенаправляем на страницу входа
         console.error('Не удалось обновить токен', refreshError);
-        window.location.href('/login')
+        // window.location.assign('/login')
         return Promise.reject(refreshError);
       }
     }

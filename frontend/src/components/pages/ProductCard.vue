@@ -1,6 +1,7 @@
 <template>
 	<v-container class="d-flex flex-column flex-md-row pa-4 h-100">
 	  <!-- Левая колонка: Карточка товара -->
+	  <NavigationDrawer :isAuth="isAuth" :email="email" :image_url="image_url"/>
 	  <v-row class="w-100 w-md-50 me-md-4 mb-4 mb-md-0">
 		<v-col>
 		  <v-card class="pa-4 elevation-3 rounded">
@@ -95,13 +96,20 @@
   
   <script>
   import axios from 'axios';
+  import NavigationDrawer from '../components/NavigationDrawer.vue'
   export default {
 	data(){
 		return {
 			product : {category : {}, name : ''},
 			relatedProducts : '',
+			isAuth : false,
+			email : '',
+			image_url : ''
 
 		}
+	},
+	components : {
+		NavigationDrawer
 	},
 	// name: 'ProductDetail',
 	methods: {
@@ -128,7 +136,37 @@
 			});
 		},
 	}, 
+
+	created(){
+		try {
+			this.email =  JSON.parse(localStorage.getItem('user')).email
+			this.image_url =  JSON.parse(localStorage.getItem('user')).image_url
+			this.isAuth = true
+		} catch (error) {
+			
+		}
+	},
 	async mounted(){
+		if (this.email == '' && this.image_url == '') {
+			try {
+				const token = localStorage.getItem('access')
+				const user = await apiClient.get('/user/me', {
+					headers : `Authorization: Bearer ${token}`
+				})
+				if (user.data) {
+					localStorage.setItem('user', JSON.stringify(user.data))
+					this.email = user.data.email
+					this.image_url = user.data.image_url
+					this.isAuth = true
+				}
+				console.log(this.isAuth);
+				
+
+			} catch (error) {
+				
+			}
+		}
+		
 		try {
 			const slug = this.$route.params.slug
 			const response = await axios.get(`/api/products/get/${slug}`)
@@ -147,11 +185,6 @@
 			console.log(error);
 		}
 
-		try {
-			
-		} catch (error) {
-			
-		}
 	}
 
 

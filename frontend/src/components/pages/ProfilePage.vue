@@ -1,147 +1,139 @@
 <template>
-    <v-container class="h-screen d-flex align-center justify-center">
-      <v-card elevation="10" max-width="700" class="pa-5" round>
-        <v-row justify="center" align="center">
-          <!-- Контейнер для почты и фото -->
-          <v-col
-            cols="12" sm="10" md="6" lg="6"
-            class="d-flex flex-column flex-md-row align-start justify-center"
-          >
-            <v-img
-              :src="photoPreview || image_url || 'https://cdn.vuetifyjs.com/images/cards/dark-beach.jpg'"
-              cover
-              width="100%"
-              class="elevation-5 ma-3"
-              max-width="400"
-              max-height="500"
-            ></v-img>
-            <div class="d-flex flex-column fill-height">
-              <v-card-title class="text-h6 font-weight-bold">{{ email }}</v-card-title>
-              <v-file-input
-                class="ma-2 rounded-3"
-                :rules="rules"
-                accept="image/png, image/jpeg, image/bmp"
-                label="Select photo"
-                placeholder="Click to select file"
-                prepend-icon="mdi-camera"
-                variant="outlined"
-                dense
-                v-model="photo"
-                @change="previewPhoto"
-              ></v-file-input>
-              <!-- <v-btn
-                class="text-none font-weight-regular pa-2"
-                append-icon="mdi-upload"
-                color="primary"
-                elevation="2"
-                rounded
-                :disabled="!photo"
-                @click="uploadPhoto"
-              >
-                Загрузить
-              </v-btn> -->
+  <v-container class="h-screen d-flex container" fluid style="margin: 0; padding: 0;">
+    <!-- Левая часть: Форма регистрации -->
+    <v-col
+      cols="12"
+      md="4"
+      sm="7"
+      class="pa-5  d-flex flex-column justify-self-center"
+    >
+      <v-card elevation="10" class="pa-5" rounded :loading="isUpdating">
+        <template v-slot:loader="{ isActive }">
+          <v-progress-linear
+            :active="isActive"
+            color="black-lighten-3"
+            height="4"
+            indeterminate
+          ></v-progress-linear>
+        </template>
 
-              <v-btn
-                class="text-none font-weight-regular pa-2  btn-equal-width"
-                prepend-icon="mdi-lock-reset"
-                color="primary"
-                elevation="2"                
-                text="Upload Photo"
-                :disabled="!photo"
-                @click="uploadPhoto"
-                rounded
-              ></v-btn>
-                <div class="py-4 text-center align-start d-flex">
-                  <v-dialog
-                    v-model="dialog"
-                  >
-                    <template v-slot:activator="{ props: activatorProps }">
-                      <v-btn
-                        color="warning"
-                        align-start
-                        class="text-none font-weight-regular pa-2 btn-equal-width"
-                        prepend-icon="mdi-lock-reset"
-                        text="Change Password"
-                        rounded
-                        v-bind="activatorProps"
-                      ></v-btn>
-                    </template>
+        <v-card-title
+          class="text-h5 font-weight-bold text-left mb-4"
+        >
+          {{ email }}
+        </v-card-title>
 
-                    <v-card
-                      prepend-icon="mdi-lock-reset"
-                      title="Password Changing"
-                      class="w-25 ma-auto"
-                    >
-                      <v-card-text>
-                        <v-row>
-                          <v-col
-                            cols="12"
-                          >
-                            <v-text-field
-                              label="Current password*"
-                              type="current_password"
-                              v-model="old_password"
-                              required
-                            ></v-text-field>
-                          </v-col>
+        <v-img
+          :src="photoPreview || image_url || 'https://cdn.vuetifyjs.com/images/cards/dark-beach.jpg'"
+          cover
+          class="elevation-5 mb-4 rounded"
+          max-width="100%"
+          height="200"
+        ></v-img>
 
-                          <v-col
-                            cols="12"
-                          >
-                            <v-text-field
-                              label="Password*"
-                              type="password"
-                              v-model="new_password"
-                              required
-                            ></v-text-field>
-                          </v-col>
+        <v-file-input
+          class="ma-3 rounded-3"
+          :rules="rules"
+          accept="image/png, image/jpeg, image/bmp"
+          label="Select photo"
+          prepend-icon="mdi-camera"
+          variant="outlined"
+          dense
+          v-model="photo"
+          @change="previewPhoto"
+        >
+          <template v-slot:append>
+            <v-btn
+              class="ml-3"
+              prepend-icon="mdi-upload"
+              color="primary"
+              elevation="2"
+              rounded
+              :disabled="!photo"
+              @click="uploadPhoto"
+            >
+              Upload Photo
+            </v-btn>
+          </template>
+        </v-file-input>
 
-                          <v-col
-                            cols="12"
-                          >
-                            <v-text-field
-                              label="Confirm Password*"
-                              type="password"
-                              v-model="confirm_password"
-                              required
-                            ></v-text-field>
-                          </v-col>
-                        </v-row>
+        <v-btn
+          class="text-none font-weight-regular pa-2 mb-3"
+          prepend-icon="mdi-lock-reset"
+          color="warning"
+          rounded
+          @click="dialog = true"
+        >
+          Change Password
+        </v-btn>
 
-                      </v-card-text>
-                      <v-card-actions>
+        <v-dialog v-model="dialog">
+          <v-card class="ma-auto" max-width="400">
+            <v-card-title>Password Changing</v-card-title>
+            <v-card-text>
+              <v-text-field
+                label="Current password*"
+                type="password"
+                v-model="old_password"
+                required
+              ></v-text-field>
 
-                        <v-btn
-                          text="Close"
-                          variant="plain"
-                          @click="dialog = false"
-                        ></v-btn>
+              <v-text-field
+                label="New password*"
+                type="password"
+                v-model="new_password"
+                required
+              ></v-text-field>
 
-                        <v-btn
-                          color="primary"
-                          text="Change"
-                          variant="tonal"
-                          @click="changePassword"
-                        ></v-btn>
-                      </v-card-actions>
-                    </v-card>
-                  </v-dialog>                  
-                </div>
-                <v-spacer></v-spacer>
-                <div class="d-flex flex-column align-end">
-                  <v-btn
-                    color="red"
-                    text="Logout"
-                    variant="tonal"
-                    @click="Logout"
-                  ></v-btn>
-                </div>
-            </div>
-          </v-col>
-        </v-row>
+              <v-text-field
+                label="Confirm password*"
+                type="password"
+                v-model="confirm_password"
+                required
+              ></v-text-field>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn text @click="dialog = false">Close</v-btn>
+              <v-btn color="primary" text @click="changePassword">Change</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
+        <v-spacer></v-spacer>
+
+        <v-btn
+          color="red"
+          text
+          class="mt-auto"
+          @click="Logout"
+        >
+          Logout
+        </v-btn>
       </v-card>
-    </v-container>
-  </template>
+    </v-col>
+
+    <!-- Правая часть: Фоновое изображение -->
+    <v-col
+      cols="12"
+      md="8"
+      class="pa-0 d-none d-md-block"
+    >
+      <v-img
+        src="https://storage.yandexcloud.net/alishlo.com/contact-form-background.jpg"
+        cover
+        class="h-full"
+      ></v-img>
+    </v-col>
+  </v-container>
+</template>
+
+<style scoped>
+/* Дополнительные отступы для мобильных устройств */
+.pa-5 {
+  padding: 16px !important;
+}
+</style>
+
 <script>
 import eventBus from '../../eventBus';
 import apiClient from '../../axiosClient';
@@ -158,6 +150,7 @@ export default {
                     // return !value || value.size < 2000000 || 'Размер аватара должен быть меньше 2 MB!';
                 },
             ],
+            isUpdating: false,
             width : '100%',
             dialog : false,
             old_password : '',
@@ -169,7 +162,6 @@ export default {
         previewPhoto() {
             if (this.photo) {
                 this.photoPreview = URL.createObjectURL(this.photo);
-                console.log('Предварительный просмотр:', this.photoPreview); // Отладочный лог
             }
         },
         Logout(){
@@ -198,6 +190,7 @@ export default {
         },
 
         async uploadPhoto() {
+          this.isUpdating = true
             if (!this.photo) {
                 console.warn('Нет выбранного файла для загрузки.');
                 return;
@@ -225,7 +218,8 @@ export default {
                 });
 
                 console.log('Ответ сервера:', response); // Лог успешного ответа
-                eventBus.emit('show-modal', 'Success Photo');
+                this.isUpdating = false
+                eventBus.emit('show-modal', 'Success upload photo');
             } catch (error) {
                 if (error.response.data.statusCode == 401) {
                     eventBus.emit('show-modal', 'Session ended, login again');
@@ -290,6 +284,8 @@ export default {
 </script>
 
 <style scoped>
+
+
 .text-h6{
   font-family: 'Sarpanch', sans-serif;
   font-size:1.5rem;
@@ -307,5 +303,12 @@ export default {
   min-width: 150px; /* Минимальная ширина для кнопок */
   text-align: center; /* Центрирование текста внутри кнопки */
 }
+.h-full {
+  height: 100vh;
+  width: 100vw;
+}
 
+.container{
+  width: 100vw;
+}
 </style>

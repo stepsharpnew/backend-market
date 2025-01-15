@@ -33,31 +33,31 @@ export class AuthService {
 
     async registration(createUserDto : CreateUserDTO)
     {
-
-        const userExist = await this.usersService.findByEmail(createUserDto.email)
-        if (userExist) {
-            throw new HttpException('Пользователь уже есть',HttpStatus.UNPROCESSABLE_ENTITY)
-        }
-        
-        let user = new UserEntity()
-        const hashPassword = await bcrypt.hash(createUserDto.password,4)
-        Object.assign(user,createUserDto)
-        const newUser = await this.userRepository.save({...user,password : hashPassword} )
-        const tokens = await this.getTokens(newUser.id,newUser.email,newUser.role)
-        await this.updateRefreshToken(newUser.id, tokens.refreshToken);
-        
-        return tokens
+      const userExist = await this.usersService.findByEmail(createUserDto.email)
+      if (userExist) {
+          throw new HttpException('Пользователь уже есть',HttpStatus.UNPROCESSABLE_ENTITY)
+      }
+      
+      let user = new UserEntity()
+      const hashPassword = await bcrypt.hash(createUserDto.password,4)
+      Object.assign(user,createUserDto)
+      const newUser = await this.userRepository.save({...user,password : hashPassword} )
+      const tokens = await this.getTokens(newUser.id,newUser.email,newUser.role)
+      await this.updateRefreshToken(newUser.id, tokens.refreshToken);
+      
+      return tokens
     } 
-    @ApiProperty()
-    async login(authDto : AuthDto):
-    Promise<{accessToken: string,refreshToken:string}>{      
+
+    async login(authDto : AuthDto)
+    // :Promise<{accessToken: string,refreshToken:string}>
+    {      
         const findUser = await this.usersService.findByEmail(authDto.email)
         if (!findUser) {
-            throw new HttpException('Такого пользователя не существует',HttpStatus.BAD_REQUEST)
+            throw new HttpException('Такого пользователя не существует',HttpStatus.UNPROCESSABLE_ENTITY)
         }
         const validPass = await bcrypt.compare(authDto.password,findUser.password)
         if (!validPass) {
-            throw new HttpException('Неправильный пароль',HttpStatus.BAD_REQUEST)
+            throw new HttpException('Неправильный пароль',HttpStatus.UNPROCESSABLE_ENTITY)
         }
         const tokens = await this.getTokens(findUser.id,findUser.email,findUser.role)
         await this.updateRefreshToken(findUser.id, tokens.refreshToken);
@@ -77,7 +77,7 @@ export class AuthService {
     async updateRefreshToken(userId: number, refreshToken: string) : Promise<UserEntity> {
         const hashedRefreshToken = await this.hashData(refreshToken);
         return await this.usersService.update(userId, {
-            refreshToken: hashedRefreshToken,
+            refreshToken: hashedRefreshToken, 
         });
         
       }
