@@ -5,7 +5,7 @@
       <NavigationDrawer :isAuth="isAuth" :email="email" :image_url="image_url"/>
       
       <v-main class="pa-4 ma-5 w-80 align-center">
-        <SearchAndAuth :rail="rail" />
+        <SearchAndAuth :isAuth="isAuth"/>
         <v-row >
           <v-col>
             <h2 class="text-h3 text-center" style="width: 100%;" v-if="saleProducts.length" >Current sales</h2>
@@ -33,6 +33,19 @@
                 prev-icon="mdi-menu-left"
               ></v-pagination>
             </div>
+            <v-card 
+            :loading="isUpdating" elevation="0">
+              <template v-slot:loader="{ isActive }">
+                <v-progress-linear
+                  :active="isActive"
+                  color="black-lighten-3"
+                  height="4"
+                  indeterminate
+                ></v-progress-linear>
+              </template>
+              <v-divider></v-divider>
+            </v-card>
+
             <!-- <PrivacyPolicy v-model="policyStatus"@closePolicy="closePolicy"/> -->
             
           </v-col>
@@ -69,8 +82,7 @@ export default {
   data() {
     return {
       products: [], 
-      drawer: true,
-      rail: true,
+      isUpdating : false,
       saleProducts : [],
       openCategory : false,
       email : '',
@@ -91,7 +103,14 @@ export default {
       }
     }, 3000);
   },
-  
+  watch: {
+        isUpdating (val) {
+          clearTimeout(this.timeout)
+          if (val) {
+            this.timeout = setTimeout(() => (this.isUpdating = false), 800)
+          }
+        },
+      },
   async mounted() {    
     const token = localStorage.getItem('access')
     let user
@@ -141,9 +160,22 @@ export default {
   },
   methods : {
     async paginationParams(){
-      this.offset = (this.page-1)*this.limit
-      const response = await axios.get(`/api/products?offset=${this.offset}&limit=${this.limit}`);
-      this.products = response.data; 
+      this.isUpdating = true
+      try {
+        this.offset = (this.page-1)*this.limit
+        const response = await axios.get(`/api/products?offset=${this.offset}&limit=${this.limit}`);
+        setTimeout(()=>{
+          this.products = response.data; 
+          window.scrollTo({
+            bottom: 0,
+            behavior: 'smooth', // Добавляет анимацию при прокрутке
+          });
+        },500)
+      } catch (error) {
+        console.log(error);
+        
+      }
+
     },
 
 

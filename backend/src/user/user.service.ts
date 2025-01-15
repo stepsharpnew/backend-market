@@ -21,7 +21,7 @@ export class UserService {
     Promise<UserEntity>
     {
         let user = new UserEntity()
-        Object.assign(user,createUserDto)
+        Object.assign(user,createUserDto) 
         const newUser = await this.userRepository.save(user)      
         return newUser
     }

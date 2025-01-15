@@ -18,10 +18,11 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, documentFactory);
 
   app.use(cookieParser());
-  app.enableCors({
-    // origin: 'http://localhost:5173',
-    // credentials: true,  
-  });
+  // app.enableCors({
+  //   origin: 'http://localhost:5173',
+  //   credentials: true,  
+  // });
+  app.enableCors();
   await app.listen(process.env.PORT);
   console.log(`server running on ${process.env.PORT}`);
 }

@@ -32,7 +32,7 @@
             ></v-text-field>
         </v-card-text>
         <v-spacer></v-spacer>
-        <v-sheet>
+        <v-sheet >
             <v-btn
                     class="mx-4 my-2 pa-2"
                     append-icon="mdi-chevron-right"
@@ -55,7 +55,18 @@
                     
                 >
             </v-btn>
-        </v-sheet>  
+        </v-sheet>
+        <!-- <v-sheet v-if="!isAuth">
+            <v-btn
+                    class="mx-4 my-2 pa-2"
+                    append-icon="mdi-chevron-right"
+                    color="red-lighten-2"
+                    text="Logout"
+                    variant="outlined"
+                    
+                >
+            </v-btn>
+        </v-sheet>    -->
     </v-row>
 
     <v-navigation-drawer
@@ -112,10 +123,11 @@
                             gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
                             height="150"
                             contain
-                            @click="goToCategory(card.id)"
+                            @click="goToCategory(card.short_name)"
                             >
                             <v-card-title class="text-white" v-text="card.category"></v-card-title>
                             </v-img>
+
                             <v-card-actions>
                                 <v-btn
                                     color="medium-emphasis"
@@ -123,17 +135,18 @@
                                     size="small"
                                 ></v-btn>
 
-                                <v-btn
+                                <!-- <v-btn
                                     color="medium-emphasis"
                                     icon="mdi-bookmark"
                                     size="small"
-                                ></v-btn>
+                                ></v-btn> -->
 
                                 <v-btn
                                     color="medium-emphasis"
                                     icon="mdi-share-variant"
                                     size="small"
                                 ></v-btn>
+                                <v-spacer></v-spacer>   
                             </v-card-actions>
                         </v-card>
                     </v-col>
@@ -159,7 +172,7 @@ export default {
         }
     },
     props : {
-        rail : {
+        isAuth : {
             type : Boolean
         }
     },
@@ -173,9 +186,13 @@ export default {
           this.loaded = true
         }, 2000)
       },
-      goToCategory(index){
-
-      },
+	  goToCategory(short_name){
+		this.$router.push(`/products/category/${short_name}`)
+		window.scrollTo({
+				top: 0,
+				behavior: 'smooth', // Добавляет анимацию при прокрутке
+			});
+	  },
 
       closeCategory(){
         this.openCategory=false

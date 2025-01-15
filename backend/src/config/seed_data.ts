@@ -19,11 +19,11 @@ const categories = [
         short_name: "Planshety", 
         image_url: "https://storage.yandexcloud.net/step2002sharp/tablets.jpg" 
     },
-    { 
-        category: "Home Appliances", 
-        short_name: "Bytovaya-tehnika", 
-        image_url: "https://storage.yandexcloud.net/step2002sharp/bytovaya.jpg" 
-    },
+    // { 
+    //     category: "Home Appliances", 
+    //     short_name: "Bytovaya-tehnika", 
+    //     image_url: "https://storage.yandexcloud.net/step2002sharp/bytovaya.jpg" 
+    // },
     { 
         category: "Headphones", 
         short_name: "Nauschniki", 

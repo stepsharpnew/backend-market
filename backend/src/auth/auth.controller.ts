@@ -49,20 +49,14 @@ export class AuthController {
   @UsePipes(new ValidationPipe())
   @Post('signin')
   async signin(@Body() data: AuthDto,@Res() res: Response) {
-    try{
+
       let tokens = await this.authService.login(data);
       // res.cookie('refresh',tokens.refreshToken, {
       //   httpOnly : true,
       //   maxAge : 604800000,
       // })
-      
+      console.log(tokens);
       return res.status(201).send({ ...tokens });
-    }
-    catch(error){
-      console.log(error);
-      
-    }
-
   }
 
 
@@ -81,8 +75,9 @@ export class AuthController {
   async refreshTokensController(@Req() req : expressRequestInterface):
   Promise<{accessToken:string,refreshToken: string,}>
   { 
-    // console.log('123',req.user.sub,req.user.refreshToken );
-    
+    if (!req.user.sub) {
+      return
+    }
     const tokens = await this.authService.refreshTokens(req.user.sub, req.user.refreshToken)
     return tokens
     

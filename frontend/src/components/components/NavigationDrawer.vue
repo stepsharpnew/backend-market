@@ -5,7 +5,7 @@
         v-model="drawer"
         :rail="rail"
         style="cursor: pointer"
-        v-if="isAuth"
+        v-if="isAuth && openLeft"
         class="h-100"
         permanent
       >
@@ -37,7 +37,7 @@
 		</v-tooltip>
 
 		<v-tooltip text="Favorite">
-		<template v-slot:activator="{ props }">
+			<template v-slot:activator="{ props }">
 			<v-list-item prepend-icon="mdi-heart" title="Favorite" value="Favorite" v-bind="props"></v-list-item>
 		</template>
 		</v-tooltip>
@@ -71,6 +71,7 @@ import LogoutModal from './LogoutModal.vue';
 export default {
 	data(){
 		return {
+			openLeft: true,
 			drawer: true,
 			rail: true,
 			// email : '',
@@ -104,7 +105,7 @@ export default {
 	methods : {
 		closeLeftPanel(){
 			this.openLogoutDialog = false
-			this.isAuth = false
+			this.openLeft = false
 		}
 	}
 }
