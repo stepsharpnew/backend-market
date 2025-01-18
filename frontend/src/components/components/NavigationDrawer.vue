@@ -44,7 +44,7 @@
 
 		<v-tooltip text="Basket">
 		<template v-slot:activator="{ props }">
-			<v-list-item prepend-icon="mdi-delete" title="Basket" value="Basket" v-bind="props"></v-list-item>
+			<v-list-item prepend-icon="mdi-delete" title="Basket" value="Basket" v-bind="props" @click="this.$router.push('/basket')"></v-list-item>
 		</template>
 		</v-tooltip>
 

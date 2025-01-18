@@ -6,6 +6,7 @@ import ProfilePage from '../components/pages/ProfilePage.vue'
 import RestoringPage from '../components/pages/RestoringPage.vue'
 import ProductCard from '../components/pages/ProductCard.vue'
 import CategoryItems from '../components/pages/CategoryItems.vue'
+import CartComponent from '../components/pages/CartComponent.vue'
 
 
 const routes = [
@@ -16,6 +17,7 @@ const routes = [
   { path: '/restore', component:  RestoringPage},
   { path: '/product/:slug', component:  ProductCard},
   { path: '/products/category/:short_name', component:  CategoryItems},
+  { path: '/basket', component:  CartComponent},
 
 ]
 
