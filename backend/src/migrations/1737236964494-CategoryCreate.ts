@@ -1,10 +1,10 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class CategoryCreate1735635586966 implements MigrationInterface {
-    name = 'CategoryCreate1735635586966'
+export class CategoryCreate1737236964494 implements MigrationInterface {
+    name = 'CategoryCreate1737236964494'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`CREATE TABLE "basket_products" ("id" SERIAL NOT NULL, "userId" integer, "productsId" integer, CONSTRAINT "PK_b6245f9f34546a14637d4deb7e6" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "basket_products" ("id" SERIAL NOT NULL, "count" integer DEFAULT '1', "userId" integer, "productsId" integer, CONSTRAINT "PK_b6245f9f34546a14637d4deb7e6" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "categories" ("id" SERIAL NOT NULL, "category" character varying NOT NULL, "image_url" character varying NOT NULL, "short_name" character varying NOT NULL, CONSTRAINT "PK_24dbc6126a28ff948da33e97d3b" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "products" ("id" SERIAL NOT NULL, "name" character varying NOT NULL, "price" integer NOT NULL, "image_url" character varying NOT NULL DEFAULT 'https://storage.yandexcloud.net/step2002sharp/nofoto2.jpg', "description" character varying NOT NULL, "slug" character varying NOT NULL, "saleBool" boolean NOT NULL DEFAULT false, "sale" integer DEFAULT '0', "sold_count" integer NOT NULL DEFAULT '0', "categoryId" integer, CONSTRAINT "PK_0806c755e0aca124e67c0cf6d7d" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "favorites" ("id" SERIAL NOT NULL, "productList" text DEFAULT '[]', "userId" integer, CONSTRAINT "PK_890818d27523748dd36a4d1bdc8" PRIMARY KEY ("id"))`);

@@ -5,6 +5,9 @@ import { UserEntity } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
 import { BasketProductsEntity } from 'src/entitys/basket_products.entity';
 import { ZakazEntity } from 'src/zakaz/zakaz.entity';
+import { log } from 'node:console';
+import ApiClient from 'telegraf/typings/core/network/client';
+import axios from 'axios';
 
 @Injectable()
 export class BasketService {
@@ -37,7 +40,7 @@ export class BasketService {
     }
 
     async getBasketUser(id : number){
-        try {
+
             const currentUser = await this.GetUser(id)
             if (!currentUser) {
                 throw new HttpException('Нет такого пользователя',HttpStatus.UNPROCESSABLE_ENTITY)
@@ -47,8 +50,9 @@ export class BasketService {
                 where : {
                     user : currentUser
                 },
-                relations : ['products','user']
+                relations : ['products','user','products.category']
             })
+            
             let product_Ids =  user_products.map((el)=>{
                 return el.products.id
             })
@@ -56,42 +60,61 @@ export class BasketService {
             if (product_Ids.length == 0) {
                 return new HttpException('У пользователя нет товаров в корзине',HttpStatus.UNPROCESSABLE_ENTITY)
             }
-            const queryBuilder = this.productRepository
-            .createQueryBuilder('products')
-            .where('products.id IN (:...ids)',{ids : product_Ids})
-            const products = await queryBuilder.getMany()
-            return products
-        } catch (error) {  
-            console.log(error);
-            
-        }
+            const queryBuilder = this.basketProduct_Repository
+            .createQueryBuilder('basketProducts') // Указываем основную сущность BasketProductsEntity
+            .leftJoinAndSelect('basketProducts.products', 'products') // Присоединяем связанные продукты
+            .leftJoinAndSelect('products.category', 'category') // Присоединяем категорию продуктов
+            .where('products.id IN (:...ids)', { ids: product_Ids }); // Фильтрация по ID
         
-    } 
+            const products = await queryBuilder.getMany();
+            return products;
 
+        
+    }
 
+    async productCount(id : number){
+        const currentUser = await this.GetUser(id)
+        if (!currentUser) {
+            throw new HttpException('Нет такого пользователя',HttpStatus.UNPROCESSABLE_ENTITY)
+        }
+        const counts = await this.basketProduct_Repository.find({
+            where : {
+                user : currentUser
+            }
+        })
+        return counts
+    }
 
-    async addProdToBasket(user_id: number, product_id : number){
+    async addProdToBasket(user_id: number, product_id : number, count : number){
         const product = await this.GetProduct(product_id)
         const user = await this.GetUser(user_id)
         if (!product) {
             throw new HttpException('Такого товара еще не существует',HttpStatus.UNPROCESSABLE_ENTITY)
         }
-        const userWithProduct = await this.basketProduct_Repository.findOne({
+        let userWithProduct = await this.basketProduct_Repository.findOne({
             where : {
                 user : user,
                 products : product
             },
             relations : ['products', 'user']
         })
-        if (userWithProduct) {
-            throw new HttpException('Эта запись уже существует в корзине',HttpStatus.BAD_REQUEST)
-        }
+
         let Entity = new BasketProductsEntity()
-        Entity.user = user
-        Entity.products = product
+        let newBasketItem = []
+        if (userWithProduct) {
+            console.log(userWithProduct);
+            userWithProduct.count++
+            return await this.basketProduct_Repository.save(userWithProduct)
+        }else{
+            Entity.user = user
+            Entity.products = product
+            Entity.count = count
+            return await this.basketProduct_Repository.save(Entity)
+        }
+
         // console.log('Entity', Entity);
-        const newBasketItem = await this.basketProduct_Repository.save(Entity)
-        return newBasketItem
+        // await this.basketProduct_Repository.save(userWithProduct)
+        // return newBasketItem
     }
 
 
@@ -167,6 +190,30 @@ export class BasketService {
         const new_zakaz = await this.zakazRepository.save(zakaz)
         this.deleteBasket(user_id)
         return new_zakaz 
+    }
+    async countChange(user_id : number, count:number, type:boolean){
+        const user = await this.GetUser(user_id)
+        let basketItem = await this.basketProduct_Repository.findOne({
+            where : {
+                user 
+            }
+        })
+        console.log(typeof count);//number
+        if (!basketItem) {
+            throw new Error('Basket item not found');
+        }
+
+        if (isNaN(count)) {
+            throw new HttpException('Invalid count value', HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+        // type?count++:count--
+        if (type) {
+            count++
+        }else{
+            count--
+        }
+        basketItem.count = count
+        return await this.basketProduct_Repository.save(basketItem)
     }
 
 

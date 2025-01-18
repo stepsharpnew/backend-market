@@ -51,6 +51,7 @@ export class ProductEntity {
     @ManyToOne(()=>CategoryEntity, (category)=>category.products)
     category : CategoryEntity
 
-    @OneToMany(()=>BasketProductsEntity, (product)=> product.products)
-    products : ProductEntity
+    @OneToMany(() => BasketProductsEntity, (basketProduct) => basketProduct.products)
+    basketProducts: BasketProductsEntity[];
+
 }
