@@ -74,12 +74,11 @@
         app
         temporary
         left
-        width="420"
+        width="350"
         class="mx-auto"
       >
       <v-card
             class="mx-auto"
-            max-width="400"
         >
             <v-container class="d-flex justify-start my-6">
                 <v-row
