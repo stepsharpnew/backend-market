@@ -58,13 +58,10 @@
 	MAIL_PASSWORD="Выдается в личном аккаунте почты"
 	BOT_TOKEN=""
 	BACKEND="http://localhost для работы в docker-compose"
-5. Установка и запуск docker образа postgres
-	```bash
-	sudo docker run --name postgres-image -p 5432:5432 -e POSTGRES_PASSWORD=12345678 -d postgres
-6. Запуск docker-compose
+5. Запуск docker-compose
 	```bash
 	sudo docker compose up --build
-7. Добавление данных
+6. Добавление данных
 	sudo docker compose exec backend npm run db:migrate
 	sudo docker compose exec backend npm run db:seed
 
