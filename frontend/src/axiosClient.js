@@ -13,7 +13,6 @@ apiClient.interceptors.response.use(
     
     if (error.response && error.response.status === 401) {
         const refreshToken = localStorage.getItem('refresh');
-        console.log(refreshToken);
       try {
         const refreshResponse = await axios.get('/api/auth/refresh', {
             headers: {

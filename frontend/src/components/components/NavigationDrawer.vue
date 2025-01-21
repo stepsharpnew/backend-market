@@ -44,7 +44,7 @@
 
 		<v-tooltip text="Basket">
 		<template v-slot:activator="{ props }">
-			<v-list-item prepend-icon="mdi-delete" title="Basket" value="Basket" v-bind="props"></v-list-item>
+			<v-list-item prepend-icon="mdi-cart" title="Basket" value="Basket" v-bind="props" @click="this.$router.push('/basket')"></v-list-item>
 		</template>
 		</v-tooltip>
 
@@ -74,8 +74,6 @@ export default {
 			openLeft: true,
 			drawer: true,
 			rail: true,
-			// email : '',
-			// image_url : 'https://storage.yandexcloud.net/step2002sharp/none-profile.png',
 			openLogoutDialog: false,
 		}
 	},
@@ -106,6 +104,7 @@ export default {
 		closeLeftPanel(){
 			this.openLogoutDialog = false
 			this.openLeft = false
+			this.$router.push('/')
 		}
 	}
 }

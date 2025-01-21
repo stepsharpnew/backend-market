@@ -1,12 +1,13 @@
-import { Body, Controller, Delete, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { BasketService } from './basket.service';
 import { AccesTokenGeard } from 'src/guards/accessToken.guard';
 import { User } from 'src/user/decorators/UserDecorator';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { UserEntity } from 'src/user/user.entity';
+
 import { ProductEntity } from 'src/products/products.entity';
 import { BasketProductsEntity } from 'src/entitys/basket_products.entity';
 import { ZakazEntity } from 'src/zakaz/zakaz.entity';
+
 
 @ApiTags('Корзина')
 @ApiBearerAuth()
@@ -30,9 +31,9 @@ export class BasketController {
   @ApiResponse({status : 200, type : BasketProductsEntity })
   @Post('create')
   @UseGuards(AccesTokenGeard)
-  @ApiBody({schema : {properties : {product_id : { example : 1}}}})
-  async productToBasket(@User()user_id : any, @Body('product_id') product_id:number){
-    const new_record = await this.basketService.addProdToBasket(user_id.sub ,product_id )
+  @ApiBody({schema : {properties : {product_id : { example : 1},count : {example : 2} }}})
+  async productToBasket(@User()user_id : any, @Body('product_id') product_id:number,@Body('count') count:number){
+    const new_record = await this.basketService.addProdToBasket(user_id.sub ,product_id, count )
     return new_record
   }
 
@@ -54,6 +55,38 @@ export class BasketController {
   async basketToZakaz(@User()user_id : any){
     const zakaz = await this.basketService.basketToZakaz(user_id.sub )
     return zakaz
+  }
+
+
+  @ApiOperation({summary : "Количество товаров"})
+  @ApiResponse({status : 200, type : ZakazEntity })
+  @Get('count')
+  @UseGuards(AccesTokenGeard)
+  async productCols(@User()user_id : any){
+    const counts = await this.basketService.productCount(user_id.sub )
+    return counts
+  }
+
+  @ApiOperation({summary : "Изменение количества в бакете"})
+  @ApiResponse({status : 200, type : ZakazEntity })
+  @Post('count_change')
+  @ApiBody({schema : {properties : {count : {example : 2},type : {example : true}}}})
+  @UseGuards(AccesTokenGeard)
+  async countChange(@User()user_id : any,@Body('count') count:number,@Body('type') type : boolean){
+    console.log(count);
+    
+    const counts = await this.basketService.countChange(user_id.sub, count, type )
+    return counts
+  }
+
+  @ApiOperation({ summary: "Удаление товара из корзины" })
+  @ApiResponse({ status: 200, type: ProductEntity })
+  @Delete('delete-item')
+  @UseGuards(AccesTokenGeard)
+  async deleteFrombasket(@User() user_id: any, @Query('product_id') product_id: number) {
+      console.log(product_id); // Теперь значение будет отображаться
+      const counts = await this.basketService.deleteFrombasket(user_id.sub, product_id);
+      return counts;
   }
 
 }

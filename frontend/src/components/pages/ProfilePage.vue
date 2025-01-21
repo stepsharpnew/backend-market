@@ -1,11 +1,17 @@
 <template>
-  <v-container class="h-screen d-flex container" fluid style="margin: 0; padding: 0;">
-    <!-- Левая часть: Форма регистрации -->
+  <v-container
+    class="h-screen d-flex container align-center justify-center"
+    fluid
+    style="margin: 0; padding: 0; background-image: url('https://storage.yandexcloud.net/alishlo.com/contact-form-background.jpg'); background-size: cover; background-position: center;"
+  >
+
+    <NavigationDrawer :isAuth="isAuth" :email="email" :image_url="image_url"/>
+    <!-- Форма регистрации -->
     <v-col
       cols="12"
-      md="4"
-      sm="7"
-      class="pa-5  d-flex flex-column justify-self-center"
+      md="6"
+      sm="8"
+      class="pa-5 d-flex flex-column justify-self-center"
     >
       <v-card elevation="10" class="pa-5" rounded :loading="isUpdating">
         <template v-slot:loader="{ isActive }">
@@ -16,19 +22,21 @@
             indeterminate
           ></v-progress-linear>
         </template>
-
-        <v-card-title
-          class="text-h5 font-weight-bold text-left mb-4"
-        >
-          {{ email }}
-        </v-card-title>
+        <div class="d-flex justify-space-between align-center">
+          <v-card-title class="text-h5 font-weight-bold text-left">
+            {{ email }}
+          </v-card-title>
+          <v-btn color="red" text class="mb-auto" @click="Logout">
+            Logout
+          </v-btn>
+        </div>
 
         <v-img
           :src="photoPreview || image_url || 'https://cdn.vuetifyjs.com/images/cards/dark-beach.jpg'"
           cover
           class="elevation-5 mb-4 rounded"
           max-width="100%"
-          height="200"
+          height="400"
         ></v-img>
 
         <v-file-input
@@ -68,7 +76,7 @@
         </v-btn>
 
         <v-dialog v-model="dialog">
-          <v-card class="ma-auto" max-width="400">
+          <v-card class="mx-auto" width="350" >
             <v-card-title>Password Changing</v-card-title>
             <v-card-text>
               <v-text-field
@@ -101,28 +109,8 @@
 
         <v-spacer></v-spacer>
 
-        <v-btn
-          color="red"
-          text
-          class="mt-auto"
-          @click="Logout"
-        >
-          Logout
-        </v-btn>
-      </v-card>
-    </v-col>
 
-    <!-- Правая часть: Фоновое изображение -->
-    <v-col
-      cols="12"
-      md="8"
-      class="pa-0 d-none d-md-block"
-    >
-      <v-img
-        src="https://storage.yandexcloud.net/alishlo.com/contact-form-background.jpg"
-        cover
-        class="h-full"
-      ></v-img>
+      </v-card>
     </v-col>
   </v-container>
 </template>
@@ -137,6 +125,7 @@
 <script>
 import eventBus from '../../eventBus';
 import apiClient from '../../axiosClient';
+import NavigationDrawer from '../components/NavigationDrawer.vue';
 
 export default {
     data() {
@@ -155,8 +144,12 @@ export default {
             dialog : false,
             old_password : '',
             new_password : '',
-            confirm_password : ''
+            confirm_password : '',
+            isAuth : false
         };
+    },
+    components : {
+      NavigationDrawer
     },
     methods: {
         previewPhoto() {
@@ -181,6 +174,7 @@ export default {
             this.image_url = user.image_url;
             localStorage.removeItem('user')
             localStorage.setItem('user', JSON.stringify(user))
+            this.isAuth = true
             console.log(user);
             } catch (error) {
                 if (error.response.data.statusCode == 401) {
@@ -224,6 +218,7 @@ export default {
                 if (error.response.data.statusCode == 401) {
                     eventBus.emit('show-modal', 'Session ended, login again');
                 }
+                eventBus.emit('show-modal', 'Error, try later');
                 console.error('Ошибка загрузки фото:', error);
 
             }
@@ -282,33 +277,9 @@ export default {
     },
 };
 </script>
-
 <style scoped>
-
-
-.text-h6{
+.text-h5{
   font-family: 'Sarpanch', sans-serif;
-  font-size:1.5rem;
 }  
-.v-card {
-  width: 100%;
-  padding: 20px;
-}
-.button-container {
-  display: flex;
-  gap: 16px; /* Расстояние между кнопками */
-}
-.btn-equal {
-  flex: 1; /* Одинаковая ширина для всех кнопок */
-  min-width: 150px; /* Минимальная ширина для кнопок */
-  text-align: center; /* Центрирование текста внутри кнопки */
-}
-.h-full {
-  height: 100vh;
-  width: 100vw;
-}
-
-.container{
-  width: 100vw;
-}
 </style>
+
