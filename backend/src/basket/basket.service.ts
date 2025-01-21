@@ -146,10 +146,6 @@ export class BasketService {
         return 'good'
     }
 
-    async deleteProdFromBAsket(user_id : number, product_id : number){
-
-    }
-
     //получить список товаров в корзине, при нажатии кнопки "ПОКУПКА", должна создатьсья запись с юзером и списком его товаров
 
     async basketToZakaz(user_id: number){
@@ -198,7 +194,7 @@ export class BasketService {
                 user 
             }
         })
-        console.log(typeof count);//number
+
         if (!basketItem) {
             throw new Error('Basket item not found');
         }
@@ -214,6 +210,17 @@ export class BasketService {
         }
         basketItem.count = count
         return await this.basketProduct_Repository.save(basketItem)
+    }
+
+    async deleteFrombasket(user_id: number, product_id: number) {
+        console.log(user_id, product_id);
+        
+        const deleted = await this.basketProduct_Repository.delete({
+            user: { id: user_id },
+            products: { id: product_id },
+        });
+    
+        return deleted;
     }
 
 

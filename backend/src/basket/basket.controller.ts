@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { BasketService } from './basket.service';
 import { AccesTokenGeard } from 'src/guards/accessToken.guard';
 import { User } from 'src/user/decorators/UserDecorator';
@@ -77,6 +77,16 @@ export class BasketController {
     
     const counts = await this.basketService.countChange(user_id.sub, count, type )
     return counts
+  }
+
+  @ApiOperation({ summary: "Удаление товара из корзины" })
+  @ApiResponse({ status: 200, type: ProductEntity })
+  @Delete('delete-item')
+  @UseGuards(AccesTokenGeard)
+  async deleteFrombasket(@User() user_id: any, @Query('product_id') product_id: number) {
+      console.log(product_id); // Теперь значение будет отображаться
+      const counts = await this.basketService.deleteFrombasket(user_id.sub, product_id);
+      return counts;
   }
 
 }

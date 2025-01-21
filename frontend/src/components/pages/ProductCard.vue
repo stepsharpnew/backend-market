@@ -94,9 +94,11 @@
 	</v-container>
   </template>
   
-  <script>
-  import axios from 'axios';
-  import NavigationDrawer from '../components/NavigationDrawer.vue'
+<script>
+import axios from 'axios';
+import NavigationDrawer from '../components/NavigationDrawer.vue'
+import eventBus from '../../eventBus';
+import apiClient from '../../axiosClient';
   export default {
 	data(){
 		return {
@@ -113,8 +115,27 @@
 	},
 	// name: 'ProductDetail',
 	methods: {
-	  addToBasket(product) {
-		console.log('Добавлено в корзину:', product);
+	   async addToBasket(product) {
+		const token = localStorage.getItem('access')
+		try {
+			const response = await apiClient.post('/basket/create', 
+				{
+					product_id: product.id,
+					count: 1
+				}, 
+				{
+					headers: {
+						Authorization: `Bearer ${token}`
+					}
+				}
+			);
+			console.log(response.data);
+			eventBus.emit('show-modal', "Product added to basket");
+		} catch (error) {
+			console.log(error);
+		}
+
+		
 
 	  },
 	  buyNow(product) {

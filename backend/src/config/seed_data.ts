@@ -51,6 +51,8 @@ const products = [
         image_url: "https://example.com/images/laptop2.jpg",
         description: "Мощный ноутбук для работы и развлечений.",
         slug: "hp-pavilion-15",
+        sale :20,
+        saleBool : true,
         category: categories.find((cat) => cat.short_name === "Noutbuki"),
         },
         {
@@ -59,6 +61,8 @@ const products = [
         image_url: "https://example.com/images/smartphone1.jpg",
         description: "Смартфон с великолепной камерой и экраном.",
         slug: "samsung-galaxy-s21",
+        sale :20,
+        saleBool : true,
         category: categories.find((cat) => cat.short_name === "Smartfony"),
         },
         {
@@ -107,6 +111,8 @@ const products = [
         image_url: "https://example.com/images/smartwatch1.jpg",
         description: "Продвинутые умные часы для активного образа жизни.",
         slug: "apple-watch-series-7",
+        sale :30,
+        saleBool : true,
         category: categories.find((cat) => cat.short_name === "Smart-chasy"),
         },
         {
@@ -155,6 +161,8 @@ const products = [
         image_url: "/images/tablet3.jpg",
         description: "Универсальный планшет для работы и учёбы.",
         slug: "microsoft-surface-pro-7",
+        sale :20,
+        saleBool : true,
         category: categories.find((cat) => cat.short_name === "Planshety"),
         },
         {
@@ -179,6 +187,8 @@ const products = [
         image_url: "https://example.com/images/tv3.jpg",
         description: "4K HDR телевизор с великолепным качеством изображения.",
         slug: "sony-x900h",
+        sale :10,
+        saleBool : true,
         category: categories.find((cat) => cat.short_name === "Televizory"),
         },
         {

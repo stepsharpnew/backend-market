@@ -27,8 +27,45 @@
             >
               {{ product.name }}
             </div>
-            <div class="text-subtitle-1 text-end mt-auto">
-              {{ product.price }} ₽
+            <div class="text-subtitle-1 d-flex align-center" v-if="!product.saleBool">
+              <v-chip 
+                class="mr-2" 
+                outlined 
+                small
+                color="grey lighten-2"
+              >
+                <span class="grey--text">{{ product.price }} ₽</span>
+              </v-chip>
+            </div>
+            <div class="text-subtitle-1 d-flex align-center" v-else>
+              <!-- Старая цена -->
+              <v-chip 
+                class="mr-2" 
+                outlined 
+                small
+                color="grey lighten-2"
+              >
+                <span class="text-decoration-line-through grey--text">{{ product.price }} ₽</span>
+              </v-chip>
+
+              <!-- Новая цена со скидкой -->
+              <v-chip 
+                class="mr-2"
+                small
+                color="orange lighten-3"
+                dark
+              >
+                {{ (product.price - product.price * product.sale / 100).toFixed(2) }} ₽
+              </v-chip>
+
+              <!-- Процент скидки -->
+              <v-chip 
+                small 
+                color="red lighten-3"
+                dark
+              >
+                -{{ product.sale }}%
+              </v-chip>
             </div>
           </div>
           <v-card-actions>

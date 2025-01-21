@@ -2,7 +2,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { ProductEntity } from "../products/products.entity";
 import { UserEntity } from "../user/user.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({name : 'basket_products'})
 
@@ -14,6 +14,7 @@ export class BasketProductsEntity{
     
     @ApiProperty({ type: () => UserEntity, description: 'Связанный пользователь' })
     @ManyToOne(()=>UserEntity,(user)=>user.id)
+    // @JoinColumn({ name: 'user_id' }) // Явно указываем имя колонки
     user : UserEntity
 
 

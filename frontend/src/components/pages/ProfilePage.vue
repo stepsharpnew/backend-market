@@ -4,6 +4,8 @@
     fluid
     style="margin: 0; padding: 0; background-image: url('https://storage.yandexcloud.net/alishlo.com/contact-form-background.jpg'); background-size: cover; background-position: center;"
   >
+
+    <NavigationDrawer :isAuth="isAuth" :email="email" :image_url="image_url"/>
     <!-- Форма регистрации -->
     <v-col
       cols="12"
@@ -123,6 +125,7 @@
 <script>
 import eventBus from '../../eventBus';
 import apiClient from '../../axiosClient';
+import NavigationDrawer from '../components/NavigationDrawer.vue';
 
 export default {
     data() {
@@ -141,8 +144,12 @@ export default {
             dialog : false,
             old_password : '',
             new_password : '',
-            confirm_password : ''
+            confirm_password : '',
+            isAuth : false
         };
+    },
+    components : {
+      NavigationDrawer
     },
     methods: {
         previewPhoto() {
@@ -167,6 +174,7 @@ export default {
             this.image_url = user.image_url;
             localStorage.removeItem('user')
             localStorage.setItem('user', JSON.stringify(user))
+            this.isAuth = true
             console.log(user);
             } catch (error) {
                 if (error.response.data.statusCode == 401) {
