@@ -4,9 +4,39 @@
 	  <NavigationDrawer :isAuth="isAuth" :email="email" :image_url="image_url" />
 
 	  <!-- Основной контент -->
+	   
 	  <v-row>
 		<!-- Колонка корзины -->
 		<v-col cols="12" md="7">
+			<v-row v-if="cartItems.length > 0" class="my-8">
+				<v-col cols="12" >
+					<v-card class="pa-4 elevation-3 rounded">
+					<!-- Заголовок с общей суммой -->
+					<v-card-title class="d-flex flex-wrap justify-space-between align-center">
+						<span class="text-h5 font-weight-bold">Total: {{ totalPrice }} ₽</span>
+						<v-chip color="blue lighten-4" outlined class="mt-2 mt-md-0">
+						<v-icon left color="blue darken-2">mdi-cart</v-icon>
+						{{ totalQuantity }} items
+						</v-chip>
+					</v-card-title>
+
+					<!-- Действия -->
+					<v-card-actions class="d-flex flex-column flex-sm-row justify-center align-start">
+						<v-chip color="green lighten-4" outlined class="mb-4 mb-md-0 ">
+							<v-icon left color="green darken-2">mdi-check-circle</v-icon>
+							Ready to Checkout
+						</v-chip>
+						<v-spacer></v-spacer>
+						<div class="d-flex flex-sm-row align-center justify-start ">
+							<BuyAll :products="cartItems" class=""/>
+							<v-btn color="red darken-2" small outlined @click="clearBasket">
+								Clear Basket
+							</v-btn>
+						</div>
+					</v-card-actions>
+					</v-card>
+				</v-col>
+				</v-row>
 		  <!-- Проверка на наличие товаров в корзине -->
 		  <h1 class="text-h4 font-weight-bold text-center">Your basket</h1>
 		  <v-divider></v-divider>
@@ -32,10 +62,60 @@
 				<v-card class="pa-2 elevation-2 rounded mb-4">
 				<v-img :src="item.products.category.image_url" class="mb-3 rounded" cover height="150"></v-img>
 				<v-card-title class="text-h6 font-weight-bold">{{ item.products.name }}</v-card-title>
-				<v-card-subtitle class="text-body-2 text-grey">Price: {{ item.products.price }} ₽</v-card-subtitle>
-				<v-card-text>
-					Quantity: {{ item.count }}
-				</v-card-text>
+				<div class="text-subtitle-1 d-flex align-center" v-if="!item.products.saleBool">
+              <v-chip 
+                class="mr-2" 
+                outlined 
+                small
+                color="grey lighten-2"
+              >
+                <span class="grey--text">{{ item.products.price }} ₽</span>
+              </v-chip>
+            </div>
+            <div class="text-subtitle-1 d-flex align-center" v-else>
+              <!-- Старая цена -->
+              <v-chip 
+                class="mr-2" 
+                outlined 
+                small
+                color="grey lighten-2"
+              >
+                <span class="text-decoration-line-through grey--text">{{ item.products.price }} ₽</span>
+              </v-chip>
+
+              <!-- Новая цена со скидкой -->
+              <v-chip 
+                class="mr-2"
+                small
+                color="orange lighten-3"
+                dark
+              >
+                {{ (item.products.price - item.products.price * item.products.sale / 100).toFixed(2) }} ₽
+              </v-chip>
+
+              <!-- Процент скидки -->
+              <v-chip 
+                small 
+                color="red lighten-3"
+                dark
+              >
+                -{{ item.products.sale }}%
+              </v-chip>
+            </div>
+				<div class="d-flex justify-space-between align-center">
+					<v-card-text>
+						Count: {{ item.count }}
+					</v-card-text>
+					<v-btn
+						class="mx-1"
+						prepend-icon="mdi-delete"
+						color="error"
+						@click="removeFromCart(item)"
+					>
+						Remove
+					</v-btn>
+				</div>
+
 				<v-card-actions>
 					<v-chip
 					small
@@ -55,48 +135,20 @@
 					>
 					<v-icon left small color="green darken-2">mdi-plus</v-icon>
 					</v-chip>
-					<v-btn
-					class="mx-1"
-					prepend-icon="mdi-delete"
-					color="error"
-					@click="removeFromCart(item)"
+					<!-- <v-btn
+						class="mx-1"
+						prepend-icon="mdi-cash"
+						color="green"
+						@click="Buy(item)"
+						variant="outlined"
 					>
-					Remove
-					</v-btn>
+						Buy
+					</v-btn> -->
+					<BuyComponent :product="item"/>
 				</v-card-actions>
 				</v-card>
 			</v-col>
 			</v-row>
-			<v-row v-if="cartItems.length > 0">
-				<v-col cols="12" >
-					<v-card class="pa-4 elevation-3 rounded">
-					<!-- Заголовок с общей суммой -->
-					<v-card-title class="d-flex flex-wrap justify-space-between align-center">
-						<span class="text-h5 font-weight-bold">Total: {{ totalPrice }} ₽</span>
-						<v-chip color="blue lighten-4" outlined class="mt-2 mt-md-0">
-						<v-icon left color="blue darken-2">mdi-cart</v-icon>
-						{{ totalQuantity }} items
-						</v-chip>
-					</v-card-title>
-
-					<!-- Действия -->
-					<v-card-actions class="d-flex flex-column flex-md-row justify-space-between align-center">
-						<v-chip color="green lighten-4" outlined class="mb-4 mb-md-0">
-							<v-icon left color="green darken-2">mdi-check-circle</v-icon>
-							Ready to Checkout
-						</v-chip>
-						<div class="d-flex flex-sm-row align-start justify-start">
-							<v-btn color="green darken-2" small outlined class="mr-sm-2" @click="buyNow">
-								Buy Now
-							</v-btn>
-							<v-btn color="red darken-2" small outlined @click="clearBasket">
-								Clear Basket
-							</v-btn>
-						</div>
-					</v-card-actions>
-					</v-card>
-				</v-col>
-				</v-row>
 		</v-col>
 		
 		<!-- Колонка товаров со скидками -->
@@ -106,10 +158,10 @@
 			<v-col v-for="product in discountedProducts" :key="product.id" cols="12">
 			  <v-card class="pa-3 elevation-1 rounded mb-3 d-flex justify-start">
 				<v-row>
-				  <v-col cols="4">
+				  <v-col  lg="3" md="5" sm="3" >
 					<v-img :src="product.category.image_url" cover height="100" width="100" class="rounded"></v-img>
 				  </v-col>
-				  <v-col cols="8" class="d-flex flex-column justify-center">
+				  <v-col  lg="9" md="7" sm="9" class="d-flex flex-column justify-start  align-start">
 					<div class="text-body-1 font-weight-bold">{{ product.name }}</div>
 					<div class="d-flex align-center">
 					  <v-chip small outlined class="mr-2 grey--text">
@@ -117,10 +169,10 @@
 					  </v-chip>
 
 					  <v-chip small color="red lighten-3" dark class="mt-1">-{{ product.sale }}%</v-chip>
-					  <v-chip small color="orange lighten-3" dark>
+					</div>
+					<v-chip small color="orange lighten-3" dark style="width: fit-content;font-size: large;">
 						{{ (product.price - product.price * product.sale / 100).toFixed(2) }}
 					  </v-chip>
-					</div>
 					<div class="d-flex">
 						<v-tooltip text="Add to basket"location="bottom" class="cursor-pointer">
 							<template v-slot:activator="{ props }">
@@ -133,7 +185,6 @@
 							</template>
 						</v-tooltip>
 					</div>
-					
 				  </v-col>
 				</v-row>
 			  </v-card>
@@ -150,6 +201,8 @@ import eventBus from '../../eventBus';
 import axios from 'axios';
 import apiClient from '../../axiosClient';
 import NavigationDrawer from '../components/NavigationDrawer.vue';
+import BuyComponent from '../components/BuyComponent.vue';
+import BuyAll from '../components/BuyAll.vue';
   export default {
 	data() {
 	  return {
@@ -162,7 +215,9 @@ import NavigationDrawer from '../components/NavigationDrawer.vue';
 	  };
 	},
 	components : {
-		NavigationDrawer
+		NavigationDrawer,
+		BuyComponent,
+		BuyAll
 	},
 
 	async mounted(){
@@ -192,9 +247,14 @@ import NavigationDrawer from '../components/NavigationDrawer.vue';
 		totalPrice() {
 			let sum = 0
 			this.cartItems.forEach((elem)=>{
-				sum = elem.count*elem.products.price + sum
+				if (elem.products.saleBool) {
+					sum = elem.count*(elem.products.price - elem.products.price*elem.products.sale/100)
+				}
+				else{
+					sum = elem.count*elem.products.price + sum
+				}
 			})
-			return sum
+			return sum.toFixed(2)
 		},
 	  	totalQuantity() {
 			return this.cartItems.reduce((total, item) => total + item.count, 0);
@@ -263,17 +323,24 @@ import NavigationDrawer from '../components/NavigationDrawer.vue';
 	async removeFromCart(item) {
 		const token = localStorage.getItem('access');
 		this.cartItems = this.cartItems.filter(cartItem => cartItem.id !== item.id);
+		try {
+			await apiClient.delete('basket/delete-item', {
+				params: {
+					product_id: item.products.id,
+				},
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+			eventBus.emit('show-modal', "Product removed from basket");
+		} catch (error) {
+			
+		}
 
-		const deleted = await apiClient.delete('basket/delete-item', {
-			params: {
-				product_id: item.products.id,
-			},
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-		});
+
 	},
-	  checkout() {
+	  Buy(item) {
+
 		console.log('Proceeding to checkout with items:', this.cartItems);
 		// Logic for checkout
 	  },
