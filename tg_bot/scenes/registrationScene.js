@@ -42,8 +42,9 @@ RegScene.on('text', async (ctx) => {
         // Выполняем запрос на ваш бэкенд
         const port = process.env.PORT
         const addres = process.env.BACKEND
-        const response = await axios.post(`${addres}:${port}/user/tg-email/${email}`);
+        const url = process.env.URL
         // const response = await axios.post(`${addres}:${port}/user/tg-email/${email}`);
+        const response = await axios.post(`${url}/user/tg-email/${email}`);
         if (response.data ==="Нет пользователя с такой почтой") {
             setTimeout(()=>{
                 ctx.reply(`Нет пользователя с такой почтой`);
@@ -59,8 +60,8 @@ RegScene.on('text', async (ctx) => {
             setTimeout(async() => {
                 console.log(ctx.update?.message.chat.id);
 
-                const setChatId = await axios.post(`${addres}:${port}/user/add-chat-id`,{
                 // const setChatId = await axios.post(`${addres}:${port}/user/add-chat-id`,{
+                const setChatId = await axios.post(`${url}/user/add-chat-id`,{
                     email,
                     chatId : ctx.update?.message.chat.id
                 })
