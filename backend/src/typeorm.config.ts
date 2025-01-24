@@ -3,8 +3,8 @@ import 'dotenv/config'
 
 export const dataSourceOptions: DataSourceOptions = {
     type: 'postgres',
-    // host: "postgres-image",
-    host : 'localhost',
+    host: "postgres-image",
+    //host : 'localhost',
     port: 5432,
     username: "postgres",
     password: "12345678",
