@@ -62,23 +62,20 @@ const bufferFunctionPrint = (current, buffer) => {
         if (current[current.length - 1].id !== (buffer.length > 0 ? buffer[buffer.length - 1].id : -1)) {
             if (!buffer.length) {
                 current.forEach((element) => {
-                    currentCtx.sendPhoto(element.image_url, {
+                    console.log(element);
+                    
+                    currentCtx.sendPhoto(element.category.image_url, {
                         caption: formatTelegramMessage(element),
                         parse_mode: "Markdown",
                     });
                 });
             } else {
                 const lastProduct = current[current.length - 1];
-                currentCtx.sendPhoto(lastProduct.image_url, {
+                currentCtx.sendPhoto(lastProduct.category.image_url, {
                     caption: formatTelegramMessage(lastProduct),
                     parse_mode: "Markdown",
                 });
             }
-
-            // console.log(current);
-            // console.log(buffer);
-            // console.log(current === buffer);
-
             buffer = current;
             return buffer;
         }

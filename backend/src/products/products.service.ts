@@ -159,12 +159,14 @@ export class ProductsService {
         if(!favorites){
             return []
         }
-        const favoritesIds = favorites.productList
-        console.log(favoritesIds);
-        
-        const queryBuilder = this.productRepository.createQueryBuilder('products')
+        const favoritesIds = favorites.productList        
+        const queryBuilder = this.productRepository
+        .createQueryBuilder('products')
+        .leftJoinAndSelect('products.category', 'category')
         .andWhereInIds(favoritesIds)
         const products = await queryBuilder.getMany()
+        console.log(products);
+        
 
         let array = []
         products.forEach((product)=>{
