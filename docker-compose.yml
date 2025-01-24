@@ -46,3 +46,10 @@ services:
       context: ./frontend
     networks:
       - dev
+
+
+  bot:
+    build:
+      context: ./tg_bot
+    networks:
+      - dev

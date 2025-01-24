@@ -92,7 +92,7 @@ const job = new CronJob(
             const chatId = currentCtx.update?.message?.chat.id;
             const port = process.env.PORT;
             const address = process.env.BACKEND;
-            const change = await axios.post(`${address}:${port}/products/telegram_sale`, {
+            const change = await axios.post(`/api/products/telegram_sale`, {
                 chatId: chatId
             });
             currentData = change.data 
