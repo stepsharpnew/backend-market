@@ -15,7 +15,7 @@
             contain
             class="align-end"
           >
-            <!-- Placeholder for image -->
+
           </v-img>
           <div 
             class="d-flex flex-column pa-3"
@@ -69,28 +69,31 @@
             </div>
           </div>
           <v-card-actions>
-            <v-btn color="orange-lighten-2" @click="GoToProd(product)">Подробнее</v-btn>
+            
+            <v-tooltip text="More info">
+              <template v-slot:activator="{ props }">
+                <v-btn color="orange-lighten-2" @click="GoToProd(product)" v-bind="props">Подробнее</v-btn>
+              </template>
+            </v-tooltip>       
             <v-spacer></v-spacer>
-            <v-btn :icon="'mdi-heart'" color="grey" prepend class="ma-0 pa-0"></v-btn>
-          </v-card-actions>
 
-          <v-expand-transition>
-            <div v-show="show[index]">
-              <v-divider></v-divider>
-              <v-card-text>
-                {{ product.description }}
-              </v-card-text>
-            </div>
-          </v-expand-transition>
+            <v-tooltip text="Add to favorites">
+              <template v-slot:activator="{ props }">
+                <v-btn :icon="'mdi-heart'" color="grey" prepend class="ma-0 pa-0" v-bind="props" @click="AddToFavorite(product)"></v-btn>
+              </template>
+            </v-tooltip> 
+          </v-card-actions>
         </v-card>
     </v-col>
   </v-row>
 </template>
 
 <script>
+import eventBus from '../../eventBus';
+import apiClient from '../../axiosClient';
 export default {
   props: {
-    // Принимает список продуктов от родителя
+
     products: {
       type: Array,
       required: true,
@@ -116,8 +119,30 @@ export default {
 				top: 0,
 				behavior: 'smooth', // Добавляет анимацию при прокрутке
 			});
+    },
+    async AddToFavorite(product) {
+      try {
+        const token = localStorage.getItem('access')
+        const response = await apiClient.post('/favorite/like', 
+					{
+						product_id: product.id,
+					}, 
+					{
+						headers: {
+							Authorization: `Bearer ${token}`
+						}
+					}
+				);
+        console.log(response);
+        
+      } catch (error) {
+        console.log(error);
+        
+        eventBus.emit('show-modal', "You need registration");
+      }
     }
   },
+
 };
 </script>
 

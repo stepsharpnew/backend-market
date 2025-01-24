@@ -39,13 +39,13 @@
 
 		<v-tooltip text="Favorite">
 			<template v-slot:activator="{ props }">
-			<v-list-item prepend-icon="mdi-heart" title="Favorite" value="Favorite" v-bind="props" @click="this.$router.push('/favorite')"></v-list-item>
+			<v-list-item prepend-icon="mdi-heart" title="Favorite" value="Favorite" v-bind="props" @click="goToFavorite"></v-list-item>
 		</template>
 		</v-tooltip>
 
 		<v-tooltip text="Basket">
 		<template v-slot:activator="{ props }">
-			<v-list-item prepend-icon="mdi-cart" title="Basket" value="Basket" v-bind="props" @click="this.$router.push('/basket')"></v-list-item>
+			<v-list-item prepend-icon="mdi-cart" title="Basket" value="Basket" v-bind="props" @click="goToBasket"></v-list-item>
 		</template>
 		</v-tooltip>
 
@@ -106,7 +106,23 @@ export default {
 			this.openLogoutDialog = false
 			this.openLeft = false
 			this.$router.push('/')
-		}
+		},
+		goToFavorite(){
+			this.$router.push('/favorite')
+			window.scrollTo({
+				top: 0,
+				behavior: 'smooth', // Добавляет анимацию при прокрутке
+			});
+			
+		},
+		goToBasket(){
+			this.$router.push('/basket')
+			window.scrollTo({
+				top: 0,
+				behavior: 'smooth', // Добавляет анимацию при прокрутке
+			});
+		},
+
 	}
 }
 
