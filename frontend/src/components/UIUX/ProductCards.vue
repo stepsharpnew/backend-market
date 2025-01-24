@@ -112,6 +112,10 @@ export default {
     },
     GoToProd(product){
       this.$router.push(`/product/${product.slug}`)
+      window.scrollTo({
+				top: 0,
+				behavior: 'smooth', // Добавляет анимацию при прокрутке
+			});
     }
   },
 };

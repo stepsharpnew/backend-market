@@ -9,13 +9,14 @@
         class="h-100"
         permanent
       >
-      <v-tooltip :text="email">
+      <v-tooltip :text="email" >
         <template v-slot:activator="{ props }">
           <v-list-item
             :prepend-avatar="image_url"
             :title="email"
             width="100"
             v-bind="props"
+			@click="this.$router.push('/profile')"
           >
             <!-- <template v-slot:append>
               <v-btn 
@@ -30,15 +31,15 @@
       </v-tooltip>
 	<v-divider></v-divider>
 	<v-list density="compact" nav>
-		<v-tooltip text="My Account">
+		<!-- <v-tooltip text="My Account">
 		<template v-slot:activator="{ props }">
 			<v-list-item prepend-icon="mdi-account" title="My Account" value="account" v-bind="props" @click="this.$router.push('/profile')"></v-list-item>
 		</template>
-		</v-tooltip>
+		</v-tooltip> -->
 
 		<v-tooltip text="Favorite">
 			<template v-slot:activator="{ props }">
-			<v-list-item prepend-icon="mdi-heart" title="Favorite" value="Favorite" v-bind="props"></v-list-item>
+			<v-list-item prepend-icon="mdi-heart" title="Favorite" value="Favorite" v-bind="props" @click="this.$router.push('/favorite')"></v-list-item>
 		</template>
 		</v-tooltip>
 

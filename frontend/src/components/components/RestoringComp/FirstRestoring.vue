@@ -136,7 +136,11 @@ import ProgressBar from '../../UIUX/ProgressBar.vue';
           }
         },
         goToLogin(){
-          this.$router.push('/login')          
+          this.$router.push('/login') 
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth', // Добавляет анимацию при прокрутке
+          });         
           eventBus.emit('show-modal', 'Process password restoring is aborted');
         }
       },

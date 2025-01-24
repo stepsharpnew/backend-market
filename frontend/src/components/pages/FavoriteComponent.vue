@@ -2,43 +2,49 @@
 	<v-container class="d-flex flex-column pa-5 h-100" fluid>
 	  <!-- Навигация -->
 	  <NavigationDrawer :isAuth="isAuth" :email="email" :image_url="image_url" />
-
-	  <!-- Основной контент -->
 	   
 	  <v-row>
 		<!-- Колонка корзины -->
 		<v-col cols="12" md="7">
-			<v-row v-if="cartItems.length > 0" class="my-8">
+			<v-row class="my-8">
 				<v-col cols="12" >
 					<v-card class="pa-4 elevation-3 rounded">
-					<!-- Заголовок с общей суммой -->
-					<v-card-title class="d-flex flex-wrap justify-space-between align-center">
-						<span class="text-h5 font-weight-bold">Total: {{ totalPrice }} ₽</span>
-						<v-chip color="blue lighten-4" outlined class="mt-2 mt-md-0">
-						<v-icon left color="blue darken-2">mdi-cart</v-icon>
-						{{ totalQuantity }} items
-						</v-chip>
-					</v-card-title>
-
-					<!-- Действия -->
-					<v-card-actions class="d-flex flex-column flex-sm-row justify-center align-start">
-						<v-chip color="green lighten-4" outlined class="mb-4 mb-md-0 ">
-							<v-icon left color="green darken-2">mdi-check-circle</v-icon>
-							Ready to Checkout
-						</v-chip>
-						<v-spacer></v-spacer>
-						<div class="d-flex flex-sm-row align-center justify-start ">
-							<BuyAll :products="cartItems" class=""/>
-							<v-btn color="red darken-2" small outlined @click="clearBasket">
-								Clear Basket
+						<v-card-title class="d-flex flex-wrap align-center justify-start">
+							<v-chip color="blue lighten-4" outlined class="mr-4">
+							<v-icon left color="blue darken-2">mdi-cart</v-icon>
+							{{ totalQuantity }} item
+							</v-chip>
+							<h2 class="text-h4 text-center">Your Favorite</h2>
+							<v-spacer></v-spacer>
+							<!-- Кнопка уведомлений -->
+							 
+							<v-btn
+								class="notification-button enabled"
+								small
+								v-if="tgNotify"
+							>
+								<v-icon left v-if="tgNotify" color="green darken-2">mdi-check-circle</v-icon>
+								<v-icon left v-else color="blue darken-2">mdi-alert-circle</v-icon>
+								{{ tgNotify ? 'Notification enabled' : 'Notification disabled' }}
 							</v-btn>
-						</div>
-					</v-card-actions>
+							
+							<v-btn
+								class="notification-button disabled"
+								small
+								v-else
+								@click="openChildDialog"
+							>
+								<v-icon left v-if="tgNotify" color="green darken-2">mdi-check-circle</v-icon>
+								<v-icon left v-else color="blue darken-2">mdi-alert-circle</v-icon>
+								{{ tgNotify ? 'Notification enabled' : 'Notification disabled' }}
+							</v-btn>
+							<ModalNoify ref="ModalNoify"/>
+						</v-card-title>
 					</v-card>
 				</v-col>
-				</v-row>
+			</v-row>
 		  <!-- Проверка на наличие товаров в корзине -->
-		  <h1 class="text-h4 font-weight-bold text-center">Your basket</h1>
+		  
 		  <v-divider></v-divider>
 		  <br>
 		  <v-row v-if="empty">
@@ -60,16 +66,16 @@
 				lg="4"
 			>
 				<v-card class="pa-2 elevation-2 rounded mb-4">
-				<v-img :src="item.products.category.image_url" class="mb-3 rounded" cover height="150"></v-img>
-				<v-card-title class="text-h6 font-weight-bold">{{ item.products.name }}</v-card-title>
-				<div class="text-subtitle-1 d-flex align-center" v-if="!item.products.saleBool">
+				<v-img :src="item.category.image_url" class="mb-3 rounded" cover height="150"></v-img>
+				<v-card-title class="text-h6 font-weight-bold">{{ item.name }}</v-card-title>
+				<div class="text-subtitle-1 d-flex align-center" v-if="!item.saleBool">
               <v-chip 
                 class="mr-2" 
                 outlined 
                 small
                 color="grey lighten-2"
               >
-                <span class="grey--text">{{ item.products.price }} ₽</span>
+                <span class="grey--text">{{ item.price }} ₽</span>
               </v-chip>
             </div>
             <div class="text-subtitle-1 d-flex align-center" v-else>
@@ -80,7 +86,7 @@
                 small
                 color="grey lighten-2"
               >
-                <span class="text-decoration-line-through grey--text">{{ item.products.price }} ₽</span>
+                <span class="text-decoration-line-through grey--text">{{ item.price }} ₽</span>
               </v-chip>
 
               <!-- Новая цена со скидкой -->
@@ -90,7 +96,7 @@
                 color="orange lighten-3"
                 dark
               >
-                {{ (item.products.price - item.products.price * item.products.sale / 100).toFixed(2) }} ₽
+                {{ (item.price - item.price * item.sale / 100).toFixed(2) }} ₽
               </v-chip>
 
               <!-- Процент скидки -->
@@ -99,13 +105,11 @@
                 color="red lighten-3"
                 dark
               >
-                -{{ item.products.sale }}%
+                -{{ item.sale }}%
               </v-chip>
             </div>
 				<div class="d-flex justify-space-between align-center">
-					<v-card-text>
-						Count: {{ item.count }}
-					</v-card-text>
+
 					<v-btn
 						class="mx-1"
 						prepend-icon="mdi-delete"
@@ -116,36 +120,8 @@
 					</v-btn>
 				</div>
 
-				<v-card-actions>
-					<v-chip
-					small
-					outlined
-					color="red lighten-4"
-					@click="decreaseQuantity(item)"
-					class="d-flex align-center px-0 w-100"
-					>
-						<v-icon left small color="red darken-2">mdi-minus</v-icon>
-					</v-chip>
-					<v-chip
-					small
-					outlined
-					color="green lighten-4"
-					@click="increaseQuantity(item)"
-					class="d-flex align-center px-0 w-100"
-					>
-					<v-icon left small color="green darken-2">mdi-plus</v-icon>
-					</v-chip>
-					<!-- <v-btn
-						class="mx-1"
-						prepend-icon="mdi-cash"
-						color="green"
-						@click="Buy(item)"
-						variant="outlined"
-					>
-						Buy
-					</v-btn> -->
-					<BuyComponent :product="item"/>
-				</v-card-actions>
+
+
 				</v-card>
 			</v-col>
 			</v-row>
@@ -181,7 +157,7 @@
 						</v-tooltip>
 						<v-tooltip text="Add to favorite" location="bottom" class="cursor-pointer">
 							<template v-slot:activator="{ props }">
-								<v-list-item prepend-icon="mdi-heart" value="Add to favorite" v-bind="props"  @click="addToFavorite(product)"></v-list-item>
+								<v-list-item prepend-icon="mdi-heart" value="Add to favorite" v-bind="props" @click="addToFavorite(product)"></v-list-item>
 							</template>
 						</v-tooltip>
 					</div>
@@ -202,8 +178,8 @@ import eventBus from '../../eventBus';
 import axios from 'axios';
 import apiClient from '../../axiosClient';
 import NavigationDrawer from '../components/NavigationDrawer.vue';
-import BuyComponent from '../components/BuyComponent.vue';
-import BuyAll from '../components/BuyAll.vue';
+import ModalNoify from '../UIUX/ModalNoify.vue';
+
   export default {
 	data() {
 	  return {
@@ -212,13 +188,13 @@ import BuyAll from '../components/BuyAll.vue';
 		email : '',
 		image_url : '',
 		empty : true,
-		discountedProducts : []
+		discountedProducts : [],
+		tgNotify : false
 	  };
 	},
 	components : {
 		NavigationDrawer,
-		BuyComponent,
-		BuyAll
+		ModalNoify
 	},
 	beforeRouteEnter(to, from, next) {
       if (!isAuthenticated()) {
@@ -229,25 +205,33 @@ import BuyAll from '../components/BuyAll.vue';
     },
 
 	async mounted(){
-		try {
-			const token = localStorage.getItem('access')
-			const user = await apiClient.get('/user/me', {
-				headers : `Authorization: Bearer ${token}`
-			})
-			if (user.data) {
-				localStorage.setItem('user', JSON.stringify(user.data))
-				this.email = user.data.email
-				this.image_url = user.data.image_url
-				this.isAuth = true
+
+			try {
+				const token = localStorage.getItem('access')
+				const user = await apiClient.get('/user/me', {
+					headers : `Authorization: Bearer ${token}`
+				})
+
+					localStorage.setItem('user', JSON.stringify(user.data))
+					this.email = user.data.email
+					this.image_url = user.data.image_url
+					this.isAuth = true
+					this.tgNotify = user.data.telegram? true : false
+					console.log(this.tgNotify);
+					
+				// }
+			} catch (error) {
+				console.log(error);
+				
 			}
-		} catch (error) {
-			
-		}
-		const token = localStorage.getItem('access')
-		this.fetchData(token)
+			const token = localStorage.getItem('access')
+			this.fetchData(token)
+		// }
+
+
+
+		
 	},
-
-
 	computed: {
 		totalPrice() {
 			let sum = 0
@@ -262,25 +246,33 @@ import BuyAll from '../components/BuyAll.vue';
 			return sum.toFixed(2)
 		},
 	  	totalQuantity() {
-			return this.cartItems.reduce((total, item) => total + item.count, 0);
+			return this.cartItems.length
 		}
 	},
 	methods: {
+		openChildDialog() {
+			this.$refs.ModalNoify.openDialog(); // Вызываем метод открытия диалога
+		},
 		async fetchData(token){
 			try {
-				const response = await apiClient.get('/basket',{
+				const response = await apiClient.get('/favorite',{
 					headers : `Authorization: Bearer ${token}`
 				})
+				this.cartItems = response.data
+				console.log(response.data);
+				
 				if (response.data.status === 422) {
 					this.empty = true
 				}
 				else{
 					this.empty = false
-					this.cartItems = response.data
 				}
+				console.log(response.data);
+				
 			} catch (error) {
 				console.log(error);
 			}
+
 			try {
 				const response = await axios.get('/api/products/sales')
 				this.discountedProducts = response.data
@@ -290,122 +282,69 @@ import BuyAll from '../components/BuyAll.vue';
 			}
 		},
 
-		async addToFavorite(product){
-			console.log(product);
+
+	async removeFromCart(item) {
+		const token = localStorage.getItem('access');
+		this.cartItems = this.cartItems.filter(cartItem => cartItem.id !== item.id);
+		try {
+			await apiClient.delete('/favorite', {
+				params: {
+					product_id: item.id,
+				},
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+
+			eventBus.emit('show-modal', "Product removed from favorites");
+		} catch (error) {
 			
-			const token = localStorage.getItem('access')
-			try {
-				const response = await apiClient.post('/favorite/like', 
-					{
-						product_id: product.id,
-					}, 
-					{
-						headers: {
-							Authorization: `Bearer ${token}`
-						}
-					}
-				);
-				eventBus.emit('show-modal', "Product added to favorites");
-			} catch (error) {
-				if (error.response.data.statusCode == 400) {
-					eventBus.emit('show-modal', "Product has already been added to favorites");
-				}
-				console.log(error);
-			}
-		},
-		async decreaseQuantity(item) {
-			const token = localStorage.getItem('access')
-			if (item.count > 1) {
-			item.count -= 1;
-			await apiClient.post('basket/count_change', 
-				{
-					count: item.count+1,
-					type: false
-				}, 
-				{
-					headers: {
-						Authorization: `Bearer ${token}`
-					}
-				}
-			);
-			} else {
-			this.removeFromCart(item);
-			}
-		
-		
-		},
-		async increaseQuantity(item) {
-			const token = localStorage.getItem('access')
-			item.count += 1;
-			await apiClient.post('basket/count_change', 
-				{
-					count: item.count-1,
-					type: true
-				}, 
-				{
-					headers: {
-						Authorization: `Bearer ${token}`
-					}
-				}
-			);
-		},
-		async removeFromCart(item) {
-			const token = localStorage.getItem('access');
-			this.cartItems = this.cartItems.filter(cartItem => cartItem.id !== item.id);
-			try {
-				await apiClient.delete('basket/delete-item', {
-					params: {
-						product_id: item.products.id,
-					},
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				});
-				eventBus.emit('show-modal', "Product removed from basket");
-			} catch (error) {
-				
-			}
-
-
-		},
-
-		async addToBasket(product){
-			const token = localStorage.getItem('access')
-			try {
-				const response = await apiClient.post('/basket/create', 
-					{
-						product_id: product.id,
-						count: 1
-					}, 
-					{
-						headers: {
-							Authorization: `Bearer ${token}`
-						}
-					}
-				);
-				this.fetchData(token)
-				eventBus.emit('show-modal', "Product added to basket");
-			} catch (error) {
-				console.log(error);
-			}
-		},
-
-		async clearBasket(){
-			const token = localStorage.getItem('access')
-			try {
-				await apiClient.delete('/basket/delete', 
-					{
-						headers: {
-							Authorization: `Bearer ${token}`
-						}
-					}
-				);
-				this.cartItems = []
-				eventBus.emit('show-modal', "Basket cleared");
-			} catch (error) {
-				console.log(error);
-			}
 		}
+
+
+	},
+
+	async addToBasket(product){
+		const token = localStorage.getItem('access')
+		try {
+			const response = await apiClient.post('/basket/create', 
+				{
+					product_id: product.id,
+					count: 1
+				}, 
+				{
+					headers: {
+						Authorization: `Bearer ${token}`
+					}
+				}
+			);
+			eventBus.emit('show-modal', "Product added to basket");
+		} catch (error) {
+			console.log(error);
+		}
+	  },
+	  async addToFavorite(product){
+		console.log(product);
+		
+		const token = localStorage.getItem('access')
+		try {
+			const response = await apiClient.post('/favorite/like', 
+				{
+					product_id: product.id,
+				}, 
+				{
+					headers: {
+						Authorization: `Bearer ${token}`
+					}
+				}
+			);
+			this.fetchData(token)
+			eventBus.emit('show-modal', "Product added to favorite");
+		} catch (error) {
+			console.log(error);
+		}
+	  },
+	  	
 	},
 
 	created(){
@@ -427,9 +366,31 @@ import BuyAll from '../components/BuyAll.vue';
   </script>
   
   <style scoped>
-  .text-h4 {
-	font-family: 'Roboto', sans-serif;
-	font-weight: 700;
-  }
+	.text-h4 {
+		font-family: 'Roboto', sans-serif;
+		font-weight: 700;
+	}
+	.notification-button {
+		border-radius: 20px;
+		transition: all 0.3s ease;
+	}
+	.notification-button.enabled {
+		background-color: #e8f5e9; /* Светло-зелёный */
+		color: #1b5e20; /* Тёмно-зелёный */
+	}
+	.notification-button.disabled {
+		background-color: #e3f2fd; /* Светло-синий */
+		color: #0d47a1; /* Тёмно-синий */
+		animation: blink 3s infinite; /* Мигание */
+	}
+
+	@keyframes blink {
+	0%, 100% {
+		background-color: #e3f2fd;
+	}
+	50% {
+		background-color: #bbdefb;
+	}
+	}
   </style>
   

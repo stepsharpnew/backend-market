@@ -81,10 +81,22 @@ export class FavoriteService {
         if (!favorites) {
             return []
         }
+        
         const favoritesIds = favorites.productList
         const queryBuilder = this.productRepository.createQueryBuilder('products')
         .andWhereInIds(favoritesIds)
+        .leftJoinAndSelect('products.category', 'category')
         const products = await queryBuilder.getMany()
         return products
     }
+
+    async deleteFavorite(user_id:number,product_id:number){
+        const user = await this.getUserById(user_id)
+        let favorites = await this.getuserFavorites(user)
+        favorites.productList = favorites.productList.filter((id)=>id!=product_id)
+        await this.favoritesRepository.save({
+             ...favorites
+        })
+    }
+
 }

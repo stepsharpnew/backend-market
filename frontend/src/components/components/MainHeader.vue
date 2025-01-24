@@ -4,7 +4,7 @@
 
   </template>
 
-  <v-app-bar-title @click="this.$router.push('/')" style="cursor: pointer;"><h3>StepMarket</h3></v-app-bar-title>
+  <v-app-bar-title @click="goToMain" style="cursor: pointer;"><h3>StepMarket</h3></v-app-bar-title>
 
     <div class="align-center  px-2" >
         <strong>Connected now!</strong> 
@@ -27,5 +27,14 @@ export default {
       'mdi-send',
     ],
   }),
+  methods : {
+    goToMain(){
+      this.$router.push('/')
+      window.scrollTo({
+				top: 0,
+				behavior: 'smooth', // Добавляет анимацию при прокрутке
+			});
+    }
+  }
 }
 </script>

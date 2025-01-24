@@ -7,17 +7,19 @@ import RestoringPage from '../components/pages/RestoringPage.vue'
 import ProductCard from '../components/pages/ProductCard.vue'
 import CategoryItems from '../components/pages/CategoryItems.vue'
 import CartComponent from '../components/pages/CartComponent.vue'
+import FavoriteComponent from '../components/pages/FavoriteComponent.vue'
 
 
 const routes = [
-  { path: '/', component: PrimaryPage },
-  { path: '/reg', component:  RegisterPage},
-  { path: '/login', component:  LoginPage},
-  { path: '/profile', component:  ProfilePage},
-  { path: '/restore', component:  RestoringPage},
-  { path: '/product/:slug', component:  ProductCard},
-  { path: '/products/category/:short_name', component:  CategoryItems},
-  { path: '/basket', component:  CartComponent},
+  { path: '/', component: PrimaryPage, name : 'PrimaryPage'},
+  { path: '/reg', component:  RegisterPage, name : 'RegisterPage'},
+  { path: '/login', component:  LoginPage, name : 'LoginPage'},
+  { path: '/profile', component:  ProfilePage, name : 'ProfilePage'},
+  { path: '/restore', component:  RestoringPage, name : 'RestoringPage'},
+  { path: '/product/:slug', component:  ProductCard, name : 'ProductCard'},
+  { path: '/products/category/:short_name', component:  CategoryItems, name : 'CategoryItems'},
+  { path: '/basket', component:  CartComponent, name : 'CartComponent'},
+  { path: '/favorite', component:  FavoriteComponent, name : 'FavoriteComponent'},
 
 ]
 

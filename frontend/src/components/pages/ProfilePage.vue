@@ -126,7 +126,7 @@
 import eventBus from '../../eventBus';
 import apiClient from '../../axiosClient';
 import NavigationDrawer from '../components/NavigationDrawer.vue';
-
+import { isAuthenticated } from '../../router/auth';
 export default {
     data() {
         return {
@@ -147,6 +147,14 @@ export default {
             confirm_password : '',
             isAuth : false
         };
+        
+    },
+    beforeRouteEnter(to, from, next) {
+      if (!isAuthenticated()) {
+        next({ name: 'LoginPage' }); // Перенаправление на страницу входа
+      } else {
+        next();
+      }
     },
     components : {
       NavigationDrawer

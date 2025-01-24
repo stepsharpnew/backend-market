@@ -158,6 +158,7 @@
 				prepend-icon="mdi-link"
 				title="Copy link"
 				link
+				@click="Copy"
 			  ></v-list-item>
   
 			  <v-divider class="my-2"></v-divider>
@@ -179,6 +180,7 @@
 
 <script>
 import eventBus from '../../eventBus';
+
 	export default {
 		data(){
 			return {
@@ -198,6 +200,19 @@ import eventBus from '../../eventBus';
 			async Buy(isActive){
 				isActive.value = false
 				eventBus.emit('show-modal', "Successfuly, enjoy a new product");
+			},
+			Copy(){
+				try {
+					const url = `${window.location.origin}/product/${this.product.products.slug}`;
+					console.log(url);
+					navigator.clipboard
+					.writeText(url)
+					eventBus.emit('show-modal', "Copied");
+					
+				} catch (error) {
+					console.log(error);
+					
+				}
 			}
 		}
 
