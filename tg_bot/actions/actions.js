@@ -94,11 +94,10 @@ const job = new CronJob(
             const address = process.env.BACKEND;
             const url = process.env.URL
             const change = await axios.post(`${url}/products/telegram_sale`, {
+                
                 chatId: chatId
             });
-            currentData = change.data 
-            console.log(currentData);
-            
+            currentData = change.data             
             bufferData = bufferFunctionPrint(currentData, bufferData)
         } else {
             console.log('Контекст не найден');
