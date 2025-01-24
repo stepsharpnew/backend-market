@@ -97,6 +97,8 @@ const job = new CronJob(
                 chatId: chatId
             });
             currentData = change.data 
+            console.log(currentData);
+            
             bufferData = bufferFunctionPrint(currentData, bufferData)
         } else {
             console.log('Контекст не найден');

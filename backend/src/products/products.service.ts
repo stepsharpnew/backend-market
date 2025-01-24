@@ -165,7 +165,6 @@ export class ProductsService {
         .leftJoinAndSelect('products.category', 'category')
         .andWhereInIds(favoritesIds)
         const products = await queryBuilder.getMany()
-        console.log(products);
         
 
         let array = []
