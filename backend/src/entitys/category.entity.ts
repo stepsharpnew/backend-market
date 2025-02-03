@@ -10,13 +10,13 @@ export class CategoryEntity{
     @PrimaryGeneratedColumn()
     id : number
 
-
+ 
     @ApiProperty({example : "Электроника", description : "Название категории"})
     @Column()
     category : string
 
     @ApiProperty({example : "http://example.com", description : "Ссылка на товар"})
-    @Column()
+    @Column({default : 'https://storage.yandexcloud.net/step2002sharp/telefony.jpg'})
     image_url : string
 
     @ApiProperty({example : "Elektronika", description : "SLUG категории"})

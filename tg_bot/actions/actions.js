@@ -56,14 +56,12 @@ const formatTelegramMessage = (product) => {
 
 const bufferFunctionPrint = (current, buffer) => {
     if (current.length) {
-        console.log(current.length, buffer.length);
-        console.log(buffer.length > 0 ? buffer[0].id : -1);
+        // console.log(current.length, buffer.length);
+        // console.log(buffer.length > 0 ? buffer[0].id : -1);
 
         if (current[current.length - 1].id !== (buffer.length > 0 ? buffer[buffer.length - 1].id : -1)) {
             if (!buffer.length) {
                 current.forEach((element) => {
-                    console.log(element);
-                    
                     currentCtx.sendPhoto(element.category.image_url, {
                         caption: formatTelegramMessage(element),
                         parse_mode: "Markdown",
@@ -75,7 +73,7 @@ const bufferFunctionPrint = (current, buffer) => {
                     caption: formatTelegramMessage(lastProduct),
                     parse_mode: "Markdown",
                 });
-            }
+            } 
             buffer = current;
             return buffer;
         }
@@ -91,15 +89,16 @@ const job = new CronJob(
         if (currentCtx) {
             const chatId = currentCtx.update?.message?.chat.id;
             const port = process.env.PORT;
-            const address = process.env.BACKEND;
+            const addres = process.env.BACKEND;
             const url = process.env.URL
             const change = await axios.post(`${url}/products/telegram_sale`, {
+            // const change = await axios.post(`${addres}:${port}/products/telegram_sale`, {
                 
                 chatId: chatId
             });
             currentData = change.data             
             bufferData = bufferFunctionPrint(currentData, bufferData)
-        } else {
+        } else { 
             console.log('Контекст не найден');
         }
     },

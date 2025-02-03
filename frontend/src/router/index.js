@@ -8,6 +8,7 @@ import ProductCard from '../components/pages/ProductCard.vue'
 import CategoryItems from '../components/pages/CategoryItems.vue'
 import CartComponent from '../components/pages/CartComponent.vue'
 import FavoriteComponent from '../components/pages/FavoriteComponent.vue'
+import AdminPanel from '../components/pages/AdminPanel.vue'
 
 
 const routes = [
@@ -20,6 +21,8 @@ const routes = [
   { path: '/products/category/:short_name', component:  CategoryItems, name : 'CategoryItems'},
   { path: '/basket', component:  CartComponent, name : 'CartComponent'},
   { path: '/favorite', component:  FavoriteComponent, name : 'FavoriteComponent'},
+  { path: '/admin', component:  AdminPanel, name : 'AdminPanel'},
+
 
 ]
 

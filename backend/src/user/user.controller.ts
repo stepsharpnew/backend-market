@@ -122,6 +122,19 @@ export class UserController {
         return user_info
     }
 
+
+    // @ApiOperation({summary : "Изменение профиля"})
+    // @ApiResponse({status : 200, type : UserEntity })
+    // @UseGuards(AccesTokenGeard, AdminGuard)
+    // @Post('/m')
+    // async banUser(
+    //     @User() user : any,
+    //     @Body('user_id') user_id : number
+    // ){
+    //     const ban_user = this.userService.banUser(user.sub, user_id)
+    //     return ban_user
+    // }
+
     
 
 
