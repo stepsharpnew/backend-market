@@ -16,9 +16,13 @@ export class CreateProductDTO{
     price : number
 
 
-    @ApiProperty({type : ()=>CategoryEntity, description : "Цена товара"})
+    // @ApiProperty({type : ()=>CategoryEntity, description : "Цена товара"})
+    // @IsNotEmpty()
+    // category : CategoryEntity
+
+    @ApiProperty({example : "Televisions", description : "Цена товара"})
     @IsNotEmpty()
-    category : CategoryEntity
+    category : string
 
     @ApiProperty({example : "Товар Товар Товар Товар Товар", description : "Цена товара"})
     @IsNotEmpty()

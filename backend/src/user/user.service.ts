@@ -116,4 +116,8 @@ export class UserService {
         return user.email
     }
 
+
+    // async banUser(admin_id, user_id){
+
+    // }
 }

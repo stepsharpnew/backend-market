@@ -133,12 +133,16 @@ export default {
 						}
 					}
 				);
-        console.log(response);
-        
+        eventBus.emit('show-modal', "Product added to favorites");
       } catch (error) {
         console.log(error);
+        if (error.response.data.statusCode==400) {
+          eventBus.emit('show-modal', "Product already added");
+        }
+        if (error.response.data.statusCode==401) {
+          eventBus.emit('show-modal', "You need registration");
+        }
         
-        eventBus.emit('show-modal', "You need registration");
       }
     }
   },

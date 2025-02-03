@@ -2,18 +2,25 @@
   <v-container
     class="h-screen d-flex container align-center justify-center"
     fluid
-    style="margin: 0; padding: 0; background-image: url('https://storage.yandexcloud.net/alishlo.com/contact-form-background.jpg'); background-size: cover; background-position: center;"
+    style="margin: 0; padding: 0; background-image: url('https://storage.yandexcloud.net/step2002sharp/telefony.jpg'); background-size: cover; background-position: center;"
   >
-
     <NavigationDrawer :isAuth="isAuth" :email="email" :image_url="image_url"/>
     <!-- Форма регистрации -->
     <v-col
       cols="12"
       md="6"
-      sm="8"
-      class="pa-5 d-flex flex-column justify-self-center"
+      sm="10"
+      xs="12"
+      class="pa-5 d-flex flex-column justify-center"
+      style="background-color: blanchedalmond;"
     >
-      <v-card elevation="10" class="pa-5" rounded :loading="isUpdating">
+      <v-card
+        elevation="10"
+        class="pa-4 rounded-xl"
+        :loading="isUpdating"
+        style="max-width: 100%; background-color:aliceblue;"
+        
+      >
         <template v-slot:loader="{ isActive }">
           <v-progress-linear
             :active="isActive"
@@ -22,61 +29,82 @@
             indeterminate
           ></v-progress-linear>
         </template>
-        <div class="d-flex justify-space-between align-center">
-          <v-card-title class="text-h5 font-weight-bold text-left">
+
+        <!-- Заголовок и кнопка выхода -->
+        <div class="d-flex justify-space-between align-center mb-4">
+          <v-card-title
+            class="text-h5 font-weight-bold text-left"
+            style="font-size: calc(1.2rem + 0.5vw);"
+          >
             {{ email }}
           </v-card-title>
-          <v-btn color="red" text class="mb-auto" @click="Logout">
-            Logout
-          </v-btn>
+
         </div>
 
-        <v-img
-          :src="photoPreview || image_url || 'https://cdn.vuetifyjs.com/images/cards/dark-beach.jpg'"
-          cover
-          class="elevation-5 mb-4 rounded"
-          max-width="100%"
-          height="400"
-        ></v-img>
-
-        <v-file-input
-          class="ma-3 rounded-3"
-          :rules="rules"
-          accept="image/png, image/jpeg, image/bmp"
-          label="Select photo"
-          prepend-icon="mdi-camera"
-          variant="outlined"
-          dense
-          v-model="photo"
-          @change="previewPhoto"
+        <!-- Аватар пользователя -->
+        <div
+          class="d-flex flex-column align-start mb-6 ml-6 justify-center"
+          style="text-align: center;"
         >
-          <template v-slot:append>
-            <v-btn
-              class="ml-3"
-              prepend-icon="mdi-upload"
-              color="primary"
-              elevation="2"
-              rounded
-              :disabled="!photo"
-              @click="uploadPhoto"
-            >
-              Upload Photo
-            </v-btn>
-          </template>
-        </v-file-input>
+          <v-avatar size="150" class="elevation-5">
+            <v-img
+              :src="photoPreview || image_url || 'https://cdn.vuetifyjs.com/images/cards/dark-beach.jpg'"
+              class="rounded-circle"
+            ></v-img>
+          </v-avatar>
+          <v-file-input
+            class="mr-auto rounded-3 mt-3"
+            :rules="rules"
+            accept="image/png, image/jpeg, image/bmp"
 
+            prepend-icon="mdi-camera"
+            dense
+            v-model="photo"
+            @change="previewPhoto"
+          ><v-spacer></v-spacer>
+            <template v-slot:append>
+              <v-btn
+                class="ml-3"
+                prepend-icon="mdi-upload"
+                color="primary"
+                elevation="2"
+                rounded
+                :disabled="!photo"
+                @click="uploadPhoto"
+                style="font-size: calc(0.8rem + 0.3vw);"
+              >
+                Upload
+              </v-btn>
+            </template>
+          </v-file-input>
+          <!-- <v-file-upload density="compact" variant="compact"></v-file-upload> -->
+        </div>
+
+        <!-- Кнопка смены пароля -->
         <v-btn
-          class="text-none font-weight-regular pa-2 mb-3"
+          color="red"
+          prepend-icon="mdi-lock-reset"
+          class="text-none font-weight-regular pa-2 mb-4 mr-3  "
+          style="font-size: calc(0.8rem + 0.3vw);"
+          @click="Logout"
+          rounded
+        >
+          Logout
+        </v-btn>
+        <v-btn
+          class="text-none font-weight-regular pa-2 mb-4"
           prepend-icon="mdi-lock-reset"
           color="warning"
           rounded
+          style="font-size: calc(0.8rem + 0.3vw);"
           @click="dialog = true"
         >
           Change Password
         </v-btn>
 
+        <!-- Диалог смены пароля -->
         <v-dialog v-model="dialog">
-          <v-card class="mx-auto" width="350" >
+          <v-card class="mx-auto" width="350">
             <v-card-title>Password Changing</v-card-title>
             <v-card-text>
               <v-text-field
@@ -106,27 +134,20 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
-
-        <v-spacer></v-spacer>
-
-
       </v-card>
     </v-col>
   </v-container>
 </template>
 
-<style scoped>
-/* Дополнительные отступы для мобильных устройств */
-.pa-5 {
-  padding: 16px !important;
-}
-</style>
+
 
 <script>
 import eventBus from '../../eventBus';
 import apiClient from '../../axiosClient';
 import NavigationDrawer from '../components/NavigationDrawer.vue';
 import { isAuthenticated } from '../../router/auth';
+import { shallowRef } from 'vue'
+const density = shallowRef('default')
 export default {
     data() {
         return {
@@ -197,8 +218,6 @@ export default {
                 console.warn('Нет выбранного файла для загрузки.');
                 return;
             }
-
-            console.log(this.photo); // Лог выбранного файла
 
             const formData = new FormData();
             formData.append('file', this.photo);
@@ -289,5 +308,22 @@ export default {
 .text-h5{
   font-family: 'Sarpanch', sans-serif;
 }  
-</style>
+@media (max-width: 600px) {
+  .v-avatar {
+    width: 120px !important;
+    height: 120px !important;
+  }
 
+  .v-card-title {
+    font-size: 1rem !important;
+  }
+
+  .v-btn {
+    font-size: 0.9rem !important;
+  }
+
+  .v-card {
+    padding: 1rem !important;
+  }
+}
+</style>

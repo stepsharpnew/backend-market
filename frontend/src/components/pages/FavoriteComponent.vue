@@ -324,8 +324,6 @@ import ModalNoify from '../UIUX/ModalNoify.vue';
 		}
 	  },
 	  async addToFavorite(product){
-		console.log(product);
-		
 		const token = localStorage.getItem('access')
 		try {
 			const response = await apiClient.post('/favorite/like', 
@@ -342,6 +340,9 @@ import ModalNoify from '../UIUX/ModalNoify.vue';
 			eventBus.emit('show-modal', "Product added to favorite");
 		} catch (error) {
 			console.log(error);
+			if (error.response.data.statusCode==400) {
+				eventBus.emit('show-modal', "Product already added");
+			}
 		}
 	  },
 	  	

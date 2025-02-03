@@ -79,7 +79,7 @@ export class ProductsService {
         }
         const category = await this.categoryRepository.findOne({
             where : {
-                category : createProductDTO.category.category
+                category : createProductDTO.category
             }
         }) 
         if (!category) {

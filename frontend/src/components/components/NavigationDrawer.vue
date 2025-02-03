@@ -54,6 +54,14 @@
 			<v-list-item prepend-icon="mdi-logout" title="Logout" value="Logout" v-bind="props" @click="openLogoutDialog = true"></v-list-item>
 		</template>
 		</v-tooltip>
+
+		<v-tooltip text="Control panel" v-if="isAdmin">
+		<template v-slot:activator="{ props }">
+			<v-list-item prepend-icon="mdi-account" title="My Account" v-bind="props" value="account" @click="goToControl"></v-list-item>
+		</template>
+		</v-tooltip>
+
+
 	</v-list>
 	</v-navigation-drawer>
 	<LogoutModal
@@ -87,7 +95,11 @@ export default {
 		},
 		image_url : {
 			type:String
-		}
+		},
+		// isAdmin : {
+		// 	default : false,
+		// 	type : Boolean
+		// }
 	},
 	mounted(){
 		try {
@@ -100,6 +112,16 @@ export default {
 	},
 	components : {
 		LogoutModal
+	},
+
+	computed : {
+		isAdmin(){
+			if (JSON.parse(localStorage.getItem('user')).role === 'admin') {
+				return true
+			} else {
+				false
+			}
+		}
 	},
 	methods : {
 		closeLeftPanel(){
@@ -122,6 +144,13 @@ export default {
 				behavior: 'smooth', // Добавляет анимацию при прокрутке
 			});
 		},
+		goToControl(){
+			this.$router.push('/admin')
+			window.scrollTo({
+				top: 0,
+				behavior: 'smooth', // Добавляет анимацию при прокрутке
+			});
+		}
 
 	}
 }
