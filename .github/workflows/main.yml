@@ -41,17 +41,11 @@ jobs:
 
       - name: 🚀 Деплой на сервер по SSH
         uses: appleboy/scp-action@v0.1.7
-        with:
-          # host: ${{ secrets.SERVER_HOST }}   # IP или домен сервера
-          # username: ${{ secrets.SERVER_USER }}  # Пользователь на сервере
-          # key: ${{ secrets.SERVER_SSH_KEY }}  # SSH-ключ из GitHub Secrets
-                    host: ${{ secrets.SERVER_HOST }}
+          host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
-
           source: "."  # Что копируем (всё содержимое репо)
-          # password: ${{ secrets.SSH_PASSPHRASE }}  # Добавляем passphrase!
           target: "/home/${{ secrets.SERVER_USER }}/app"  # Куда копируем
 
 
