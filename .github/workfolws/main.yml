@@ -46,6 +46,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}  # Пользователь на сервере
           key: ${{ secrets.SERVER_SSH_KEY }}  # SSH-ключ из GitHub Secrets
           source: "."  # Что копируем (всё содержимое репо)
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
           target: "/home/${{ secrets.SERVER_USER }}/app"  # Куда копируем
 
       - name: 🏃‍♂️ Перезапуск сервиса на сервере
