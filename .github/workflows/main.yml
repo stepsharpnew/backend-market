@@ -15,6 +15,7 @@ jobs:
       - name: 🛎️ Клонирование репозитория
         uses: actions/checkout@v4
 
+        
       - name: 📂 Создание `.env` файлов
         run: |
           echo "${{ secrets.BACKEND }}" > backend/.env
