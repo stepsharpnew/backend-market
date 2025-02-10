@@ -15,30 +15,30 @@ jobs:
       - name: 🛎️ Клонирование репозитория
         uses: actions/checkout@v4
 
-        
+
       - name: 📂 Создание `.env` файлов
         run: |
-          echo "${{ secrets.BACKEND }}" > backend/.env
-          echo "${{ secrets.USERNAME }}" > backend/.env
-          echo "${{ secrets.TYPE }}" > backend/.env
-          echo "${{ secrets.SECRET_KEY_OBJECT_STORAGE }}" > backend/.env
-          echo "${{ secrets.PORT }}" > backend/.env
-          echo "${{ secrets.PASSWORD }}" > backend/.env
-          echo "${{ secrets.MAIL_USERNAME }}" > backend/.env
-          echo "${{ secrets.MAIL_PASSWORD }}" > backend/.env
-          echo "${{ secrets.JWT_SECRET }}" > backend/.env
-          echo "${{ secrets.JWT_REFRESH_SECRET }}" > backend/.env
-          echo "${{ secrets.JWT_ACCESS_SECRET }}" > backend/.env
-          echo "${{ secrets.ID_KEY_OBJECT_STORAGE }}" > backend/.env
-          echo "${{ secrets.HOST }}" > backend/.env
-          echo "${{ secrets.DB_PORT }}" > backend/.env
-          echo "${{ secrets.DATABASE }}" > backend/.env
+          echo "BACKEND=${{ secrets.BACKEND }}" >> backend/.env
+          echo "USERNAME=${{ secrets.USERNAME }}" >> backend/.env
+          echo "TYPE=${{ secrets.TYPE }}" >> backend/.env
+          echo "SECRET_KEY_OBJECT_STORAGE=${{ secrets.SECRET_KEY_OBJECT_STORAGE }}" >> backend/.env
+          echo "PORT=${{ secrets.PORT }}" >> backend/.env
+          echo "PASSWORD=${{ secrets.PASSWORD }}" >> backend/.env
+          echo "MAIL_USERNAME=${{ secrets.MAIL_USERNAME }}" >> backend/.env
+          echo "MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}" >> backend/.env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> backend/.env
+          echo "JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }}" >> backend/.env
+          echo "JWT_ACCESS_SECRET=${{ secrets.JWT_ACCESS_SECRET }}" >> backend/.env
+          echo "ID_KEY_OBJECT_STORAGE=${{ secrets.ID_KEY_OBJECT_STORAGE }}" >> backend/.env
+          echo "HOST=${{ secrets.HOST }}" >> backend/.env
+          echo "DB_PORT=${{ secrets.DB_PORT }}" >> backend/.env
+          echo "DATABASE=${{ secrets.DATABASE }}" >> backend/.env
 
 
-          echo "${{ secrets.BACKEND }}" > tg_bot/.env
-          echo "${{ secrets.URL }}" > tg_bot/.env
-          echo "${{ secrets.PORT }}" > tg_bot/.env
-          echo "${{ secrets.BOT_TOKEN }}" > tg_bot/.env
+          echo "BACKEND=${{ secrets.BACKEND }}" >> tg_bot/.env
+          echo "URL=${{ secrets.URL }}" >> tg_bot/.env
+          echo "PORT=${{ secrets.PORT }}" >> tg_bot/.env
+          echo "BOT_TOKEN=${{ secrets.BOT_TOKEN }}" >> tg_bot/.env
 
       - name: 🚀 Деплой на сервер по SSH
         uses: appleboy/scp-action@v0.1.7
