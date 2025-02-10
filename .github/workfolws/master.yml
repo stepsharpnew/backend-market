@@ -1,0 +1,60 @@
+name: Docker Compose CI/CD
+
+on:
+  push:
+    branches:
+      - master 
+  pull_request:
+    branches:
+      - master  
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest 
+    steps:
+      - name: 🛎️ Клонирование репозитория
+        uses: actions/checkout@v4
+
+      - name: 📂 Создание `.env` файлов
+        run: |
+          echo "${{ secrets.BACKEND }}" > backend/.env
+          echo "${{ secrets.USERNAME }}" > backend/.env
+          echo "${{ secrets.TYPE }}" > backend/.env
+          echo "${{ secrets.SECRET_KEY_OBJECT_STORAGE }}" > backend/.env
+          echo "${{ secrets.PORT }}" > backend/.env
+          echo "${{ secrets.PASSWORD }}" > backend/.env
+          echo "${{ secrets.MAIL_USERNAME }}" > backend/.env
+          echo "${{ secrets.MAIL_PASSWORD }}" > backend/.env
+          echo "${{ secrets.JWT_SECRET }}" > backend/.env
+          echo "${{ secrets.JWT_REFRESH_SECRET }}" > backend/.env
+          echo "${{ secrets.JWT_ACCESS_SECRET }}" > backend/.env
+          echo "${{ secrets.ID_KEY_OBJECT_STORAGE }}" > backend/.env
+          echo "${{ secrets.HOST }}" > backend/.env
+          echo "${{ secrets.DB_PORT }}" > backend/.env
+          echo "${{ secrets.DATABASE }}" > backend/.env
+
+
+          echo "${{ secrets.BACKEND }}" > tg_bot/.env
+          echo "${{ secrets.URL }}" > tg_bot/.env
+          echo "${{ secrets.PORT }}" > tg_bot/.env
+          echo "${{ secrets.BOT_TOKEN }}" > tg_bot/.env
+
+      - name: 🚀 Деплой на сервер по SSH
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}   # IP или домен сервера
+          username: ${{ secrets.SERVER_USER }}  # Пользователь на сервере
+          key: ${{ secrets.SERVER_SSH_KEY }}  # SSH-ключ из GitHub Secrets
+          source: "."  # Что копируем (всё содержимое репо)
+          target: "/home/${{ secrets.SERVER_USER }}/app"  # Куда копируем
+
+      - name: 🏃‍♂️ Перезапуск сервиса на сервере
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            cd /home/${{ secrets.SERVER_USER }}/app
+            sudo docker-compose down
+            sudo docker-compose up -d --build 

@@ -96,10 +96,7 @@ export default {
 		image_url : {
 			type:String
 		},
-		// isAdmin : {
-		// 	default : false,
-		// 	type : Boolean
-		// }
+
 	},
 	mounted(){
 		try {
