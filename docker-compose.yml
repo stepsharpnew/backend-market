@@ -43,7 +43,7 @@ services:
     - "5000:5000"
 
   frontend:
-    image: backend-image
+    image: frontend-image
     build:
       context: ./frontend
     networks:
