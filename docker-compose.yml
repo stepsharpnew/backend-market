@@ -55,4 +55,4 @@ services:
     build:
       context: ./tg_bot
     networks:
-      - dev
+      - dev 
