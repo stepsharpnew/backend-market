@@ -66,5 +66,5 @@ jobs:
             sleep 10  # Ожидание запуска контейнеров
             
             # Выполнение миграций и наполнение БД
-            sudo docker compose exec backend npm run db:migrate && \
-            sudo docker compose exec backend npm run db:seed
+            # sudo docker compose exec backend npm run db:migrate && \
+            # sudo docker compose exec backend npm run db:seed
