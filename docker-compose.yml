@@ -1,3 +1,6 @@
+version: '3.8'
+
+
 networks:
   dev:
 services:
@@ -60,4 +63,4 @@ services:
       - dev 
 
 volumes:
-  - postgres_data:
+  postgres_data:
