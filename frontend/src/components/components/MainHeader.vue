@@ -15,6 +15,7 @@
           class="mx-2"
           size="small"
           variant="plain"
+          @click="openTelegramBot"
         ></v-btn>
     </div>
 </v-app-bar>
@@ -24,7 +25,7 @@
 export default {
   data: () => ({
     icons: [
-      'mdi-telegram',
+      'mdi-bell-ring',
     ],
     telegramBotUrl: 'https://t.me/market_notify_step_bot'
   }),
