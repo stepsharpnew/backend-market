@@ -24,8 +24,9 @@
 export default {
   data: () => ({
     icons: [
-      'mdi-send',
+      'mdi-telegram',
     ],
+    telegramBotUrl: 'https://t.me/market_notify_step_bot'
   }),
   methods : {
     goToMain(){
@@ -34,6 +35,9 @@ export default {
 				top: 0,
 				behavior: 'smooth', // Добавляет анимацию при прокрутке
 			});
+    },
+    openTelegramBot() {
+      window.open(this.telegramBotUrl, '_blank');
     }
   }
 }
