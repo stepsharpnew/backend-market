@@ -1,8 +1,8 @@
 version: '3.8'
 
-
 networks:
   dev:
+
 services:
 
   database:
@@ -31,7 +31,6 @@ services:
       - frontend
     networks:
       - dev
-    
 
   backend:
     image: backend-image
@@ -45,7 +44,7 @@ services:
       DATABASE_PASSWORD: 12345678
       DATABASE_NAME: postgres
     ports:
-    - "5000:5000"
+      - "5000:5000"
 
   frontend:
     image: frontend-image
@@ -54,13 +53,34 @@ services:
     networks:
       - dev
 
-
   bot:
     image: bot-image
     build:
       context: ./tg_bot
     networks:
       - dev 
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: always
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/config:/etc/prometheus
+    networks:
+      - dev
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: grafana
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/data:/var/lib/grafana
+    networks:
+      - dev
 
 volumes:
   postgres_data:
