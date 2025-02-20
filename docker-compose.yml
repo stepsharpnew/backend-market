@@ -77,10 +77,14 @@ services:
     restart: always
     ports:
       - "3000:3000"
+    environment:
+      - GF_SERVER_ROOT_URL=http://localhost/grafana
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
     volumes:
       - ./grafana/data:/var/lib/grafana
     networks:
       - dev
+
 
 volumes:
   postgres_data:
