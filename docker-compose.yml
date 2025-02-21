@@ -71,17 +71,17 @@ services:
     networks:
       - dev
 
-  grafana:
-    image: grafana/grafana-oss:latest
-    container_name: grafana
-    restart: always
-    ports:
-      - '3000:3000'
-    volumes:
-      - ./grafana/data:/var/lib/grafana
-      - ./grafana/data/grafana.ini:/etc/grafana/data/grafana.ini
-    networks:
-      - dev
+  # grafana:
+  #   image: grafana/grafana-oss:latest
+  #   container_name: grafana
+  #   restart: always
+  #   ports:
+  #     - '3000:3000'
+  #   volumes:
+  #     - ./grafana/data:/var/lib/grafana
+  #     - ./grafana/data/grafana.ini:/etc/grafana/data/grafana.ini
+  #   networks:
+  #     - dev
 
 
 volumes:
