@@ -14,7 +14,7 @@ import AdminPanel from '../components/pages/AdminPanel.vue'
 const routes = [
   { path: '/', component: PrimaryPage, name : 'PrimaryPage'},
   { path: '/reg', component:  RegisterPage, name : 'RegisterPage'},
-  { path: '/logins', component:  LoginPage, name : 'LoginPage'},
+  { path: '/login', component:  LoginPage, name : 'LoginPage'},
   { path: '/profile', component:  ProfilePage, name : 'ProfilePage'},
   { path: '/restore', component:  RestoringPage, name : 'RestoringPage'},
   { path: '/product/:slug', component:  ProductCard, name : 'ProductCard'},
