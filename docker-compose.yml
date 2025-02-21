@@ -75,8 +75,8 @@ services:
     image: grafana/grafana-oss:latest
     container_name: grafana
     restart: always
-    expose:
-      - 3000
+    ports:
+      - '3000:3000'
     environment:
       - GF_SERVER_ROOT_URL=http://89.232.177.97/grafana
       - GF_SERVER_SERVE_FROM_SUB_PATH=true
