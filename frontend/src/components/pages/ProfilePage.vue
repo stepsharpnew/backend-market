@@ -170,13 +170,13 @@ export default {
         };
         
     },
-    beforeRouteEnter(to, from, next) {
-      if (!isAuthenticated()) {
-        next({ name: 'LoginPage' }); // Перенаправление на страницу входа
-      } else {
-        next();
-      }
-    },
+    // beforeRouteEnter(to, from, next) {
+    //   if (!isAuthenticated()) {
+    //     next({ name: 'LoginPage' }); // Перенаправление на страницу входа
+    //   } else {
+    //     next();
+    //   }
+    // },
     components : {
       NavigationDrawer
     },
