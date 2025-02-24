@@ -191,7 +191,7 @@ import eventBus from '../../eventBus';
 			}
 		},
 		mounted(){
-			console.log(this.products);
+			// // console.log(this.products);
 			
 		},
 		methods : {
@@ -202,13 +202,13 @@ import eventBus from '../../eventBus';
 			Copy(){
 				try {
 					const url = `${window.location.origin}/products/category/${this.products[0].products.category.short_name}`;
-					console.log(url);
+					// // console.log(url);
 					navigator.clipboard
 					.writeText(url)
 					eventBus.emit('show-modal', "Copied");
 					
 				} catch (error) {
-					console.log(error);
+					// console.log(error);
 					
 				}
 			}
@@ -225,7 +225,7 @@ import eventBus from '../../eventBus';
 					else{
 						sum += elem.count*elem.products.price + sum
 					}
-					console.log(sum);
+					// // console.log(sum);
 				})
 				return sum.toFixed(2)
 			},
@@ -233,7 +233,7 @@ import eventBus from '../../eventBus';
 				let count = 0
 				this.products.forEach((elem)=>{
 					count += elem.count
-					console.log(count);
+					// // console.log(count);
 				})
 				return count
 			}

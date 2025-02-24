@@ -10,7 +10,7 @@ const RegScene = new Scenes.BaseScene('reg');
 RegScene.enter(async (ctx) => {
     try {
         const user_name = ctx.from?.first_name || 'Гость';
-        console.log(`${user_name} вошел в сцену регистрации.`);
+        // // console.log(`${user_name} вошел в сцену регистрации.`);
         ctx.reply('Введите адрес электронной почты, используемый в приложении:');
     } catch (error) {
         console.error('Ошибка при входе в сцену:', error);
@@ -46,7 +46,7 @@ RegScene.on('text', async (ctx) => {
         if (response.data ==="Нет пользователя с такой почтой") {
             setTimeout(()=>{
                 ctx.reply(`Нет пользователя с такой почтой`);
-                console.log(`Нет пользователя с такой почтой`);
+                // // console.log(`Нет пользователя с такой почтой`);
                 ctx.scene.leave();
                 return
             },1)
@@ -56,7 +56,7 @@ RegScene.on('text', async (ctx) => {
         const user = response.data;
         if (user) {
             setTimeout(async() => {
-                console.log(ctx.update?.message.chat.id);
+                // // console.log(ctx.update?.message.chat.id);
                 const setChatId = await axios.post(`${addres}:${port}/user/add-chat-id`,{
                     email,
                     chatId : ctx.update?.message.chat.id
@@ -66,7 +66,7 @@ RegScene.on('text', async (ctx) => {
                 }
                 
                 ctx.reply(`Добро пожаловать, ${user}! Вы успешно зарегистрированы. Теперь вам будут приходить уведомления`);
-                console.log(`Пользователь найден: ${user}`);
+                // // console.log(`Пользователь найден: ${user}`);
                 sheduler(ctx)
                 ctx.scene.leave();
             }, 1000);

@@ -241,16 +241,16 @@ import NavigationDrawer from '../components/NavigationDrawer.vue';
 					headers : `Authorization: Bearer ${token}`
 				})
 			} catch (error) {
-				console.log(error);
+				// console.log(error);
 			}
 			try {
 				const allUsers = await apiClient.get('/user/get_all',{
 					headers : `Authorization: Bearer ${token}`
 				})
 				this.allUsers = allUsers.data
-				console.log(allUsers);
+				// console.log(allUsers);
 			} catch (error) {
-				console.log(error);
+				// console.log(error);
 				
 			}
 		},
@@ -310,9 +310,9 @@ import NavigationDrawer from '../components/NavigationDrawer.vue';
 							}
 						}
 					)
-				console.log(response);	
+				// console.log(response);	
 			} catch (error) {
-				console.log(error);
+				// console.log(error);
 				if (error.response.data.statusCode == 422) {
 					eventBus.emit('show-modal', "Product already exist");
 				}
@@ -347,7 +347,7 @@ import NavigationDrawer from '../components/NavigationDrawer.vue';
 					return
 				}
 				eventBus.emit('show-modal', "Failed created");
-				console.log(error);
+				// console.log(error);
 				
 			}
 			
@@ -368,19 +368,19 @@ import NavigationDrawer from '../components/NavigationDrawer.vue';
 					}
 				}
 			)
-			console.log(response.data);
+			// console.log(response.data);
 			if (response.data) {
 				this.closeCategoryModal()
 				}
 			} catch (error) {
-				console.log(error);
+				// console.log(error);
 				
 				if (error.response.data.statusCode == 400) {
 					eventBus.emit('show-modal', "Category already exist");
 					return
 				}
 				eventBus.emit('show-modal', "Failed created");
-				console.log(error);
+				// console.log(error);
 				
 			}
 			

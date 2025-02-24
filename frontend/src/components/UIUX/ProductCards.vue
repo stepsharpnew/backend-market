@@ -106,7 +106,7 @@ export default {
   },
   mounted() {
     this.show = new Array(this.products.length).fill(false);
-    console.log(this.products);
+    // console.log(this.products);
     
   },
   methods: {
@@ -135,7 +135,7 @@ export default {
 				);
         eventBus.emit('show-modal', "Product added to favorites");
       } catch (error) {
-        console.log(error);
+        // console.log(error);
         if (error.response.data.statusCode==400) {
           eventBus.emit('show-modal', "Product already added");
         }

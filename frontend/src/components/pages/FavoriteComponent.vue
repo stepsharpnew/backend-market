@@ -217,11 +217,11 @@ import ModalNoify from '../UIUX/ModalNoify.vue';
 					this.image_url = user.data.image_url
 					this.isAuth = true
 					this.tgNotify = user.data.telegram? true : false
-					console.log(this.tgNotify);
+					// console.log(this.tgNotify);
 					
 				// }
 			} catch (error) {
-				console.log(error);
+				// console.log(error);
 				
 			}
 			const token = localStorage.getItem('access')
@@ -259,7 +259,7 @@ import ModalNoify from '../UIUX/ModalNoify.vue';
 					headers : `Authorization: Bearer ${token}`
 				})
 				this.cartItems = response.data
-				console.log(response.data);
+				// console.log(response.data);
 				
 				if (response.data.status === 422) {
 					this.empty = true
@@ -267,17 +267,17 @@ import ModalNoify from '../UIUX/ModalNoify.vue';
 				else{
 					this.empty = false
 				}
-				console.log(response.data);
+				// console.log(response.data);
 				
 			} catch (error) {
-				console.log(error);
+				// console.log(error);
 			}
 
 			try {
 				const response = await axios.get('/api/products/sales')
 				this.discountedProducts = response.data
 			} catch (error) {
-				console.log(error);
+				// console.log(error);
 				
 			}
 		},
@@ -320,7 +320,7 @@ import ModalNoify from '../UIUX/ModalNoify.vue';
 			);
 			eventBus.emit('show-modal', "Product added to basket");
 		} catch (error) {
-			console.log(error);
+			// console.log(error);
 		}
 	  },
 	  async addToFavorite(product){
@@ -339,7 +339,7 @@ import ModalNoify from '../UIUX/ModalNoify.vue';
 			this.fetchData(token)
 			eventBus.emit('show-modal', "Product added to favorite");
 		} catch (error) {
-			console.log(error);
+			// console.log(error);
 			if (error.response.data.statusCode==400) {
 				eventBus.emit('show-modal', "Product already added");
 			}

@@ -128,7 +128,7 @@ export default {
       }
     }
     catch(error){
-      console.log(error);
+      // console.log(error);
       if (token) {
         user = await apiClient.get('/user/me', {
           headers : `Authorization: Bearer ${token}`
@@ -145,7 +145,7 @@ export default {
     try {    
       const response = await axios.get(`/api/products?offset=${this.offset * this.limit}&limit=${this.limit}`);
       this.products = response.data; 
-      console.log(this.products);
+      // console.log(this.products);
       
       const sales = await axios.get(`/api/products/sales`);
       this.saleProducts = sales.data
@@ -172,7 +172,7 @@ export default {
           });
         },500)
       } catch (error) {
-        console.log(error);
+        // console.log(error);
         
       }
 

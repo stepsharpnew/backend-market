@@ -6,7 +6,7 @@ import { FilterDTO } from './filterDTO';
 export class FilterService {
     async filter (products : ProductEntity[], price_bottom : number, price_up : number){
         const  filtered = products.filter((product)=> product.price>price_bottom && product.price < price_up)
-        console.log(filtered.map((el)=>el.id));
+        // // console.log(filtered.map((el)=>el.id));
         return filtered
 
     }

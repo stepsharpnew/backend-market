@@ -56,7 +56,7 @@ export class BasketService {
             let product_Ids =  user_products.map((el)=>{
                 return el.products.id
             })
-            // console.log(product_Ids);
+            // // console.log(product_Ids);
             if (product_Ids.length == 0) {
                 return new HttpException('У пользователя нет товаров в корзине',HttpStatus.UNPROCESSABLE_ENTITY)
             }
@@ -102,7 +102,7 @@ export class BasketService {
         let Entity = new BasketProductsEntity()
         let newBasketItem = []
         if (userWithProduct) {
-            console.log(userWithProduct);
+            // console.log(userWithProduct);
             userWithProduct.count++
             return await this.basketProduct_Repository.save(userWithProduct)
         }else{
@@ -112,7 +112,7 @@ export class BasketService {
             return await this.basketProduct_Repository.save(Entity)
         }
 
-        // console.log('Entity', Entity);
+        // // console.log('Entity', Entity);
         // await this.basketProduct_Repository.save(userWithProduct)
         // return newBasketItem
     }
@@ -164,7 +164,7 @@ export class BasketService {
         }
 
         const products_Ids = basket_items.map((elem)=>elem.products.id)
-        // console.log(products_Ids);
+        // // console.log(products_Ids);
         if (products_Ids.length === 0) {
             throw new HttpException('Ваша корзина пустая', HttpStatus.UNPROCESSABLE_ENTITY)
         }
@@ -213,7 +213,7 @@ export class BasketService {
     }
 
     async deleteFrombasket(user_id: number, product_id: number) {
-        console.log(user_id, product_id);
+        // console.log(user_id, product_id);
         
         const deleted = await this.basketProduct_Repository.delete({
             user: { id: user_id },

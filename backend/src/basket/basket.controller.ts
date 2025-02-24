@@ -73,7 +73,7 @@ export class BasketController {
   @ApiBody({schema : {properties : {count : {example : 2},type : {example : true}}}})
   @UseGuards(AccesTokenGeard)
   async countChange(@User()user_id : any,@Body('count') count:number,@Body('type') type : boolean){
-    console.log(count);
+    // // console.log(count);
     
     const counts = await this.basketService.countChange(user_id.sub, count, type )
     return counts
@@ -84,7 +84,7 @@ export class BasketController {
   @Delete('delete-item')
   @UseGuards(AccesTokenGeard)
   async deleteFrombasket(@User() user_id: any, @Query('product_id') product_id: number) {
-      console.log(product_id); // Теперь значение будет отображаться
+      // // console.log(product_id); // Теперь значение будет отображаться
       const counts = await this.basketService.deleteFrombasket(user_id.sub, product_id);
       return counts;
   }

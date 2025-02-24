@@ -14,7 +14,7 @@ export class MailService {
       )
       return mail
     } catch (error) {
-      console.log(error);
+      // // console.log(error);
       return error
     }
 

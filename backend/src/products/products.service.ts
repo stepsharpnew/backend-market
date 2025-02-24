@@ -34,7 +34,7 @@ export class ProductsService {
         // if (cacheProducts) {
         //     return cacheProducts 
         // }
-        console.log({limit , offset});
+        // // console.log({limit , offset});
         
         
         const queryBuilder = this.productRepository.createQueryBuilder('products')
@@ -67,7 +67,7 @@ export class ProductsService {
 
 
     async createProduct(createProductDTO : CreateProductDTO, user_id : number):Promise<ProductEntity>{
-        console.log(user_id);
+        // // console.log(user_id);
         
         const productConsist = await this.productRepository.findOne({
             where : {
@@ -173,7 +173,7 @@ export class ProductsService {
                 array.push(product)
             }
         })
-        // console.log('Array',array);
+        // // console.log('Array',array);
         return array
     }
 
@@ -201,10 +201,10 @@ export class ProductsService {
             throw new HttpException('Скидка уже есть', HttpStatus.BAD_REQUEST)
         }
         Object.assign(product, {...product, sale, saleBool : true})
-        console.log(product_id);
+        // // console.log(product_id);
         
         // const cache = await this.cacheService.set<ProductEntity>(`sale_${product_id}:`,product,60000)
-        // console.log(cache);
+        // // console.log(cache);
         return await this.productRepository.save(product)
     }
 
@@ -220,7 +220,7 @@ export class ProductsService {
         }
         Object.assign(product, {...product, saleBool : false, sale : 0})
         const cache = await this.cacheService.del(`sale_${product_id}:`)
-        console.log(cache);
+        // // console.log(cache);
         
         return await this.productRepository.save(product)
     }
@@ -242,7 +242,7 @@ export class ProductsService {
     //     const sales = await Promise.all(
     //         keys.map(key => this.cacheService.get<ProductEntity>(key)) // Получить значения по ключам
     //     );
-    //     console.log(sales);
+    //     // console.log(sales);
     //     return sales
     //     const products = await this.productRepository.find({
     //         where : {

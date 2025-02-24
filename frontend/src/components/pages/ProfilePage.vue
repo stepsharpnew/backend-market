@@ -204,7 +204,7 @@ export default {
             localStorage.removeItem('user')
             localStorage.setItem('user', JSON.stringify(user))
             this.isAuth = true
-            console.log(user);
+            // console.log(user);
             } catch (error) {
                 if (error.response.data.statusCode == 401) {
                     eventBus.emit('show-modal', 'Your credentials is outdated');
@@ -222,7 +222,7 @@ export default {
             const formData = new FormData();
             formData.append('file', this.photo);
 
-            console.log('Форма данных:', formData); // Лог для отладки
+            // console.log('Форма данных:', formData); // Лог для отладки
 
             try {
                 const token = localStorage.getItem('access');
@@ -238,7 +238,7 @@ export default {
                     },
                 });
 
-                console.log('Ответ сервера:', response); // Лог успешного ответа
+                // console.log('Ответ сервера:', response); // Лог успешного ответа
                 this.isUpdating = false
                 eventBus.emit('show-modal', 'Success upload photo');
             } catch (error) {
@@ -266,9 +266,9 @@ export default {
             })
             eventBus.emit('show-modal', 'Password changed is successfull');
             this.dialog = false
-            console.log(response.data);
+            // console.log(response.data);
           } catch (error) {
-            console.log(error.response.data.message);
+            // console.log(error.response.data.message);
             if (Array.isArray(error.response.data.message)) {
               eventBus.emit('show-modal', error.response.data.message[0]); 
               return
@@ -289,7 +289,7 @@ export default {
         // let user;
         // user = JSON.parse(localStorage.getItem('user'));
         const token = localStorage.getItem('access');
-        console.log(token);
+        // console.log(token);
         
         try {
             if (!token) {
@@ -298,7 +298,7 @@ export default {
             this.fetchPhoto()
 
         } catch (error) {
-            console.log(error);
+            // console.log(error);
         }
 
     },

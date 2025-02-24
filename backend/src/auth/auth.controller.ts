@@ -35,7 +35,7 @@ export class AuthController {
   @Post('signup')
   async signup(@Body() createUserDto: CreateUserDTO,@Res() res: Response) {
     let tokens = await this.authService.registration(createUserDto);
-    // console.log(tokens);
+    // // console.log(tokens);
     // res.cookie('refresh',tokens.refreshToken, {
     //   httpOnly : true,
     //   maxAge : 604800000,
@@ -55,7 +55,7 @@ export class AuthController {
       //   httpOnly : true,
       //   maxAge : 604800000,
       // })
-      console.log(tokens);
+      // // console.log(tokens);
       return res.status(201).send({ ...tokens });
   }
 

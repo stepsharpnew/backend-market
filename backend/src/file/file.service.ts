@@ -22,7 +22,7 @@ export class FileService {
 //      PRODUCT ------------------------------------------------------
     //Создание названия и установка параметров
     async addFileProduct(file : Express.Multer.File,user_id : any, product_id : number){
-        console.log(file);
+        // // console.log(file);
         
         try {
             const filename = slugify(`${Date.now()}-${file.originalname.slice(0,8)}-${(Math.random()*48).toString(36).substring(2)}`)
@@ -36,7 +36,7 @@ export class FileService {
                 return await this.fileToS3(params,product_id)
 
         } catch (error) {
-            console.log(error);
+            // // console.log(error);
             throw new HttpException('Файл не загрузился', HttpStatus.BAD_GATEWAY)
         }
         
@@ -92,7 +92,7 @@ export class FileService {
                 return await this.fileToS3User(params,user_id)
 
         } catch (error) {
-            console.log(error);
+            // // console.log(error);
             throw new HttpException('Файл не загрузился', HttpStatus.BAD_GATEWAY)
         }
         

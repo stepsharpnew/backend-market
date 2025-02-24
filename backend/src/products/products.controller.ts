@@ -44,8 +44,8 @@ export class ProductsController {
     const { limit, offset } = dto
     const {price_bottom, price_up}= filterDTO
     const products = await this.productsService.getAllProducts({limit, offset})
-    console.log(products.map((el)=>el.id));
-    console.log({price_bottom, price_up});
+    // // console.log(products.map((el)=>el.id));
+    // // console.log({price_bottom, price_up});
     return products
     
     const filtered = this.filterService.filter(
@@ -90,7 +90,7 @@ export class ProductsController {
         @User('id') id:number
       ){
         const product = await this.productsService.deleteBySlug(slug,id)
-        console.log(product);
+        // console.log(product);
         
         return product
       }
@@ -204,7 +204,7 @@ export class ProductsController {
 
       // @Get('sales')
       // async GetSales(){
-      //   console.log('asdasd');
+      //   // console.log('asdasd');
       //   return await this.productsService.GetSales()
       // }
 }

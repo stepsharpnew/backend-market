@@ -115,14 +115,14 @@ import ProgressBar from '../../UIUX/ProgressBar.vue';
             const response = await axios.post('/api/auth/restoring',{
               email : this.email
             })
-            console.log(response);
+            // console.log(response);
             if (response.data) {
               eventBus.emit('show-modal', 'Check you email'); 
               this.isUpdating = false
               this.$emit('goToSecond', this.email)
             }
           } catch (error) {
-            console.log(error.response.data);
+            // console.log(error.response.data);
             
               setTimeout(()=>{
                 if (error.response.data.statusCode) {
@@ -151,7 +151,7 @@ import ProgressBar from '../../UIUX/ProgressBar.vue';
       },
 
       async created(){
-        console.log(this.currentEmail);
+        // console.log(this.currentEmail);
         
         if (this.currentEmail) {
           this.email = this.currentEmail

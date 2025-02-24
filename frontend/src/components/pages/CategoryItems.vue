@@ -120,7 +120,7 @@
 					this.image_url = user.data.image_url
 					this.isAuth = true
 				}
-				console.log(this.isAuth);
+				// console.log(this.isAuth);
 				
 
 			} catch (error) {
@@ -130,14 +130,14 @@
 		try {
 			const slug = this.$route.params.short_name
 			const response = await axios.get(`/api/products/category/${slug}`)
-			console.log(response.data[0].category.category);
+			// console.log(response.data[0].category.category);
 			
 			this.currentCategory = response.data[0].category.category
 			this.products = response.data
 			let otherCategories = await axios.get('/api/products/all_categories')
 			this.otherCategories = otherCategories.data.filter((el) => el.id !== response.data[0].category.id);
 		} catch (error) {
-			console.log(error);
+			// console.log(error);
 			eventBus.emit('show-modal', "Category is unreacheble");
 			// this.$router.push('/')
 		}

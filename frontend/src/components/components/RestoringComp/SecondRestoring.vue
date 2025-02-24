@@ -172,7 +172,7 @@ export default {
   },
 
   async created(){
-    console.log(this.currentEmail);
+    // console.log(this.currentEmail);
     
     if (this.currentCode) {
       this.code = this.currentCode

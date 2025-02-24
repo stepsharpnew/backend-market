@@ -193,7 +193,7 @@ import eventBus from '../../eventBus';
 			}
 		},
 		mounted(){
-			console.log(this.product);
+			// console.log(this.product);
 			
 		},
 		methods : {
@@ -204,13 +204,13 @@ import eventBus from '../../eventBus';
 			Copy(){
 				try {
 					const url = `${window.location.origin}/product/${this.product.products.slug}`;
-					console.log(url);
+					// console.log(url);
 					navigator.clipboard
 					.writeText(url)
 					eventBus.emit('show-modal', "Copied");
 					
 				} catch (error) {
-					console.log(error);
+					// console.log(error);
 					
 				}
 			}

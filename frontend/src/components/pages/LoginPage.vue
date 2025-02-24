@@ -125,16 +125,16 @@ import eventBus from '../../eventBus';
 
         async Login(){
           this.isUpdating = true
-          console.log('asdasd');
+          // console.log('asdasd');
           
           try {      
-            console.log('asd');
+            // console.log('asd');
             const token = await axios.post('/api/auth/signin',{
               email : this.email, 
               password : this.password
             })
-            console.log(token.data);
-            console.log('asdasdasdasdasdada');          
+            // console.log(token.data);
+            // console.log('asdasdasdasdasdada');          
               eventBus.emit('show-modal', 'Login is success'); 
               localStorage.setItem('access', token.data.accessToken)
               localStorage.setItem('refresh', token.data.refreshToken)
@@ -143,10 +143,10 @@ import eventBus from '../../eventBus';
 
 
           } catch (error) {
-            console.log(error);
+            // console.log(error);
             setTimeout(()=>{
                 this.isUpdating = false
-                console.log(error.response.data.message);
+                // console.log(error.response.data.message);
                 if (Array.isArray(error.response.data.message)) {
                   eventBus.emit('show-modal', error.response.data.message[0]); 
                   return

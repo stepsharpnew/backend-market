@@ -50,7 +50,7 @@ export class UserController {
         @Param('email') email : string,
     ){
         const user_email = await this.userService.getUserTelegram(email)
-        console.log(user_email);
+        // // console.log(user_email);
         return user_email
     }
 
@@ -62,7 +62,7 @@ export class UserController {
         @Body('chatId') chatId : number
     ){
         const user = await this.userService.AddChatId(chatId,email)
-        console.log(user);
+        // // console.log(user);
 
         return user
     }
@@ -108,7 +108,7 @@ export class UserController {
       @UploadedFile() file : Express.Multer.File,
       @User() user : any,
     ){
-        console.log(file);
+        // // console.log(file);
         
       return this.fileService.addFileProductUser(file,user.sub)
     }

@@ -279,19 +279,19 @@ import BuyAll from '../components/BuyAll.vue';
 					this.cartItems = response.data
 				}
 			} catch (error) {
-				console.log(error);
+				// console.log(error);
 			}
 			try {
 				const response = await axios.get('/api/products/sales')
 				this.discountedProducts = response.data
 			} catch (error) {
-				console.log(error);
+				// console.log(error);
 				
 			}
 		},
 
 		async addToFavorite(product){
-			console.log(product);
+			// console.log(product);
 			
 			const token = localStorage.getItem('access')
 			try {
@@ -310,7 +310,7 @@ import BuyAll from '../components/BuyAll.vue';
 				if (error.response.data.statusCode == 400) {
 					eventBus.emit('show-modal', "Product has already been added to favorites");
 				}
-				console.log(error);
+				// console.log(error);
 			}
 		},
 		async decreaseQuantity(item) {
@@ -386,7 +386,7 @@ import BuyAll from '../components/BuyAll.vue';
 				this.fetchData(token)
 				eventBus.emit('show-modal', "Product added to basket");
 			} catch (error) {
-				console.log(error);
+				// console.log(error);
 			}
 		},
 
@@ -403,7 +403,7 @@ import BuyAll from '../components/BuyAll.vue';
 				this.cartItems = []
 				eventBus.emit('show-modal', "Basket cleared");
 			} catch (error) {
-				console.log(error);
+				// console.log(error);
 			}
 		}
 	},

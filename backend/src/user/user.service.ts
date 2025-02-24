@@ -99,7 +99,7 @@ export class UserService {
         if (!user) {
             return "Нет пользователя с такой почтой"
         }
-        console.log(user);
+        // // console.log(user);
         return user.email
     }
 
@@ -112,7 +112,7 @@ export class UserService {
         
         Object.assign(user, {...user, telegram : chatId})
         await this.userRepository.save(user)
-        console.log(user);
+        // // console.log(user);
         return user.email
     }
 

@@ -216,18 +216,18 @@ import apiClient from '../../axiosClient';
 					}
 				}
 			);
-			console.log(response.data);
+			// console.log(response.data);
 			eventBus.emit('show-modal', "Product added to basket");
 		} catch (error) {
 			eventBus.emit('show-modal', "For this action required sign in");
-			console.log(error);
+			// console.log(error);
 		}
 
 		
 
 	  },
 	  buyNow(product) {
-		console.log('Покупка товара:', product);
+		// console.log('Покупка товара:', product);
 
 	  },
 	  goToCategory(short_name){
@@ -268,7 +268,7 @@ import apiClient from '../../axiosClient';
 					this.image_url = user.data.image_url
 					this.isAuth = true
 				}
-				console.log(this.isAuth);
+				// console.log(this.isAuth);
 				
 
 			} catch (error) {
@@ -279,7 +279,7 @@ import apiClient from '../../axiosClient';
 		try {
 			const slug = this.$route.params.slug
 			const response = await axios.get(`/api/products/get/${slug}`)
-			console.log(response.data);
+			// console.log(response.data);
 			this.category = response.data.category.short_name
 			this.product = response.data
 
@@ -290,10 +290,10 @@ import apiClient from '../../axiosClient';
 
 
 			this.relatedProducts = category_items.data
-			console.log(this.relatedProducts);
+			// console.log(this.relatedProducts);
 			
 		} catch (error) {
-			console.log(error);
+			// console.log(error);
 		}
 
 	}

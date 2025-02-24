@@ -21,10 +21,10 @@ async function seed() {
 
 
   await categoryRepository.save(categories);
-  console.log("Категории добавлены успешно!");
+  // console.log("Категории добавлены успешно!");
 
   await productRepository.save(products);
-  console.log("Продукты добавлены успешно!");
+  // console.log("Продукты добавлены успешно!");
 
   process.exit(0);
 }

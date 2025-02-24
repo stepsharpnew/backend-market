@@ -190,10 +190,10 @@ import eventBus from '../../eventBus';
             localStorage.setItem('refresh', token.data.refreshToken)
             this.isUpdating = false
           } catch (error) {
-              console.log(error);
+              // console.log(error);
               setTimeout(()=>{
                   this.isUpdating = false
-                  console.log(error.response.data.message);
+                  // console.log(error.response.data.message);
                   if (Array.isArray(error.response.data.message)) {
                     eventBus.emit('show-modal', error.response.data.message[0]); 
                     return
@@ -215,10 +215,10 @@ import eventBus from '../../eventBus';
       try {
         const response = await axios.get('/api/products/all_categories');
         this.people = response.data;
-        console.log(this.people);
+        // console.log(this.people);
         
       } catch (error) {
-        console.log(error);
+        // console.log(error);
         
       }
 
