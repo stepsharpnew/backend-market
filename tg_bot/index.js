@@ -30,7 +30,7 @@ bot.start(start);
 
 // Запуск бота
 bot.launch()
-    .then(() => // console.log('Bot started'))
+    .then(() => console.log('Bot started'))
     .catch(err => console.error(err));
 
 module.exports = { bot };
