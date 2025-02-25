@@ -4,7 +4,7 @@ require('dotenv').config()
 const start = async (ctx) => {
     try {
         const userName = ctx.message.from.first_name || "пользователь";
-        // console.log(`${userName} начал использование бота!`);
+        console.log(`${userName} начал использование бота!`);
         
         // Красивое приветственное сообщение
         await ctx.reply(`
@@ -20,7 +20,7 @@ const start = async (ctx) => {
     `, { parse_mode: "HTML" });
 
     } catch (error) {
-        // console.log(`Ошибка при запуске бота: ${error.message}`);
+        console.log(`Ошибка при запуске бота: ${error.message}`);
         ctx.reply("Произошла ошибка при запуске. Попробуйте ещё раз позже.");
     }
 };
@@ -56,8 +56,8 @@ const formatTelegramMessage = (product) => {
 
 const bufferFunctionPrint = (current, buffer) => {
     if (current.length) {
-        // // console.log(current.length, buffer.length);
-        // // console.log(buffer.length > 0 ? buffer[0].id : -1);
+        // console.log(current.length, buffer.length);
+        // console.log(buffer.length > 0 ? buffer[0].id : -1);
 
         if (current[current.length - 1].id !== (buffer.length > 0 ? buffer[buffer.length - 1].id : -1)) {
             if (!buffer.length) {
@@ -99,7 +99,7 @@ const job = new CronJob(
             currentData = change.data             
             bufferData = bufferFunctionPrint(currentData, bufferData)
         } else { 
-            // console.log('Контекст не найден');
+            console.log('Контекст не найден');
         }
     },
     null,
@@ -111,7 +111,7 @@ const job = new CronJob(
 const sheduler = (ctx) => {
     if (ctx) {
         currentCtx = ctx; // сохраняем контекст
-        // console.log('Контекст установлен');
+        console.log('Контекст установлен');
         job.start(); // запускаем CronJob
     }
 };
